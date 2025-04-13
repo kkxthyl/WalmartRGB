@@ -24,11 +24,19 @@ class CameraController:
             ("szFileName", ctypes.c_char * 256) # File name (C string).
         ]
     
-    def __init__(self):
+    def __init__(self, led_test=False):
         """
         Initialize the CameraController instance.
         Loads the EDSDK library and sets up the function prototypes.
         """
+
+        if led_test:
+            self.led_test = led_test
+            # Skip loading the SDK if in LED test mode.
+            self.edsdk = None
+            self.camera = None
+            return
+
         # Load the EDSDK library based on the operating system.
         if sys.platform == 'darwin':
             self.edsdk = ctypes.CDLL(
@@ -94,6 +102,12 @@ class CameraController:
         Initialize the SDK, retrieve the first available camera,
         and open a session with it.
         """
+
+        if self.led_test:
+            # Skip camera initialization if in LED test mode.
+            return
+
+
         # Initialize the SDK.
         self._check(self.edsdk.EdsInitializeSDK())
         print("EDSDK initialized.")
@@ -124,6 +138,11 @@ class CameraController:
         Trigger the camera shutter to capture an image.
         Make sure the camera session is open before calling this method.
         """
+
+        if self.led_test:
+            # Skip image capture if in LED test mode.
+            return
+
         if self.camera is None:
             raise Exception("Camera is not open. Call open_camera() first.")
         
@@ -140,6 +159,11 @@ class CameraController:
         This method navigates the folder structure (volume -> DCIM -> folder)
         and downloads the last file in the folder.
         """
+
+        if self.led_test:
+            # Skip image download if in LED test mode.
+            return
+
         if self.camera is None:
             raise Exception("Camera is not open. Call open_camera() first.")
         

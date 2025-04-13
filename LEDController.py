@@ -34,12 +34,18 @@ class LEDController:
     BACK_START = 471
     BACK_END = 599
 
-    def __init__(self, host=None, hw_address=None):
+    def __init__(self, host=None, hw_address=None, camera_test=False):
         """
         Initialize the LEDController.
 
         If host and hw_address are not provided, the device is discovered automatically.
         """
+
+        if camera_test:
+            self.device_data = {}
+            self.device_data["number_of_led"] = 600
+            return
+
         if host is None or hw_address is None:
             discovered_device = xled.discover.discover()
             host = discovered_device.ip_address
@@ -119,7 +125,7 @@ class LEDController:
         b = math.ceil(b * (w / 255))
         return struct.pack(">BBB", r, g, b)
 
-    def set_face_pattern(self, face, r, g, b, w):
+    def create_face_pattern(self, face, r, g, b, w):
         """
         Set the color of a specific face of the LED cube.
 
@@ -182,21 +188,11 @@ class LEDController:
         total_leds = self.device_data["number_of_led"]
         combined = [self.make_pixel(0, 0, 0, 0)] * total_leds
 
-        # Insert left face pattern.
-        for i, pixel in enumerate(left):
-            combined[self.LEFT_START + i] = pixel
-
-        # Insert right face pattern.
-        for i, pixel in enumerate(right):
-            combined[self.RIGHT_START + i] = pixel
-
-        # Insert top face pattern.
-        for i, pixel in enumerate(top):
-            combined[self.TOP_START + i] = pixel
-
-        # Insert back face pattern.
-        for i, pixel in enumerate(back):
-            combined[self.BACK_START + i] = pixel
+        # Fill the combined pattern with the provided face patterns
+        combined[self.LEFT_START:self.LEFT_END] = left[self.LEFT_START:self.LEFT_END]
+        combined[self.RIGHT_START:self.RIGHT_END] = right[self.RIGHT_START:self.RIGHT_END]
+        combined[self.TOP_START:self.TOP_END] = top[self.TOP_START:self.TOP_END]
+        combined[self.BACK_START:self.BACK_END] = back[self.BACK_START:self.BACK_END]
 
         return combined
 

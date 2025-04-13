@@ -229,7 +229,7 @@ if __name__ == "__main__":
         # You may want to wait a bit for the capture to complete.
         time.sleep(1)                  # Delay to ensure the image is saved on the card
         
-        cam_ctrl.download_image("new_img.jpg")  # Download the most recent image
+        cam_ctrl.download_image("calibration_images/test_img.jpg")  # Download the most recent image
     except Exception as e:
         print("An error occurred:", e)
     finally:

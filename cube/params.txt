@@ -1,0 +1,1853 @@
+SceneParameters[
+  -------------------------------------------------------------------------------------------------
+  Name                                          Flags    Type        Parent
+  -------------------------------------------------------------------------------------------------
+  checkerboard.bsdf.reflectance.to_uv                    Transform3f Checkerboard
+  checkerboard.bsdf.reflectance.color0.value    ∂        Color3f     SRGBReflectanceSpectrum
+  checkerboard.bsdf.reflectance.color1.value    ∂        Color3f     SRGBReflectanceSpectrum
+  checkerboard.silhouette_sampling_weight                float       Rectangle
+  checkerboard.to_world                         ∂, D     Transform4f Rectangle
+  cube-back.bsdf.brdf_0.reflectance.value       ∂        Color3f     SRGBReflectanceSpectrum
+  cube-back.silhouette_sampling_weight                   float       OBJMesh
+  cube-back.faces                                        ArrayXu     OBJMesh
+  cube-back.vertex_positions                    ∂, D     ArrayXf     OBJMesh
+  cube-back.vertex_normals                      ∂, D     ArrayXf     OBJMesh
+  cube-back.vertex_texcoords                    ∂        ArrayXf     OBJMesh
+  cube-bottom.bsdf.brdf_0.reflectance.value     ∂        Color3f     SRGBReflectanceSpectrum
+  cube-bottom.silhouette_sampling_weight                 float       OBJMesh
+  cube-bottom.faces                                      ArrayXu     OBJMesh
+  cube-bottom.vertex_positions                  ∂, D     ArrayXf     OBJMesh
+  cube-bottom.vertex_normals                    ∂, D     ArrayXf     OBJMesh
+  cube-bottom.vertex_texcoords                  ∂        ArrayXf     OBJMesh
+  cube-left.bsdf.brdf_0.reflectance.value       ∂        Color3f     SRGBReflectanceSpectrum
+  cube-left.silhouette_sampling_weight                   float       OBJMesh
+  cube-left.faces                                        ArrayXu     OBJMesh
+  cube-left.vertex_positions                    ∂, D     ArrayXf     OBJMesh
+  cube-left.vertex_normals                      ∂, D     ArrayXf     OBJMesh
+  cube-left.vertex_texcoords                    ∂        ArrayXf     OBJMesh
+  cube-right.bsdf.brdf_0.reflectance.value      ∂        Color3f     SRGBReflectanceSpectrum
+  cube-right.silhouette_sampling_weight                  float       OBJMesh
+  cube-right.faces                                       ArrayXu     OBJMesh
+  cube-right.vertex_positions                   ∂, D     ArrayXf     OBJMesh
+  cube-right.vertex_normals                     ∂, D     ArrayXf     OBJMesh
+  cube-right.vertex_texcoords                   ∂        ArrayXf     OBJMesh
+  cube-top.bsdf.brdf_0.reflectance.value        ∂        Color3f     SRGBReflectanceSpectrum
+  cube-top.silhouette_sampling_weight                    float       OBJMesh
+  cube-top.faces                                         ArrayXu     OBJMesh
+  cube-top.vertex_positions                     ∂, D     ArrayXf     OBJMesh
+  cube-top.vertex_normals                       ∂, D     ArrayXf     OBJMesh
+  cube-top.vertex_texcoords                     ∂        ArrayXf     OBJMesh
+  env.sampling_weight                                    float       ConstantBackgroundEmitter
+  env.radiance.value                            ∂        Color3f     SRGBReflectanceSpectrum
+  light_0.sampling_weight                                float       PointLight
+  light_0.position                                       Point3f     PointLight
+  light_0.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_1.sampling_weight                                float       PointLight
+  light_1.position                                       Point3f     PointLight
+  light_1.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_2.sampling_weight                                float       PointLight
+  light_2.position                                       Point3f     PointLight
+  light_2.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_3.sampling_weight                                float       PointLight
+  light_3.position                                       Point3f     PointLight
+  light_3.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_4.sampling_weight                                float       PointLight
+  light_4.position                                       Point3f     PointLight
+  light_4.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_5.sampling_weight                                float       PointLight
+  light_5.position                                       Point3f     PointLight
+  light_5.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_6.sampling_weight                                float       PointLight
+  light_6.position                                       Point3f     PointLight
+  light_6.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_7.sampling_weight                                float       PointLight
+  light_7.position                                       Point3f     PointLight
+  light_7.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_8.sampling_weight                                float       PointLight
+  light_8.position                                       Point3f     PointLight
+  light_8.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_9.sampling_weight                                float       PointLight
+  light_9.position                                       Point3f     PointLight
+  light_9.intensity.value                       ∂        Color3f     SRGBReflectanceSpectrum
+  light_10.sampling_weight                               float       PointLight
+  light_10.position                                      Point3f     PointLight
+  light_10.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_11.sampling_weight                               float       PointLight
+  light_11.position                                      Point3f     PointLight
+  light_11.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_12.sampling_weight                               float       PointLight
+  light_12.position                                      Point3f     PointLight
+  light_12.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_13.sampling_weight                               float       PointLight
+  light_13.position                                      Point3f     PointLight
+  light_13.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_14.sampling_weight                               float       PointLight
+  light_14.position                                      Point3f     PointLight
+  light_14.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_15.sampling_weight                               float       PointLight
+  light_15.position                                      Point3f     PointLight
+  light_15.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_16.sampling_weight                               float       PointLight
+  light_16.position                                      Point3f     PointLight
+  light_16.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_17.sampling_weight                               float       PointLight
+  light_17.position                                      Point3f     PointLight
+  light_17.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_18.sampling_weight                               float       PointLight
+  light_18.position                                      Point3f     PointLight
+  light_18.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_19.sampling_weight                               float       PointLight
+  light_19.position                                      Point3f     PointLight
+  light_19.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_20.sampling_weight                               float       PointLight
+  light_20.position                                      Point3f     PointLight
+  light_20.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_21.sampling_weight                               float       PointLight
+  light_21.position                                      Point3f     PointLight
+  light_21.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_22.sampling_weight                               float       PointLight
+  light_22.position                                      Point3f     PointLight
+  light_22.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_23.sampling_weight                               float       PointLight
+  light_23.position                                      Point3f     PointLight
+  light_23.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_24.sampling_weight                               float       PointLight
+  light_24.position                                      Point3f     PointLight
+  light_24.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_25.sampling_weight                               float       PointLight
+  light_25.position                                      Point3f     PointLight
+  light_25.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_26.sampling_weight                               float       PointLight
+  light_26.position                                      Point3f     PointLight
+  light_26.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_27.sampling_weight                               float       PointLight
+  light_27.position                                      Point3f     PointLight
+  light_27.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_28.sampling_weight                               float       PointLight
+  light_28.position                                      Point3f     PointLight
+  light_28.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_29.sampling_weight                               float       PointLight
+  light_29.position                                      Point3f     PointLight
+  light_29.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_30.sampling_weight                               float       PointLight
+  light_30.position                                      Point3f     PointLight
+  light_30.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_31.sampling_weight                               float       PointLight
+  light_31.position                                      Point3f     PointLight
+  light_31.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_32.sampling_weight                               float       PointLight
+  light_32.position                                      Point3f     PointLight
+  light_32.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_33.sampling_weight                               float       PointLight
+  light_33.position                                      Point3f     PointLight
+  light_33.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_34.sampling_weight                               float       PointLight
+  light_34.position                                      Point3f     PointLight
+  light_34.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_35.sampling_weight                               float       PointLight
+  light_35.position                                      Point3f     PointLight
+  light_35.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_36.sampling_weight                               float       PointLight
+  light_36.position                                      Point3f     PointLight
+  light_36.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_37.sampling_weight                               float       PointLight
+  light_37.position                                      Point3f     PointLight
+  light_37.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_38.sampling_weight                               float       PointLight
+  light_38.position                                      Point3f     PointLight
+  light_38.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_39.sampling_weight                               float       PointLight
+  light_39.position                                      Point3f     PointLight
+  light_39.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_40.sampling_weight                               float       PointLight
+  light_40.position                                      Point3f     PointLight
+  light_40.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_41.sampling_weight                               float       PointLight
+  light_41.position                                      Point3f     PointLight
+  light_41.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_42.sampling_weight                               float       PointLight
+  light_42.position                                      Point3f     PointLight
+  light_42.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_43.sampling_weight                               float       PointLight
+  light_43.position                                      Point3f     PointLight
+  light_43.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_44.sampling_weight                               float       PointLight
+  light_44.position                                      Point3f     PointLight
+  light_44.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_45.sampling_weight                               float       PointLight
+  light_45.position                                      Point3f     PointLight
+  light_45.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_46.sampling_weight                               float       PointLight
+  light_46.position                                      Point3f     PointLight
+  light_46.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_47.sampling_weight                               float       PointLight
+  light_47.position                                      Point3f     PointLight
+  light_47.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_48.sampling_weight                               float       PointLight
+  light_48.position                                      Point3f     PointLight
+  light_48.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_49.sampling_weight                               float       PointLight
+  light_49.position                                      Point3f     PointLight
+  light_49.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_50.sampling_weight                               float       PointLight
+  light_50.position                                      Point3f     PointLight
+  light_50.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_51.sampling_weight                               float       PointLight
+  light_51.position                                      Point3f     PointLight
+  light_51.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_52.sampling_weight                               float       PointLight
+  light_52.position                                      Point3f     PointLight
+  light_52.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_53.sampling_weight                               float       PointLight
+  light_53.position                                      Point3f     PointLight
+  light_53.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_54.sampling_weight                               float       PointLight
+  light_54.position                                      Point3f     PointLight
+  light_54.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_55.sampling_weight                               float       PointLight
+  light_55.position                                      Point3f     PointLight
+  light_55.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_56.sampling_weight                               float       PointLight
+  light_56.position                                      Point3f     PointLight
+  light_56.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_57.sampling_weight                               float       PointLight
+  light_57.position                                      Point3f     PointLight
+  light_57.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_58.sampling_weight                               float       PointLight
+  light_58.position                                      Point3f     PointLight
+  light_58.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_59.sampling_weight                               float       PointLight
+  light_59.position                                      Point3f     PointLight
+  light_59.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_60.sampling_weight                               float       PointLight
+  light_60.position                                      Point3f     PointLight
+  light_60.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_61.sampling_weight                               float       PointLight
+  light_61.position                                      Point3f     PointLight
+  light_61.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_62.sampling_weight                               float       PointLight
+  light_62.position                                      Point3f     PointLight
+  light_62.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_63.sampling_weight                               float       PointLight
+  light_63.position                                      Point3f     PointLight
+  light_63.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_64.sampling_weight                               float       PointLight
+  light_64.position                                      Point3f     PointLight
+  light_64.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_65.sampling_weight                               float       PointLight
+  light_65.position                                      Point3f     PointLight
+  light_65.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_66.sampling_weight                               float       PointLight
+  light_66.position                                      Point3f     PointLight
+  light_66.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_67.sampling_weight                               float       PointLight
+  light_67.position                                      Point3f     PointLight
+  light_67.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_68.sampling_weight                               float       PointLight
+  light_68.position                                      Point3f     PointLight
+  light_68.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_69.sampling_weight                               float       PointLight
+  light_69.position                                      Point3f     PointLight
+  light_69.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_70.sampling_weight                               float       PointLight
+  light_70.position                                      Point3f     PointLight
+  light_70.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_71.sampling_weight                               float       PointLight
+  light_71.position                                      Point3f     PointLight
+  light_71.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_72.sampling_weight                               float       PointLight
+  light_72.position                                      Point3f     PointLight
+  light_72.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_73.sampling_weight                               float       PointLight
+  light_73.position                                      Point3f     PointLight
+  light_73.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_74.sampling_weight                               float       PointLight
+  light_74.position                                      Point3f     PointLight
+  light_74.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_75.sampling_weight                               float       PointLight
+  light_75.position                                      Point3f     PointLight
+  light_75.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_76.sampling_weight                               float       PointLight
+  light_76.position                                      Point3f     PointLight
+  light_76.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_77.sampling_weight                               float       PointLight
+  light_77.position                                      Point3f     PointLight
+  light_77.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_78.sampling_weight                               float       PointLight
+  light_78.position                                      Point3f     PointLight
+  light_78.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_79.sampling_weight                               float       PointLight
+  light_79.position                                      Point3f     PointLight
+  light_79.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_80.sampling_weight                               float       PointLight
+  light_80.position                                      Point3f     PointLight
+  light_80.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_81.sampling_weight                               float       PointLight
+  light_81.position                                      Point3f     PointLight
+  light_81.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_82.sampling_weight                               float       PointLight
+  light_82.position                                      Point3f     PointLight
+  light_82.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_83.sampling_weight                               float       PointLight
+  light_83.position                                      Point3f     PointLight
+  light_83.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_84.sampling_weight                               float       PointLight
+  light_84.position                                      Point3f     PointLight
+  light_84.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_85.sampling_weight                               float       PointLight
+  light_85.position                                      Point3f     PointLight
+  light_85.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_86.sampling_weight                               float       PointLight
+  light_86.position                                      Point3f     PointLight
+  light_86.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_87.sampling_weight                               float       PointLight
+  light_87.position                                      Point3f     PointLight
+  light_87.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_88.sampling_weight                               float       PointLight
+  light_88.position                                      Point3f     PointLight
+  light_88.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_89.sampling_weight                               float       PointLight
+  light_89.position                                      Point3f     PointLight
+  light_89.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_90.sampling_weight                               float       PointLight
+  light_90.position                                      Point3f     PointLight
+  light_90.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_91.sampling_weight                               float       PointLight
+  light_91.position                                      Point3f     PointLight
+  light_91.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_92.sampling_weight                               float       PointLight
+  light_92.position                                      Point3f     PointLight
+  light_92.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_93.sampling_weight                               float       PointLight
+  light_93.position                                      Point3f     PointLight
+  light_93.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_94.sampling_weight                               float       PointLight
+  light_94.position                                      Point3f     PointLight
+  light_94.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_95.sampling_weight                               float       PointLight
+  light_95.position                                      Point3f     PointLight
+  light_95.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_96.sampling_weight                               float       PointLight
+  light_96.position                                      Point3f     PointLight
+  light_96.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_97.sampling_weight                               float       PointLight
+  light_97.position                                      Point3f     PointLight
+  light_97.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_98.sampling_weight                               float       PointLight
+  light_98.position                                      Point3f     PointLight
+  light_98.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_99.sampling_weight                               float       PointLight
+  light_99.position                                      Point3f     PointLight
+  light_99.intensity.value                      ∂        Color3f     SRGBReflectanceSpectrum
+  light_100.sampling_weight                              float       PointLight
+  light_100.position                                     Point3f     PointLight
+  light_100.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_101.sampling_weight                              float       PointLight
+  light_101.position                                     Point3f     PointLight
+  light_101.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_102.sampling_weight                              float       PointLight
+  light_102.position                                     Point3f     PointLight
+  light_102.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_103.sampling_weight                              float       PointLight
+  light_103.position                                     Point3f     PointLight
+  light_103.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_104.sampling_weight                              float       PointLight
+  light_104.position                                     Point3f     PointLight
+  light_104.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_105.sampling_weight                              float       PointLight
+  light_105.position                                     Point3f     PointLight
+  light_105.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_106.sampling_weight                              float       PointLight
+  light_106.position                                     Point3f     PointLight
+  light_106.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_107.sampling_weight                              float       PointLight
+  light_107.position                                     Point3f     PointLight
+  light_107.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_108.sampling_weight                              float       PointLight
+  light_108.position                                     Point3f     PointLight
+  light_108.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_109.sampling_weight                              float       PointLight
+  light_109.position                                     Point3f     PointLight
+  light_109.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_110.sampling_weight                              float       PointLight
+  light_110.position                                     Point3f     PointLight
+  light_110.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_111.sampling_weight                              float       PointLight
+  light_111.position                                     Point3f     PointLight
+  light_111.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_112.sampling_weight                              float       PointLight
+  light_112.position                                     Point3f     PointLight
+  light_112.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_113.sampling_weight                              float       PointLight
+  light_113.position                                     Point3f     PointLight
+  light_113.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_114.sampling_weight                              float       PointLight
+  light_114.position                                     Point3f     PointLight
+  light_114.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_115.sampling_weight                              float       PointLight
+  light_115.position                                     Point3f     PointLight
+  light_115.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_116.sampling_weight                              float       PointLight
+  light_116.position                                     Point3f     PointLight
+  light_116.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_117.sampling_weight                              float       PointLight
+  light_117.position                                     Point3f     PointLight
+  light_117.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_118.sampling_weight                              float       PointLight
+  light_118.position                                     Point3f     PointLight
+  light_118.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_119.sampling_weight                              float       PointLight
+  light_119.position                                     Point3f     PointLight
+  light_119.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_120.sampling_weight                              float       PointLight
+  light_120.position                                     Point3f     PointLight
+  light_120.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_121.sampling_weight                              float       PointLight
+  light_121.position                                     Point3f     PointLight
+  light_121.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_122.sampling_weight                              float       PointLight
+  light_122.position                                     Point3f     PointLight
+  light_122.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_123.sampling_weight                              float       PointLight
+  light_123.position                                     Point3f     PointLight
+  light_123.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_124.sampling_weight                              float       PointLight
+  light_124.position                                     Point3f     PointLight
+  light_124.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_125.sampling_weight                              float       PointLight
+  light_125.position                                     Point3f     PointLight
+  light_125.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_126.sampling_weight                              float       PointLight
+  light_126.position                                     Point3f     PointLight
+  light_126.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_127.sampling_weight                              float       PointLight
+  light_127.position                                     Point3f     PointLight
+  light_127.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_128.sampling_weight                              float       PointLight
+  light_128.position                                     Point3f     PointLight
+  light_128.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_129.sampling_weight                              float       PointLight
+  light_129.position                                     Point3f     PointLight
+  light_129.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_130.sampling_weight                              float       PointLight
+  light_130.position                                     Point3f     PointLight
+  light_130.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_131.sampling_weight                              float       PointLight
+  light_131.position                                     Point3f     PointLight
+  light_131.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_132.sampling_weight                              float       PointLight
+  light_132.position                                     Point3f     PointLight
+  light_132.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_133.sampling_weight                              float       PointLight
+  light_133.position                                     Point3f     PointLight
+  light_133.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_134.sampling_weight                              float       PointLight
+  light_134.position                                     Point3f     PointLight
+  light_134.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_135.sampling_weight                              float       PointLight
+  light_135.position                                     Point3f     PointLight
+  light_135.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_136.sampling_weight                              float       PointLight
+  light_136.position                                     Point3f     PointLight
+  light_136.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_137.sampling_weight                              float       PointLight
+  light_137.position                                     Point3f     PointLight
+  light_137.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_138.sampling_weight                              float       PointLight
+  light_138.position                                     Point3f     PointLight
+  light_138.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_139.sampling_weight                              float       PointLight
+  light_139.position                                     Point3f     PointLight
+  light_139.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_140.sampling_weight                              float       PointLight
+  light_140.position                                     Point3f     PointLight
+  light_140.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_141.sampling_weight                              float       PointLight
+  light_141.position                                     Point3f     PointLight
+  light_141.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_142.sampling_weight                              float       PointLight
+  light_142.position                                     Point3f     PointLight
+  light_142.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_143.sampling_weight                              float       PointLight
+  light_143.position                                     Point3f     PointLight
+  light_143.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_144.sampling_weight                              float       PointLight
+  light_144.position                                     Point3f     PointLight
+  light_144.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_145.sampling_weight                              float       PointLight
+  light_145.position                                     Point3f     PointLight
+  light_145.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_146.sampling_weight                              float       PointLight
+  light_146.position                                     Point3f     PointLight
+  light_146.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_147.sampling_weight                              float       PointLight
+  light_147.position                                     Point3f     PointLight
+  light_147.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_148.sampling_weight                              float       PointLight
+  light_148.position                                     Point3f     PointLight
+  light_148.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_149.sampling_weight                              float       PointLight
+  light_149.position                                     Point3f     PointLight
+  light_149.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_150.sampling_weight                              float       PointLight
+  light_150.position                                     Point3f     PointLight
+  light_150.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_151.sampling_weight                              float       PointLight
+  light_151.position                                     Point3f     PointLight
+  light_151.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_152.sampling_weight                              float       PointLight
+  light_152.position                                     Point3f     PointLight
+  light_152.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_153.sampling_weight                              float       PointLight
+  light_153.position                                     Point3f     PointLight
+  light_153.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_154.sampling_weight                              float       PointLight
+  light_154.position                                     Point3f     PointLight
+  light_154.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_155.sampling_weight                              float       PointLight
+  light_155.position                                     Point3f     PointLight
+  light_155.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_156.sampling_weight                              float       PointLight
+  light_156.position                                     Point3f     PointLight
+  light_156.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_157.sampling_weight                              float       PointLight
+  light_157.position                                     Point3f     PointLight
+  light_157.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_158.sampling_weight                              float       PointLight
+  light_158.position                                     Point3f     PointLight
+  light_158.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_159.sampling_weight                              float       PointLight
+  light_159.position                                     Point3f     PointLight
+  light_159.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_160.sampling_weight                              float       PointLight
+  light_160.position                                     Point3f     PointLight
+  light_160.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_161.sampling_weight                              float       PointLight
+  light_161.position                                     Point3f     PointLight
+  light_161.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_162.sampling_weight                              float       PointLight
+  light_162.position                                     Point3f     PointLight
+  light_162.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_163.sampling_weight                              float       PointLight
+  light_163.position                                     Point3f     PointLight
+  light_163.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_164.sampling_weight                              float       PointLight
+  light_164.position                                     Point3f     PointLight
+  light_164.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_165.sampling_weight                              float       PointLight
+  light_165.position                                     Point3f     PointLight
+  light_165.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_166.sampling_weight                              float       PointLight
+  light_166.position                                     Point3f     PointLight
+  light_166.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_167.sampling_weight                              float       PointLight
+  light_167.position                                     Point3f     PointLight
+  light_167.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_168.sampling_weight                              float       PointLight
+  light_168.position                                     Point3f     PointLight
+  light_168.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_169.sampling_weight                              float       PointLight
+  light_169.position                                     Point3f     PointLight
+  light_169.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_170.sampling_weight                              float       PointLight
+  light_170.position                                     Point3f     PointLight
+  light_170.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_171.sampling_weight                              float       PointLight
+  light_171.position                                     Point3f     PointLight
+  light_171.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_172.sampling_weight                              float       PointLight
+  light_172.position                                     Point3f     PointLight
+  light_172.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_173.sampling_weight                              float       PointLight
+  light_173.position                                     Point3f     PointLight
+  light_173.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_174.sampling_weight                              float       PointLight
+  light_174.position                                     Point3f     PointLight
+  light_174.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_175.sampling_weight                              float       PointLight
+  light_175.position                                     Point3f     PointLight
+  light_175.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_176.sampling_weight                              float       PointLight
+  light_176.position                                     Point3f     PointLight
+  light_176.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_177.sampling_weight                              float       PointLight
+  light_177.position                                     Point3f     PointLight
+  light_177.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_178.sampling_weight                              float       PointLight
+  light_178.position                                     Point3f     PointLight
+  light_178.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_179.sampling_weight                              float       PointLight
+  light_179.position                                     Point3f     PointLight
+  light_179.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_180.sampling_weight                              float       PointLight
+  light_180.position                                     Point3f     PointLight
+  light_180.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_181.sampling_weight                              float       PointLight
+  light_181.position                                     Point3f     PointLight
+  light_181.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_182.sampling_weight                              float       PointLight
+  light_182.position                                     Point3f     PointLight
+  light_182.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_183.sampling_weight                              float       PointLight
+  light_183.position                                     Point3f     PointLight
+  light_183.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_184.sampling_weight                              float       PointLight
+  light_184.position                                     Point3f     PointLight
+  light_184.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_185.sampling_weight                              float       PointLight
+  light_185.position                                     Point3f     PointLight
+  light_185.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_186.sampling_weight                              float       PointLight
+  light_186.position                                     Point3f     PointLight
+  light_186.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_187.sampling_weight                              float       PointLight
+  light_187.position                                     Point3f     PointLight
+  light_187.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_188.sampling_weight                              float       PointLight
+  light_188.position                                     Point3f     PointLight
+  light_188.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_189.sampling_weight                              float       PointLight
+  light_189.position                                     Point3f     PointLight
+  light_189.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_190.sampling_weight                              float       PointLight
+  light_190.position                                     Point3f     PointLight
+  light_190.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_191.sampling_weight                              float       PointLight
+  light_191.position                                     Point3f     PointLight
+  light_191.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_192.sampling_weight                              float       PointLight
+  light_192.position                                     Point3f     PointLight
+  light_192.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_193.sampling_weight                              float       PointLight
+  light_193.position                                     Point3f     PointLight
+  light_193.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_194.sampling_weight                              float       PointLight
+  light_194.position                                     Point3f     PointLight
+  light_194.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_195.sampling_weight                              float       PointLight
+  light_195.position                                     Point3f     PointLight
+  light_195.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_196.sampling_weight                              float       PointLight
+  light_196.position                                     Point3f     PointLight
+  light_196.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_197.sampling_weight                              float       PointLight
+  light_197.position                                     Point3f     PointLight
+  light_197.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_198.sampling_weight                              float       PointLight
+  light_198.position                                     Point3f     PointLight
+  light_198.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_199.sampling_weight                              float       PointLight
+  light_199.position                                     Point3f     PointLight
+  light_199.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_200.sampling_weight                              float       PointLight
+  light_200.position                                     Point3f     PointLight
+  light_200.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_201.sampling_weight                              float       PointLight
+  light_201.position                                     Point3f     PointLight
+  light_201.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_202.sampling_weight                              float       PointLight
+  light_202.position                                     Point3f     PointLight
+  light_202.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_203.sampling_weight                              float       PointLight
+  light_203.position                                     Point3f     PointLight
+  light_203.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_204.sampling_weight                              float       PointLight
+  light_204.position                                     Point3f     PointLight
+  light_204.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_205.sampling_weight                              float       PointLight
+  light_205.position                                     Point3f     PointLight
+  light_205.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_206.sampling_weight                              float       PointLight
+  light_206.position                                     Point3f     PointLight
+  light_206.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_207.sampling_weight                              float       PointLight
+  light_207.position                                     Point3f     PointLight
+  light_207.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_208.sampling_weight                              float       PointLight
+  light_208.position                                     Point3f     PointLight
+  light_208.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_209.sampling_weight                              float       PointLight
+  light_209.position                                     Point3f     PointLight
+  light_209.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_210.sampling_weight                              float       PointLight
+  light_210.position                                     Point3f     PointLight
+  light_210.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_211.sampling_weight                              float       PointLight
+  light_211.position                                     Point3f     PointLight
+  light_211.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_212.sampling_weight                              float       PointLight
+  light_212.position                                     Point3f     PointLight
+  light_212.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_213.sampling_weight                              float       PointLight
+  light_213.position                                     Point3f     PointLight
+  light_213.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_214.sampling_weight                              float       PointLight
+  light_214.position                                     Point3f     PointLight
+  light_214.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_215.sampling_weight                              float       PointLight
+  light_215.position                                     Point3f     PointLight
+  light_215.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_216.sampling_weight                              float       PointLight
+  light_216.position                                     Point3f     PointLight
+  light_216.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_217.sampling_weight                              float       PointLight
+  light_217.position                                     Point3f     PointLight
+  light_217.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_218.sampling_weight                              float       PointLight
+  light_218.position                                     Point3f     PointLight
+  light_218.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_219.sampling_weight                              float       PointLight
+  light_219.position                                     Point3f     PointLight
+  light_219.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_220.sampling_weight                              float       PointLight
+  light_220.position                                     Point3f     PointLight
+  light_220.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_221.sampling_weight                              float       PointLight
+  light_221.position                                     Point3f     PointLight
+  light_221.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_222.sampling_weight                              float       PointLight
+  light_222.position                                     Point3f     PointLight
+  light_222.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_223.sampling_weight                              float       PointLight
+  light_223.position                                     Point3f     PointLight
+  light_223.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_224.sampling_weight                              float       PointLight
+  light_224.position                                     Point3f     PointLight
+  light_224.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_225.sampling_weight                              float       PointLight
+  light_225.position                                     Point3f     PointLight
+  light_225.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_226.sampling_weight                              float       PointLight
+  light_226.position                                     Point3f     PointLight
+  light_226.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_227.sampling_weight                              float       PointLight
+  light_227.position                                     Point3f     PointLight
+  light_227.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_228.sampling_weight                              float       PointLight
+  light_228.position                                     Point3f     PointLight
+  light_228.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_229.sampling_weight                              float       PointLight
+  light_229.position                                     Point3f     PointLight
+  light_229.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_230.sampling_weight                              float       PointLight
+  light_230.position                                     Point3f     PointLight
+  light_230.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_231.sampling_weight                              float       PointLight
+  light_231.position                                     Point3f     PointLight
+  light_231.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_232.sampling_weight                              float       PointLight
+  light_232.position                                     Point3f     PointLight
+  light_232.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_233.sampling_weight                              float       PointLight
+  light_233.position                                     Point3f     PointLight
+  light_233.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_234.sampling_weight                              float       PointLight
+  light_234.position                                     Point3f     PointLight
+  light_234.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_235.sampling_weight                              float       PointLight
+  light_235.position                                     Point3f     PointLight
+  light_235.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_236.sampling_weight                              float       PointLight
+  light_236.position                                     Point3f     PointLight
+  light_236.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_237.sampling_weight                              float       PointLight
+  light_237.position                                     Point3f     PointLight
+  light_237.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_238.sampling_weight                              float       PointLight
+  light_238.position                                     Point3f     PointLight
+  light_238.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_239.sampling_weight                              float       PointLight
+  light_239.position                                     Point3f     PointLight
+  light_239.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_240.sampling_weight                              float       PointLight
+  light_240.position                                     Point3f     PointLight
+  light_240.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_241.sampling_weight                              float       PointLight
+  light_241.position                                     Point3f     PointLight
+  light_241.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_242.sampling_weight                              float       PointLight
+  light_242.position                                     Point3f     PointLight
+  light_242.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_243.sampling_weight                              float       PointLight
+  light_243.position                                     Point3f     PointLight
+  light_243.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_244.sampling_weight                              float       PointLight
+  light_244.position                                     Point3f     PointLight
+  light_244.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_245.sampling_weight                              float       PointLight
+  light_245.position                                     Point3f     PointLight
+  light_245.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_246.sampling_weight                              float       PointLight
+  light_246.position                                     Point3f     PointLight
+  light_246.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_247.sampling_weight                              float       PointLight
+  light_247.position                                     Point3f     PointLight
+  light_247.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_248.sampling_weight                              float       PointLight
+  light_248.position                                     Point3f     PointLight
+  light_248.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_249.sampling_weight                              float       PointLight
+  light_249.position                                     Point3f     PointLight
+  light_249.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_250.sampling_weight                              float       PointLight
+  light_250.position                                     Point3f     PointLight
+  light_250.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_251.sampling_weight                              float       PointLight
+  light_251.position                                     Point3f     PointLight
+  light_251.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_252.sampling_weight                              float       PointLight
+  light_252.position                                     Point3f     PointLight
+  light_252.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_253.sampling_weight                              float       PointLight
+  light_253.position                                     Point3f     PointLight
+  light_253.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_254.sampling_weight                              float       PointLight
+  light_254.position                                     Point3f     PointLight
+  light_254.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_255.sampling_weight                              float       PointLight
+  light_255.position                                     Point3f     PointLight
+  light_255.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_256.sampling_weight                              float       PointLight
+  light_256.position                                     Point3f     PointLight
+  light_256.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_257.sampling_weight                              float       PointLight
+  light_257.position                                     Point3f     PointLight
+  light_257.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_258.sampling_weight                              float       PointLight
+  light_258.position                                     Point3f     PointLight
+  light_258.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_259.sampling_weight                              float       PointLight
+  light_259.position                                     Point3f     PointLight
+  light_259.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_260.sampling_weight                              float       PointLight
+  light_260.position                                     Point3f     PointLight
+  light_260.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_261.sampling_weight                              float       PointLight
+  light_261.position                                     Point3f     PointLight
+  light_261.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_262.sampling_weight                              float       PointLight
+  light_262.position                                     Point3f     PointLight
+  light_262.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_263.sampling_weight                              float       PointLight
+  light_263.position                                     Point3f     PointLight
+  light_263.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_264.sampling_weight                              float       PointLight
+  light_264.position                                     Point3f     PointLight
+  light_264.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_265.sampling_weight                              float       PointLight
+  light_265.position                                     Point3f     PointLight
+  light_265.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_266.sampling_weight                              float       PointLight
+  light_266.position                                     Point3f     PointLight
+  light_266.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_267.sampling_weight                              float       PointLight
+  light_267.position                                     Point3f     PointLight
+  light_267.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_268.sampling_weight                              float       PointLight
+  light_268.position                                     Point3f     PointLight
+  light_268.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_269.sampling_weight                              float       PointLight
+  light_269.position                                     Point3f     PointLight
+  light_269.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_270.sampling_weight                              float       PointLight
+  light_270.position                                     Point3f     PointLight
+  light_270.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_271.sampling_weight                              float       PointLight
+  light_271.position                                     Point3f     PointLight
+  light_271.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_272.sampling_weight                              float       PointLight
+  light_272.position                                     Point3f     PointLight
+  light_272.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_273.sampling_weight                              float       PointLight
+  light_273.position                                     Point3f     PointLight
+  light_273.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_274.sampling_weight                              float       PointLight
+  light_274.position                                     Point3f     PointLight
+  light_274.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_275.sampling_weight                              float       PointLight
+  light_275.position                                     Point3f     PointLight
+  light_275.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_276.sampling_weight                              float       PointLight
+  light_276.position                                     Point3f     PointLight
+  light_276.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_277.sampling_weight                              float       PointLight
+  light_277.position                                     Point3f     PointLight
+  light_277.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_278.sampling_weight                              float       PointLight
+  light_278.position                                     Point3f     PointLight
+  light_278.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_279.sampling_weight                              float       PointLight
+  light_279.position                                     Point3f     PointLight
+  light_279.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_280.sampling_weight                              float       PointLight
+  light_280.position                                     Point3f     PointLight
+  light_280.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_281.sampling_weight                              float       PointLight
+  light_281.position                                     Point3f     PointLight
+  light_281.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_282.sampling_weight                              float       PointLight
+  light_282.position                                     Point3f     PointLight
+  light_282.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_283.sampling_weight                              float       PointLight
+  light_283.position                                     Point3f     PointLight
+  light_283.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_284.sampling_weight                              float       PointLight
+  light_284.position                                     Point3f     PointLight
+  light_284.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_285.sampling_weight                              float       PointLight
+  light_285.position                                     Point3f     PointLight
+  light_285.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_286.sampling_weight                              float       PointLight
+  light_286.position                                     Point3f     PointLight
+  light_286.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_287.sampling_weight                              float       PointLight
+  light_287.position                                     Point3f     PointLight
+  light_287.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_288.sampling_weight                              float       PointLight
+  light_288.position                                     Point3f     PointLight
+  light_288.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_289.sampling_weight                              float       PointLight
+  light_289.position                                     Point3f     PointLight
+  light_289.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_290.sampling_weight                              float       PointLight
+  light_290.position                                     Point3f     PointLight
+  light_290.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_291.sampling_weight                              float       PointLight
+  light_291.position                                     Point3f     PointLight
+  light_291.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_292.sampling_weight                              float       PointLight
+  light_292.position                                     Point3f     PointLight
+  light_292.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_293.sampling_weight                              float       PointLight
+  light_293.position                                     Point3f     PointLight
+  light_293.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_294.sampling_weight                              float       PointLight
+  light_294.position                                     Point3f     PointLight
+  light_294.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_295.sampling_weight                              float       PointLight
+  light_295.position                                     Point3f     PointLight
+  light_295.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_296.sampling_weight                              float       PointLight
+  light_296.position                                     Point3f     PointLight
+  light_296.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_297.sampling_weight                              float       PointLight
+  light_297.position                                     Point3f     PointLight
+  light_297.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_298.sampling_weight                              float       PointLight
+  light_298.position                                     Point3f     PointLight
+  light_298.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_299.sampling_weight                              float       PointLight
+  light_299.position                                     Point3f     PointLight
+  light_299.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_300.sampling_weight                              float       PointLight
+  light_300.position                                     Point3f     PointLight
+  light_300.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_301.sampling_weight                              float       PointLight
+  light_301.position                                     Point3f     PointLight
+  light_301.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_302.sampling_weight                              float       PointLight
+  light_302.position                                     Point3f     PointLight
+  light_302.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_303.sampling_weight                              float       PointLight
+  light_303.position                                     Point3f     PointLight
+  light_303.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_304.sampling_weight                              float       PointLight
+  light_304.position                                     Point3f     PointLight
+  light_304.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_305.sampling_weight                              float       PointLight
+  light_305.position                                     Point3f     PointLight
+  light_305.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_306.sampling_weight                              float       PointLight
+  light_306.position                                     Point3f     PointLight
+  light_306.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_307.sampling_weight                              float       PointLight
+  light_307.position                                     Point3f     PointLight
+  light_307.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_308.sampling_weight                              float       PointLight
+  light_308.position                                     Point3f     PointLight
+  light_308.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_309.sampling_weight                              float       PointLight
+  light_309.position                                     Point3f     PointLight
+  light_309.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_310.sampling_weight                              float       PointLight
+  light_310.position                                     Point3f     PointLight
+  light_310.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_311.sampling_weight                              float       PointLight
+  light_311.position                                     Point3f     PointLight
+  light_311.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_312.sampling_weight                              float       PointLight
+  light_312.position                                     Point3f     PointLight
+  light_312.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_313.sampling_weight                              float       PointLight
+  light_313.position                                     Point3f     PointLight
+  light_313.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_314.sampling_weight                              float       PointLight
+  light_314.position                                     Point3f     PointLight
+  light_314.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_315.sampling_weight                              float       PointLight
+  light_315.position                                     Point3f     PointLight
+  light_315.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_316.sampling_weight                              float       PointLight
+  light_316.position                                     Point3f     PointLight
+  light_316.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_317.sampling_weight                              float       PointLight
+  light_317.position                                     Point3f     PointLight
+  light_317.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_318.sampling_weight                              float       PointLight
+  light_318.position                                     Point3f     PointLight
+  light_318.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_319.sampling_weight                              float       PointLight
+  light_319.position                                     Point3f     PointLight
+  light_319.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_320.sampling_weight                              float       PointLight
+  light_320.position                                     Point3f     PointLight
+  light_320.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_321.sampling_weight                              float       PointLight
+  light_321.position                                     Point3f     PointLight
+  light_321.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_322.sampling_weight                              float       PointLight
+  light_322.position                                     Point3f     PointLight
+  light_322.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_323.sampling_weight                              float       PointLight
+  light_323.position                                     Point3f     PointLight
+  light_323.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_324.sampling_weight                              float       PointLight
+  light_324.position                                     Point3f     PointLight
+  light_324.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_325.sampling_weight                              float       PointLight
+  light_325.position                                     Point3f     PointLight
+  light_325.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_326.sampling_weight                              float       PointLight
+  light_326.position                                     Point3f     PointLight
+  light_326.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_327.sampling_weight                              float       PointLight
+  light_327.position                                     Point3f     PointLight
+  light_327.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_328.sampling_weight                              float       PointLight
+  light_328.position                                     Point3f     PointLight
+  light_328.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_329.sampling_weight                              float       PointLight
+  light_329.position                                     Point3f     PointLight
+  light_329.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_330.sampling_weight                              float       PointLight
+  light_330.position                                     Point3f     PointLight
+  light_330.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_331.sampling_weight                              float       PointLight
+  light_331.position                                     Point3f     PointLight
+  light_331.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_332.sampling_weight                              float       PointLight
+  light_332.position                                     Point3f     PointLight
+  light_332.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_333.sampling_weight                              float       PointLight
+  light_333.position                                     Point3f     PointLight
+  light_333.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_334.sampling_weight                              float       PointLight
+  light_334.position                                     Point3f     PointLight
+  light_334.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_335.sampling_weight                              float       PointLight
+  light_335.position                                     Point3f     PointLight
+  light_335.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_336.sampling_weight                              float       PointLight
+  light_336.position                                     Point3f     PointLight
+  light_336.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_337.sampling_weight                              float       PointLight
+  light_337.position                                     Point3f     PointLight
+  light_337.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_338.sampling_weight                              float       PointLight
+  light_338.position                                     Point3f     PointLight
+  light_338.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_339.sampling_weight                              float       PointLight
+  light_339.position                                     Point3f     PointLight
+  light_339.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_340.sampling_weight                              float       PointLight
+  light_340.position                                     Point3f     PointLight
+  light_340.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_341.sampling_weight                              float       PointLight
+  light_341.position                                     Point3f     PointLight
+  light_341.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_342.sampling_weight                              float       PointLight
+  light_342.position                                     Point3f     PointLight
+  light_342.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_343.sampling_weight                              float       PointLight
+  light_343.position                                     Point3f     PointLight
+  light_343.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_344.sampling_weight                              float       PointLight
+  light_344.position                                     Point3f     PointLight
+  light_344.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_345.sampling_weight                              float       PointLight
+  light_345.position                                     Point3f     PointLight
+  light_345.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_346.sampling_weight                              float       PointLight
+  light_346.position                                     Point3f     PointLight
+  light_346.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_347.sampling_weight                              float       PointLight
+  light_347.position                                     Point3f     PointLight
+  light_347.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_348.sampling_weight                              float       PointLight
+  light_348.position                                     Point3f     PointLight
+  light_348.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_349.sampling_weight                              float       PointLight
+  light_349.position                                     Point3f     PointLight
+  light_349.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_350.sampling_weight                              float       PointLight
+  light_350.position                                     Point3f     PointLight
+  light_350.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_351.sampling_weight                              float       PointLight
+  light_351.position                                     Point3f     PointLight
+  light_351.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_352.sampling_weight                              float       PointLight
+  light_352.position                                     Point3f     PointLight
+  light_352.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_353.sampling_weight                              float       PointLight
+  light_353.position                                     Point3f     PointLight
+  light_353.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_354.sampling_weight                              float       PointLight
+  light_354.position                                     Point3f     PointLight
+  light_354.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_355.sampling_weight                              float       PointLight
+  light_355.position                                     Point3f     PointLight
+  light_355.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_356.sampling_weight                              float       PointLight
+  light_356.position                                     Point3f     PointLight
+  light_356.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_357.sampling_weight                              float       PointLight
+  light_357.position                                     Point3f     PointLight
+  light_357.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_358.sampling_weight                              float       PointLight
+  light_358.position                                     Point3f     PointLight
+  light_358.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_359.sampling_weight                              float       PointLight
+  light_359.position                                     Point3f     PointLight
+  light_359.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_360.sampling_weight                              float       PointLight
+  light_360.position                                     Point3f     PointLight
+  light_360.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_361.sampling_weight                              float       PointLight
+  light_361.position                                     Point3f     PointLight
+  light_361.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_362.sampling_weight                              float       PointLight
+  light_362.position                                     Point3f     PointLight
+  light_362.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_363.sampling_weight                              float       PointLight
+  light_363.position                                     Point3f     PointLight
+  light_363.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_364.sampling_weight                              float       PointLight
+  light_364.position                                     Point3f     PointLight
+  light_364.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_365.sampling_weight                              float       PointLight
+  light_365.position                                     Point3f     PointLight
+  light_365.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_366.sampling_weight                              float       PointLight
+  light_366.position                                     Point3f     PointLight
+  light_366.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_367.sampling_weight                              float       PointLight
+  light_367.position                                     Point3f     PointLight
+  light_367.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_368.sampling_weight                              float       PointLight
+  light_368.position                                     Point3f     PointLight
+  light_368.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_369.sampling_weight                              float       PointLight
+  light_369.position                                     Point3f     PointLight
+  light_369.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_370.sampling_weight                              float       PointLight
+  light_370.position                                     Point3f     PointLight
+  light_370.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_371.sampling_weight                              float       PointLight
+  light_371.position                                     Point3f     PointLight
+  light_371.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_372.sampling_weight                              float       PointLight
+  light_372.position                                     Point3f     PointLight
+  light_372.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_373.sampling_weight                              float       PointLight
+  light_373.position                                     Point3f     PointLight
+  light_373.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_374.sampling_weight                              float       PointLight
+  light_374.position                                     Point3f     PointLight
+  light_374.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_375.sampling_weight                              float       PointLight
+  light_375.position                                     Point3f     PointLight
+  light_375.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_376.sampling_weight                              float       PointLight
+  light_376.position                                     Point3f     PointLight
+  light_376.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_377.sampling_weight                              float       PointLight
+  light_377.position                                     Point3f     PointLight
+  light_377.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_378.sampling_weight                              float       PointLight
+  light_378.position                                     Point3f     PointLight
+  light_378.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_379.sampling_weight                              float       PointLight
+  light_379.position                                     Point3f     PointLight
+  light_379.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_380.sampling_weight                              float       PointLight
+  light_380.position                                     Point3f     PointLight
+  light_380.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_381.sampling_weight                              float       PointLight
+  light_381.position                                     Point3f     PointLight
+  light_381.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_382.sampling_weight                              float       PointLight
+  light_382.position                                     Point3f     PointLight
+  light_382.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_383.sampling_weight                              float       PointLight
+  light_383.position                                     Point3f     PointLight
+  light_383.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_384.sampling_weight                              float       PointLight
+  light_384.position                                     Point3f     PointLight
+  light_384.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_385.sampling_weight                              float       PointLight
+  light_385.position                                     Point3f     PointLight
+  light_385.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_386.sampling_weight                              float       PointLight
+  light_386.position                                     Point3f     PointLight
+  light_386.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_387.sampling_weight                              float       PointLight
+  light_387.position                                     Point3f     PointLight
+  light_387.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_388.sampling_weight                              float       PointLight
+  light_388.position                                     Point3f     PointLight
+  light_388.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_389.sampling_weight                              float       PointLight
+  light_389.position                                     Point3f     PointLight
+  light_389.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_390.sampling_weight                              float       PointLight
+  light_390.position                                     Point3f     PointLight
+  light_390.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_391.sampling_weight                              float       PointLight
+  light_391.position                                     Point3f     PointLight
+  light_391.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_392.sampling_weight                              float       PointLight
+  light_392.position                                     Point3f     PointLight
+  light_392.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_393.sampling_weight                              float       PointLight
+  light_393.position                                     Point3f     PointLight
+  light_393.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_394.sampling_weight                              float       PointLight
+  light_394.position                                     Point3f     PointLight
+  light_394.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_395.sampling_weight                              float       PointLight
+  light_395.position                                     Point3f     PointLight
+  light_395.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_396.sampling_weight                              float       PointLight
+  light_396.position                                     Point3f     PointLight
+  light_396.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_397.sampling_weight                              float       PointLight
+  light_397.position                                     Point3f     PointLight
+  light_397.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_398.sampling_weight                              float       PointLight
+  light_398.position                                     Point3f     PointLight
+  light_398.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_399.sampling_weight                              float       PointLight
+  light_399.position                                     Point3f     PointLight
+  light_399.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_400.sampling_weight                              float       PointLight
+  light_400.position                                     Point3f     PointLight
+  light_400.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_401.sampling_weight                              float       PointLight
+  light_401.position                                     Point3f     PointLight
+  light_401.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_402.sampling_weight                              float       PointLight
+  light_402.position                                     Point3f     PointLight
+  light_402.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_403.sampling_weight                              float       PointLight
+  light_403.position                                     Point3f     PointLight
+  light_403.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_404.sampling_weight                              float       PointLight
+  light_404.position                                     Point3f     PointLight
+  light_404.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_405.sampling_weight                              float       PointLight
+  light_405.position                                     Point3f     PointLight
+  light_405.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_406.sampling_weight                              float       PointLight
+  light_406.position                                     Point3f     PointLight
+  light_406.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_407.sampling_weight                              float       PointLight
+  light_407.position                                     Point3f     PointLight
+  light_407.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_408.sampling_weight                              float       PointLight
+  light_408.position                                     Point3f     PointLight
+  light_408.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_409.sampling_weight                              float       PointLight
+  light_409.position                                     Point3f     PointLight
+  light_409.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_410.sampling_weight                              float       PointLight
+  light_410.position                                     Point3f     PointLight
+  light_410.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_411.sampling_weight                              float       PointLight
+  light_411.position                                     Point3f     PointLight
+  light_411.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_412.sampling_weight                              float       PointLight
+  light_412.position                                     Point3f     PointLight
+  light_412.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_413.sampling_weight                              float       PointLight
+  light_413.position                                     Point3f     PointLight
+  light_413.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_414.sampling_weight                              float       PointLight
+  light_414.position                                     Point3f     PointLight
+  light_414.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_415.sampling_weight                              float       PointLight
+  light_415.position                                     Point3f     PointLight
+  light_415.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_416.sampling_weight                              float       PointLight
+  light_416.position                                     Point3f     PointLight
+  light_416.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_417.sampling_weight                              float       PointLight
+  light_417.position                                     Point3f     PointLight
+  light_417.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_418.sampling_weight                              float       PointLight
+  light_418.position                                     Point3f     PointLight
+  light_418.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_419.sampling_weight                              float       PointLight
+  light_419.position                                     Point3f     PointLight
+  light_419.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_420.sampling_weight                              float       PointLight
+  light_420.position                                     Point3f     PointLight
+  light_420.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_421.sampling_weight                              float       PointLight
+  light_421.position                                     Point3f     PointLight
+  light_421.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_422.sampling_weight                              float       PointLight
+  light_422.position                                     Point3f     PointLight
+  light_422.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_423.sampling_weight                              float       PointLight
+  light_423.position                                     Point3f     PointLight
+  light_423.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_424.sampling_weight                              float       PointLight
+  light_424.position                                     Point3f     PointLight
+  light_424.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_425.sampling_weight                              float       PointLight
+  light_425.position                                     Point3f     PointLight
+  light_425.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_426.sampling_weight                              float       PointLight
+  light_426.position                                     Point3f     PointLight
+  light_426.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_427.sampling_weight                              float       PointLight
+  light_427.position                                     Point3f     PointLight
+  light_427.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_428.sampling_weight                              float       PointLight
+  light_428.position                                     Point3f     PointLight
+  light_428.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_429.sampling_weight                              float       PointLight
+  light_429.position                                     Point3f     PointLight
+  light_429.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_430.sampling_weight                              float       PointLight
+  light_430.position                                     Point3f     PointLight
+  light_430.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_431.sampling_weight                              float       PointLight
+  light_431.position                                     Point3f     PointLight
+  light_431.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_432.sampling_weight                              float       PointLight
+  light_432.position                                     Point3f     PointLight
+  light_432.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_433.sampling_weight                              float       PointLight
+  light_433.position                                     Point3f     PointLight
+  light_433.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_434.sampling_weight                              float       PointLight
+  light_434.position                                     Point3f     PointLight
+  light_434.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_435.sampling_weight                              float       PointLight
+  light_435.position                                     Point3f     PointLight
+  light_435.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_436.sampling_weight                              float       PointLight
+  light_436.position                                     Point3f     PointLight
+  light_436.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_437.sampling_weight                              float       PointLight
+  light_437.position                                     Point3f     PointLight
+  light_437.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_438.sampling_weight                              float       PointLight
+  light_438.position                                     Point3f     PointLight
+  light_438.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_439.sampling_weight                              float       PointLight
+  light_439.position                                     Point3f     PointLight
+  light_439.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_440.sampling_weight                              float       PointLight
+  light_440.position                                     Point3f     PointLight
+  light_440.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_441.sampling_weight                              float       PointLight
+  light_441.position                                     Point3f     PointLight
+  light_441.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_442.sampling_weight                              float       PointLight
+  light_442.position                                     Point3f     PointLight
+  light_442.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_443.sampling_weight                              float       PointLight
+  light_443.position                                     Point3f     PointLight
+  light_443.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_444.sampling_weight                              float       PointLight
+  light_444.position                                     Point3f     PointLight
+  light_444.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_445.sampling_weight                              float       PointLight
+  light_445.position                                     Point3f     PointLight
+  light_445.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_446.sampling_weight                              float       PointLight
+  light_446.position                                     Point3f     PointLight
+  light_446.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_447.sampling_weight                              float       PointLight
+  light_447.position                                     Point3f     PointLight
+  light_447.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_448.sampling_weight                              float       PointLight
+  light_448.position                                     Point3f     PointLight
+  light_448.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_449.sampling_weight                              float       PointLight
+  light_449.position                                     Point3f     PointLight
+  light_449.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_450.sampling_weight                              float       PointLight
+  light_450.position                                     Point3f     PointLight
+  light_450.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_451.sampling_weight                              float       PointLight
+  light_451.position                                     Point3f     PointLight
+  light_451.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_452.sampling_weight                              float       PointLight
+  light_452.position                                     Point3f     PointLight
+  light_452.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_453.sampling_weight                              float       PointLight
+  light_453.position                                     Point3f     PointLight
+  light_453.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_454.sampling_weight                              float       PointLight
+  light_454.position                                     Point3f     PointLight
+  light_454.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_455.sampling_weight                              float       PointLight
+  light_455.position                                     Point3f     PointLight
+  light_455.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_456.sampling_weight                              float       PointLight
+  light_456.position                                     Point3f     PointLight
+  light_456.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_457.sampling_weight                              float       PointLight
+  light_457.position                                     Point3f     PointLight
+  light_457.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_458.sampling_weight                              float       PointLight
+  light_458.position                                     Point3f     PointLight
+  light_458.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_459.sampling_weight                              float       PointLight
+  light_459.position                                     Point3f     PointLight
+  light_459.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_460.sampling_weight                              float       PointLight
+  light_460.position                                     Point3f     PointLight
+  light_460.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_461.sampling_weight                              float       PointLight
+  light_461.position                                     Point3f     PointLight
+  light_461.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_462.sampling_weight                              float       PointLight
+  light_462.position                                     Point3f     PointLight
+  light_462.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_463.sampling_weight                              float       PointLight
+  light_463.position                                     Point3f     PointLight
+  light_463.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_464.sampling_weight                              float       PointLight
+  light_464.position                                     Point3f     PointLight
+  light_464.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_465.sampling_weight                              float       PointLight
+  light_465.position                                     Point3f     PointLight
+  light_465.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_466.sampling_weight                              float       PointLight
+  light_466.position                                     Point3f     PointLight
+  light_466.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_467.sampling_weight                              float       PointLight
+  light_467.position                                     Point3f     PointLight
+  light_467.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_468.sampling_weight                              float       PointLight
+  light_468.position                                     Point3f     PointLight
+  light_468.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_469.sampling_weight                              float       PointLight
+  light_469.position                                     Point3f     PointLight
+  light_469.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_470.sampling_weight                              float       PointLight
+  light_470.position                                     Point3f     PointLight
+  light_470.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_471.sampling_weight                              float       PointLight
+  light_471.position                                     Point3f     PointLight
+  light_471.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_472.sampling_weight                              float       PointLight
+  light_472.position                                     Point3f     PointLight
+  light_472.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_473.sampling_weight                              float       PointLight
+  light_473.position                                     Point3f     PointLight
+  light_473.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_474.sampling_weight                              float       PointLight
+  light_474.position                                     Point3f     PointLight
+  light_474.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_475.sampling_weight                              float       PointLight
+  light_475.position                                     Point3f     PointLight
+  light_475.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_476.sampling_weight                              float       PointLight
+  light_476.position                                     Point3f     PointLight
+  light_476.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_477.sampling_weight                              float       PointLight
+  light_477.position                                     Point3f     PointLight
+  light_477.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_478.sampling_weight                              float       PointLight
+  light_478.position                                     Point3f     PointLight
+  light_478.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_479.sampling_weight                              float       PointLight
+  light_479.position                                     Point3f     PointLight
+  light_479.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_480.sampling_weight                              float       PointLight
+  light_480.position                                     Point3f     PointLight
+  light_480.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_481.sampling_weight                              float       PointLight
+  light_481.position                                     Point3f     PointLight
+  light_481.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_482.sampling_weight                              float       PointLight
+  light_482.position                                     Point3f     PointLight
+  light_482.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_483.sampling_weight                              float       PointLight
+  light_483.position                                     Point3f     PointLight
+  light_483.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_484.sampling_weight                              float       PointLight
+  light_484.position                                     Point3f     PointLight
+  light_484.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_485.sampling_weight                              float       PointLight
+  light_485.position                                     Point3f     PointLight
+  light_485.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_486.sampling_weight                              float       PointLight
+  light_486.position                                     Point3f     PointLight
+  light_486.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_487.sampling_weight                              float       PointLight
+  light_487.position                                     Point3f     PointLight
+  light_487.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_488.sampling_weight                              float       PointLight
+  light_488.position                                     Point3f     PointLight
+  light_488.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_489.sampling_weight                              float       PointLight
+  light_489.position                                     Point3f     PointLight
+  light_489.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_490.sampling_weight                              float       PointLight
+  light_490.position                                     Point3f     PointLight
+  light_490.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_491.sampling_weight                              float       PointLight
+  light_491.position                                     Point3f     PointLight
+  light_491.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_492.sampling_weight                              float       PointLight
+  light_492.position                                     Point3f     PointLight
+  light_492.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_493.sampling_weight                              float       PointLight
+  light_493.position                                     Point3f     PointLight
+  light_493.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_494.sampling_weight                              float       PointLight
+  light_494.position                                     Point3f     PointLight
+  light_494.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_495.sampling_weight                              float       PointLight
+  light_495.position                                     Point3f     PointLight
+  light_495.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_496.sampling_weight                              float       PointLight
+  light_496.position                                     Point3f     PointLight
+  light_496.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_497.sampling_weight                              float       PointLight
+  light_497.position                                     Point3f     PointLight
+  light_497.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_498.sampling_weight                              float       PointLight
+  light_498.position                                     Point3f     PointLight
+  light_498.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_499.sampling_weight                              float       PointLight
+  light_499.position                                     Point3f     PointLight
+  light_499.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_500.sampling_weight                              float       PointLight
+  light_500.position                                     Point3f     PointLight
+  light_500.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_501.sampling_weight                              float       PointLight
+  light_501.position                                     Point3f     PointLight
+  light_501.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_502.sampling_weight                              float       PointLight
+  light_502.position                                     Point3f     PointLight
+  light_502.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_503.sampling_weight                              float       PointLight
+  light_503.position                                     Point3f     PointLight
+  light_503.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_504.sampling_weight                              float       PointLight
+  light_504.position                                     Point3f     PointLight
+  light_504.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_505.sampling_weight                              float       PointLight
+  light_505.position                                     Point3f     PointLight
+  light_505.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_506.sampling_weight                              float       PointLight
+  light_506.position                                     Point3f     PointLight
+  light_506.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_507.sampling_weight                              float       PointLight
+  light_507.position                                     Point3f     PointLight
+  light_507.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_508.sampling_weight                              float       PointLight
+  light_508.position                                     Point3f     PointLight
+  light_508.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_509.sampling_weight                              float       PointLight
+  light_509.position                                     Point3f     PointLight
+  light_509.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_510.sampling_weight                              float       PointLight
+  light_510.position                                     Point3f     PointLight
+  light_510.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_511.sampling_weight                              float       PointLight
+  light_511.position                                     Point3f     PointLight
+  light_511.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_512.sampling_weight                              float       PointLight
+  light_512.position                                     Point3f     PointLight
+  light_512.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_513.sampling_weight                              float       PointLight
+  light_513.position                                     Point3f     PointLight
+  light_513.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_514.sampling_weight                              float       PointLight
+  light_514.position                                     Point3f     PointLight
+  light_514.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_515.sampling_weight                              float       PointLight
+  light_515.position                                     Point3f     PointLight
+  light_515.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_516.sampling_weight                              float       PointLight
+  light_516.position                                     Point3f     PointLight
+  light_516.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_517.sampling_weight                              float       PointLight
+  light_517.position                                     Point3f     PointLight
+  light_517.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_518.sampling_weight                              float       PointLight
+  light_518.position                                     Point3f     PointLight
+  light_518.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_519.sampling_weight                              float       PointLight
+  light_519.position                                     Point3f     PointLight
+  light_519.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_520.sampling_weight                              float       PointLight
+  light_520.position                                     Point3f     PointLight
+  light_520.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_521.sampling_weight                              float       PointLight
+  light_521.position                                     Point3f     PointLight
+  light_521.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_522.sampling_weight                              float       PointLight
+  light_522.position                                     Point3f     PointLight
+  light_522.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_523.sampling_weight                              float       PointLight
+  light_523.position                                     Point3f     PointLight
+  light_523.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_524.sampling_weight                              float       PointLight
+  light_524.position                                     Point3f     PointLight
+  light_524.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_525.sampling_weight                              float       PointLight
+  light_525.position                                     Point3f     PointLight
+  light_525.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_526.sampling_weight                              float       PointLight
+  light_526.position                                     Point3f     PointLight
+  light_526.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_527.sampling_weight                              float       PointLight
+  light_527.position                                     Point3f     PointLight
+  light_527.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_528.sampling_weight                              float       PointLight
+  light_528.position                                     Point3f     PointLight
+  light_528.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_529.sampling_weight                              float       PointLight
+  light_529.position                                     Point3f     PointLight
+  light_529.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_530.sampling_weight                              float       PointLight
+  light_530.position                                     Point3f     PointLight
+  light_530.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_531.sampling_weight                              float       PointLight
+  light_531.position                                     Point3f     PointLight
+  light_531.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_532.sampling_weight                              float       PointLight
+  light_532.position                                     Point3f     PointLight
+  light_532.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_533.sampling_weight                              float       PointLight
+  light_533.position                                     Point3f     PointLight
+  light_533.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_534.sampling_weight                              float       PointLight
+  light_534.position                                     Point3f     PointLight
+  light_534.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_535.sampling_weight                              float       PointLight
+  light_535.position                                     Point3f     PointLight
+  light_535.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_536.sampling_weight                              float       PointLight
+  light_536.position                                     Point3f     PointLight
+  light_536.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_537.sampling_weight                              float       PointLight
+  light_537.position                                     Point3f     PointLight
+  light_537.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_538.sampling_weight                              float       PointLight
+  light_538.position                                     Point3f     PointLight
+  light_538.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_539.sampling_weight                              float       PointLight
+  light_539.position                                     Point3f     PointLight
+  light_539.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_540.sampling_weight                              float       PointLight
+  light_540.position                                     Point3f     PointLight
+  light_540.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_541.sampling_weight                              float       PointLight
+  light_541.position                                     Point3f     PointLight
+  light_541.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_542.sampling_weight                              float       PointLight
+  light_542.position                                     Point3f     PointLight
+  light_542.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_543.sampling_weight                              float       PointLight
+  light_543.position                                     Point3f     PointLight
+  light_543.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_544.sampling_weight                              float       PointLight
+  light_544.position                                     Point3f     PointLight
+  light_544.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_545.sampling_weight                              float       PointLight
+  light_545.position                                     Point3f     PointLight
+  light_545.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_546.sampling_weight                              float       PointLight
+  light_546.position                                     Point3f     PointLight
+  light_546.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_547.sampling_weight                              float       PointLight
+  light_547.position                                     Point3f     PointLight
+  light_547.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_548.sampling_weight                              float       PointLight
+  light_548.position                                     Point3f     PointLight
+  light_548.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_549.sampling_weight                              float       PointLight
+  light_549.position                                     Point3f     PointLight
+  light_549.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_550.sampling_weight                              float       PointLight
+  light_550.position                                     Point3f     PointLight
+  light_550.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_551.sampling_weight                              float       PointLight
+  light_551.position                                     Point3f     PointLight
+  light_551.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_552.sampling_weight                              float       PointLight
+  light_552.position                                     Point3f     PointLight
+  light_552.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_553.sampling_weight                              float       PointLight
+  light_553.position                                     Point3f     PointLight
+  light_553.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_554.sampling_weight                              float       PointLight
+  light_554.position                                     Point3f     PointLight
+  light_554.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_555.sampling_weight                              float       PointLight
+  light_555.position                                     Point3f     PointLight
+  light_555.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_556.sampling_weight                              float       PointLight
+  light_556.position                                     Point3f     PointLight
+  light_556.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_557.sampling_weight                              float       PointLight
+  light_557.position                                     Point3f     PointLight
+  light_557.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_558.sampling_weight                              float       PointLight
+  light_558.position                                     Point3f     PointLight
+  light_558.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_559.sampling_weight                              float       PointLight
+  light_559.position                                     Point3f     PointLight
+  light_559.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_560.sampling_weight                              float       PointLight
+  light_560.position                                     Point3f     PointLight
+  light_560.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_561.sampling_weight                              float       PointLight
+  light_561.position                                     Point3f     PointLight
+  light_561.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_562.sampling_weight                              float       PointLight
+  light_562.position                                     Point3f     PointLight
+  light_562.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_563.sampling_weight                              float       PointLight
+  light_563.position                                     Point3f     PointLight
+  light_563.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_564.sampling_weight                              float       PointLight
+  light_564.position                                     Point3f     PointLight
+  light_564.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_565.sampling_weight                              float       PointLight
+  light_565.position                                     Point3f     PointLight
+  light_565.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_566.sampling_weight                              float       PointLight
+  light_566.position                                     Point3f     PointLight
+  light_566.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_567.sampling_weight                              float       PointLight
+  light_567.position                                     Point3f     PointLight
+  light_567.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_568.sampling_weight                              float       PointLight
+  light_568.position                                     Point3f     PointLight
+  light_568.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_569.sampling_weight                              float       PointLight
+  light_569.position                                     Point3f     PointLight
+  light_569.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_570.sampling_weight                              float       PointLight
+  light_570.position                                     Point3f     PointLight
+  light_570.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_571.sampling_weight                              float       PointLight
+  light_571.position                                     Point3f     PointLight
+  light_571.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_572.sampling_weight                              float       PointLight
+  light_572.position                                     Point3f     PointLight
+  light_572.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_573.sampling_weight                              float       PointLight
+  light_573.position                                     Point3f     PointLight
+  light_573.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_574.sampling_weight                              float       PointLight
+  light_574.position                                     Point3f     PointLight
+  light_574.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_575.sampling_weight                              float       PointLight
+  light_575.position                                     Point3f     PointLight
+  light_575.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_576.sampling_weight                              float       PointLight
+  light_576.position                                     Point3f     PointLight
+  light_576.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_577.sampling_weight                              float       PointLight
+  light_577.position                                     Point3f     PointLight
+  light_577.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_578.sampling_weight                              float       PointLight
+  light_578.position                                     Point3f     PointLight
+  light_578.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_579.sampling_weight                              float       PointLight
+  light_579.position                                     Point3f     PointLight
+  light_579.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_580.sampling_weight                              float       PointLight
+  light_580.position                                     Point3f     PointLight
+  light_580.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_581.sampling_weight                              float       PointLight
+  light_581.position                                     Point3f     PointLight
+  light_581.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_582.sampling_weight                              float       PointLight
+  light_582.position                                     Point3f     PointLight
+  light_582.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_583.sampling_weight                              float       PointLight
+  light_583.position                                     Point3f     PointLight
+  light_583.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_584.sampling_weight                              float       PointLight
+  light_584.position                                     Point3f     PointLight
+  light_584.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_585.sampling_weight                              float       PointLight
+  light_585.position                                     Point3f     PointLight
+  light_585.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_586.sampling_weight                              float       PointLight
+  light_586.position                                     Point3f     PointLight
+  light_586.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_587.sampling_weight                              float       PointLight
+  light_587.position                                     Point3f     PointLight
+  light_587.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_588.sampling_weight                              float       PointLight
+  light_588.position                                     Point3f     PointLight
+  light_588.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_589.sampling_weight                              float       PointLight
+  light_589.position                                     Point3f     PointLight
+  light_589.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_590.sampling_weight                              float       PointLight
+  light_590.position                                     Point3f     PointLight
+  light_590.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_591.sampling_weight                              float       PointLight
+  light_591.position                                     Point3f     PointLight
+  light_591.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_592.sampling_weight                              float       PointLight
+  light_592.position                                     Point3f     PointLight
+  light_592.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_593.sampling_weight                              float       PointLight
+  light_593.position                                     Point3f     PointLight
+  light_593.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_594.sampling_weight                              float       PointLight
+  light_594.position                                     Point3f     PointLight
+  light_594.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_595.sampling_weight                              float       PointLight
+  light_595.position                                     Point3f     PointLight
+  light_595.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_596.sampling_weight                              float       PointLight
+  light_596.position                                     Point3f     PointLight
+  light_596.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_597.sampling_weight                              float       PointLight
+  light_597.position                                     Point3f     PointLight
+  light_597.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_598.sampling_weight                              float       PointLight
+  light_598.position                                     Point3f     PointLight
+  light_598.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  light_599.sampling_weight                              float       PointLight
+  light_599.position                                     Point3f     PointLight
+  light_599.intensity.value                     ∂        Color3f     SRGBReflectanceSpectrum
+  sensor.near_clip                                       float       PerspectiveCamera
+  sensor.far_clip                                        float       PerspectiveCamera
+  sensor.shutter_open                                    float       PerspectiveCamera
+  sensor.shutter_open_time                               float       PerspectiveCamera
+  sensor.film.size                                       Vector2u    HDRFilm
+  sensor.film.crop_size                                  Vector2u    HDRFilm
+  sensor.film.crop_offset                                Point2u     HDRFilm
+  sensor.x_fov                                  ∂, D     float       PerspectiveCamera
+  sensor.principal_point_offset_x               ∂, D     float       PerspectiveCamera
+  sensor.principal_point_offset_y               ∂, D     float       PerspectiveCamera
+  sensor.to_world                               ∂, D     Transform4f PerspectiveCamera
+]

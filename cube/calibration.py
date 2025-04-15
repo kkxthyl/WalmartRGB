@@ -7,7 +7,7 @@ import drjit as dr
 
 start = time.time()
 
-mi.set_variant('llvm_ad_rgb')
+mi.set_variant('scalar_rgb')
 
 def light_grid(face, n1, n2, const_val):
     positions = []
@@ -214,15 +214,72 @@ scene_dict = {
     }
 }
 
-scene_dict.update(emitters)
-scene = mi.load_dict(scene_dict)
-scene_params = mi.traverse(scene)
+def idx_to_face(idx):
+    if idx < 150:
+        return "left"
+    elif idx < 300:
+        return "top"
+    elif idx < 450:
+        return "back"
+    elif idx < 600:
+        return "right"
+    else:
+        return None
+
+def update_emitters(emitters, translation, scale, orientation, faces_on = ["left", "top", "back", "right"]):
+    x, y, z = translation
+    s = scale
+    x_r, y_r, z_r = orientation
+
+    transform = (
+        mi.ScalarTransform4f()
+        .translate([x, y, z])
+        .rotate([1, 0, 0], x_r)
+        .rotate([0, 1, 0], y_r)
+        .rotate([0, 0, 1], z_r)
+        .scale(s)
+    )
+
+    # for light in emitters.values():
+    #     orig_pos = light["position"]
+    #     new_pos = transform @ mi.Point3f(orig_pos)
+    #     light["position"] = new_pos
+
+    # return
+
+    updated_emitters = {}
+
+    for name, light in emitters.items():
+        idx = int(name.split("_")[1])
+        face = idx_to_face(idx)
+        orig_pos = light["position"]
+        new_pos = transform @ mi.Point3f(orig_pos)
+
+        if face in faces_on: 
+            updated_emitters[name] = {
+                **light,
+                "position": new_pos
+            }
+        else:
+            updated_emitters[name] = {
+                **light,
+                "position": new_pos,
+                "intensity": {
+                    "type": "rgb",
+                    "value": [0, 0, 0]  # turn off the light
+                }
+            }
+
+    return updated_emitters
 
 
-import pdb; pdb.set_trace()
-x = 0
-def take_picture():
-    return mi.render(scene, scene_params, spp=8)
+
+
+
+
+def take_picture(scene):
+    return mi.render(scene, spp=8)
+
     
 def error_function(image, image_ref):
     return dr.mean(dr.sqr(image-image_ref))
@@ -234,55 +291,75 @@ def update_virtual_lights(opt):
 
 def test_optimizer():
 
+    real_dict = scene_dict.copy()
+    virtual_dict = scene_dict.copy()
+    
+    real_emitters = emitters.copy()
+    virtual_emitters = update_emitters(emitters, [10, 21, 4], 4, [0,0,0])
 
-    # img = mi.render(scene)
-    # plt.imshow(mi.util.convert_to_bitmap(img))
+    real_dict.update(real_emitters)
+    virtual_dict.update(virtual_emitters)
+
+    virtual_scene = mi.load_dict(scene_dict)
+    real_scene = mi.load_dict(real_dict)
+
+    virtual_params = mi.traverse(virtual_scene)
+
+
+    mi.set_variant('llvm_ad_rgb')
+    import pdb; pdb.set_trace()
+    img = mi.render(virtual_scene)
+    mi.Scene
+    plt.imshow(mi.util.convert_to_bitmap(img))
     plt.axis('off')
     plt.show()
 
     opt = mi.ad.Adam(
-        lr=0.25,
-        params=scene_params
+        lr=0.25
     )
 
     # camera parameters TODO: should be a separate optimization
-    opt['angle'] =  mi.Point3f(0.0,0.0,0.0)
-    opt['translation'] =  mi.Point1f(1.0)
+    # opt['angle'] =  mi.Point3f(0.0,0.0,0.0)
+    # opt['translation'] =  mi.Point1f(1.0)
 
 
     # cube parameters 
     opt['translation'] =  mi.Point3f(0.0,0.0,0.0)
-    opt['roll'] =  mi.Point1f(1.0)
-    opt['pitch'] =  mi.Point1f(1.0)
-    opt['yaw'] =  mi.Point1f(1.0)
+    opt['orientation'] =  mi.Point3f(0.0,0.0,0.0)
     opt['scale'] =  mi.Point1f(1.0)
 
+
     results = []
+    import pdb; pdb.set_trace()
     for light_setup in range(1):
         
-        print(light_setup)
         # TODO: Change lights
-        picture = take_picture()
+        print(light_setup)
+        picture = take_picture(real_scene)
+        print(light_setup)
+
+        update_emitters(opt['translation'], opt['scale'], opt['orientation'])
 
         # Optimization Loop
         for _ in range(50):
 
-            # virtual_image = mi.render(scene, scene_params, spp=8)
-            virtual_image = []
-            loss = error_function(virtual_image, picture)
+            virtual_render = mi.render(virtual_scene, virtual_params, spp=8)
+            loss = error_function(virtual_render, picture)
+            print(loss)
             dr.backward(loss)
             opt.step()
 
             # clamp if necessarry
-            scene_params.update(update_virtual_lights(opt))
             # smallest scale, upper bound
+            virtual_emitters = update_emitters(virtual_emitters, [10, 21, 4], 4, [0,0,0])
+            virtual_params.update(virtual_emitters)
 
         # Finished optimizing against one light setup
         results.append((loss, opt))
 
     parameters = next(sorted(results, key=lambda x: x[0]))[1]
     # OR take the average
-    parameters = next(sorted(results, key=lambda x: x[0]))[1]
+    #parameters = next(sorted(results, key=lambda x: x[0]))[1]
 
 
     print(parameters)
@@ -290,5 +367,7 @@ def test_optimizer():
 
 
 
-test_optimizer()
+#test_optimizer()
 print(time.time()-start, "s")
+
+img = mi.render(mi.load_dict(scene_dict))

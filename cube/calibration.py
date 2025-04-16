@@ -5,12 +5,13 @@ import colorsys
 import time
 import drjit as dr
 import json
+import cv2 
 
 
     
 start = time.time()
 
-mi.set_variant('scalar_rgb')
+mi.set_variant('llvm_ad_rgb')
 
 def light_grid(face, n1, n2, const_val):
     positions = []
@@ -181,11 +182,128 @@ scene_dict = {
                 "type": "checkerboard",
                 "color0": {"type": "rgb", "value": [1.0, 1.0, 1.0]},
                 "color1": {"type": "rgb", "value": [0.0, 0.0, 0.0]},
-                "to_uv": mi.Transform4f().scale(mi.Vector3f(10, 10, 1))
+                "to_uv": mi.ScalarTransform4f().scale(mi.ScalarPoint3f(10, 10, 1))
             }
         }
     }
 }
+
+# scene_dict = {
+#     "type": "scene",
+#     "integrator": {"type": "path"},
+#     "sensor": {
+#         "type": "perspective",
+#         "sampler": {
+#             "type": "independent",
+#             "sample_count": 512
+#         },
+#         "to_world": mi.ScalarTransform4f().look_at(
+#             origin=[0, 0, 18],
+#             target=[0, 0, 0],
+#             up=[0, 1, 0]
+#         ),
+#         "film": {
+#             "type": "hdrfilm",
+#             "width": 800,
+#             "height": 600,
+#             "pixel_format": "rgb"
+#         },
+#     },
+#     "env": {
+#         "type": "constant",
+#         "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
+#     },
+#     "cube-back":{
+#         "type": "obj",
+#         "filename": "cube.obj",
+#         "to_world": mi.ScalarTransform4f()
+#             .translate([0, 0, -10])  
+#         , 
+#         "bsdf": {
+#             "type": "twosided",
+#             "bsdf": {
+#                 "type": "diffuse",
+#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+#             }
+#         }
+#     },
+
+#     "cube-top":{
+#         "type": "obj",
+#         "filename": "cube.obj",
+#         "to_world": mi.ScalarTransform4f()
+#             .translate([0, 10, 0])  
+#         ,  
+#         "bsdf": {
+#             "type": "twosided",
+#             "bsdf": {
+#                 "type": "diffuse",
+#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+#             }
+#         }
+#     }, 
+#     "cube-left":{
+#         "type": "obj",
+#         "filename": "cube.obj",
+#         "to_world": mi.ScalarTransform4f()
+#             .translate([10,0, 0]) 
+#         ,  
+#         "bsdf": {
+#             "type": "twosided",
+#             "bsdf": {
+#                 "type": "diffuse",
+#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+#             }
+#         }
+#     }, 
+#     "cube-right":{
+#         "type": "obj",
+#         "filename": "cube.obj",
+#         "to_world": mi.ScalarTransform4f()
+#             .translate([-10, 0, 0]) 
+#         , 
+#         "bsdf": {
+#             "type": "twosided",
+#             "bsdf": {
+#                 "type": "diffuse",
+#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+#             }
+#         }
+#     }, 
+#     "cube-bottom":{
+#         "type": "obj",
+#         "filename": "cube.obj",
+#         "to_world": mi.ScalarTransform4f()
+#             .translate([0, -10, 0])  
+#         , 
+#         "bsdf": {
+#             "type": "twosided",
+#             "bsdf": {
+#                 "type": "diffuse",
+#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+#             }
+#         }
+#     },
+#     "center_sphere": {
+#         "type": "sphere",
+#         "to_world": mi.ScalarTransform4f().translate([0, 0, 0]).scale(2),  # Adjust position & size
+#         "bsdf": {
+#             "type": "diffuse",
+#             # "reflectance": {
+#             #     "type": "rgb",
+#             #     "value": [0.5, 0.5, 0.5]
+#             # }
+#             "reflectance": {
+#                 "type": "checkerboard",
+#                 "color0": {"type": "rgb", "value": [0.8, 0.8, 0.8]},
+#                 "color1": {"type": "rgb", "value": [0.2, 0.2, 0.2]},
+#                 "to_uv": mi.Transform4f().scale([5, 5, 5])
+
+
+#             }
+#         }
+#     }
+# }
 
 
 def render_scene(emitters, config="RGB", save_path=None):
@@ -221,7 +339,7 @@ def render_scene(emitters, config="RGB", save_path=None):
                     "type": "checkerboard",
                     "color0": {"type": "rgb", "value": [1.0, 1.0, 1.0]},
                     "color1": {"type": "rgb", "value": [0.0, 0.0, 0.0]},
-                    "to_uv": mi.Transform4f().scale(mi.Vector3f(10, 10, 1))
+                    "to_uv": mi.ScalarTransform4f().scale(mi.Vector3f(10, 10, 1))
                 }
             }
         }
@@ -246,7 +364,7 @@ def render_scene(emitters, config="RGB", save_path=None):
 
 def compare_scenes(real_img, virtual_img):
 
-    mi.set_variant('scalar_rgb')
+    #mi.set_variant('scalar_rgb')
     start = time.time()
 
     f, axarr = plt.subplots(1,2) 
@@ -257,36 +375,35 @@ def compare_scenes(real_img, virtual_img):
 
     print('Comparing virtual and real scenes ({} s)'.format(time.time()-start))
     plt.show()
-    mi.set_variant('llvm_ad_rgb')
+    #mi.set_variant('llvm_ad_rgb')
 
 
-def take_picture(scene):
+def take_picture():
     # TODO: Change lights
-    mi.set_variant('scalar_rgb')
-    ret = mi.render(scene, spp=8)
-    mi.set_variant('llvm_ad_rgb')
-    return ret
+    return mi.TensorXf(np.array(mi.Bitmap('output/CMYK.png')))
 
-def render(scene):
-    mi.set_variant('scalar_rgb')
-    ret = mi.render(scene, spp=8)
-    mi.set_variant('llvm_ad_rgb')
+    
+def save_render(virtual_img, epoch):
+    plt.imshow(mi.util.convert_to_bitmap(virtual_img))
+    plt.axis('off')
+    file = f"results/virtual_epoch{epoch}.png"
+    plt.savefig(file, dpi=300, bbox_inches='tight')
+    return mi.TensorXf(np.array(mi.Bitmap(file)))
+
+def render(scene, params):
+    ret = mi.render(scene, params, spp=8)
     return ret
     
 def error_function(image, image_ref):
-    assert type(image) == type(image_ref)
     return dr.mean(dr.square(image-image_ref))
 
-def update_virtual_lights(scene, opt):
-
-    params = mi.traverse(scene)
+def update_virtual_lights(params, translation, scale, orientation):
 
     T = get_transform(
-        mi.Point3f(opt['translation']),
-        mi.Point1f(opt['scale']),
-        mi.Point3f(opt['orientation']),
+        translation,
+        scale,
+        orientation
     )
-
 
     # Apply transform to each light
     for i in range(600):
@@ -294,7 +411,7 @@ def update_virtual_lights(scene, opt):
         x,y,z = T @ params[key]
         params[key] = dr.ravel([x,y,z])
 
-    params.update()
+    return params
 
 def track_losses(epochs, losses):
 
@@ -312,82 +429,122 @@ def track_losses(epochs, losses):
     return figure, line
 
 
+def initialize_test_scene():
 
-def test_optimizer():
+    scene_dict.update(emitters)
 
-    # Initialize scenes
-    real_dict = scene_dict.copy()
-    virtual_dict = scene_dict.copy()
-    
-    real_emitters = emitters.copy()
-    virtual_emitters = emitters.copy()
+    virtual_scene = mi.load_dict(scene_dict)
 
-    real_dict.update(real_emitters)
-    virtual_dict.update(virtual_emitters)
+    virtual_params = mi.traverse(virtual_scene)
+    virtual_img1 = render(virtual_scene, virtual_params)
 
-    virtual_scene = mi.load_dict(virtual_dict)
-    real_scene = mi.load_dict(real_dict)
-
-    picture = take_picture(real_scene)
-    virtual_img = render(virtual_scene)
-    compare_scenes(picture, virtual_img)
     t = dict()
-    t['translation'] =  mi.Point3f(0.0,0.0,0.0)
-    t['orientation'] =  mi.Point3f(90.0,0.0,0.0)
+    # Misalign virtual scene for testing
+    t['orientation'] =  mi.Point3f(0.0,0.0,0.0)
+    t['translation'] =  mi.Point3f(5.0,0.0,0.0)
     t['scale'] =  mi.Point1f(1.0)
-    update_virtual_lights(virtual_scene, t)
-    virtual_img = render(virtual_scene)
-    compare_scenes(picture, virtual_img)
+    update_virtual_lights(
+        virtual_params,
+        t['translation'],
+        t['scale'] ,
+        t['orientation'],
+    )
+    virtual_img = mi.render(virtual_scene, virtual_params, spp=8)
+    compare_scenes(virtual_img1, virtual_img)
 
-    print('Initializing optimizer...')
-    mi.set_variant('llvm_ad_rgb')
+    return virtual_scene 
+
+def attempt_transformation(virtual_scene, opt, img_ref):
+    
+    
+    virtual_params = mi.traverse(virtual_scene).copy()
+    trial_scene = mi.load_dict(virtual_params)
+
+    update_virtual_lights(trial_scene, opt)
+    virtual_img = mi.render(trial_scene)
+    return error_function(virtual_img, img_ref)
+
+
+
+def test_camera_optimizer():
+    virtual_scene, real_scene = initialize_test_scenes()
 
     opt = mi.ad.Adam(
-        lr=0.05
+        lr=0.25
     )
-    # cube parameters 
-    # Misalign virtual scene for testing
-    opt['translation'] =  mi.Point3f(0.0,0.0,0.0)
-    opt['orientation'] =  mi.Point3f(0.0,0.0,0.0)
-    opt['scale'] =  mi.Point1f(1.0)
 
-    dr.enable_grad(opt['translation'])
-    dr.enable_grad(opt['orientation'])
-    dr.enable_grad(opt['scale'])
-    dr.enable_grad(virtual_img)
+    # cube parameters 
+    opt['fov'] =  mi.Vector3f(0.0,0.0,0.0)
+    opt['orientation'] =  mi.Vector3f(0.0,0.0,0.0)
+    opt['scale'] =  mi.Vector1f(1.0)
+
+def test_light_optimizer():
+
+
+    virtual_scene = initialize_test_scene()
+
+    print('Initializing optimizer...')
+
+    virtual_scene_params = mi.traverse(virtual_scene)
+    params = {}
+    params['translation'] =  mi.Vector3f([1.0,0.0,0.0])
+    params['orientation'] =  mi.Vector3f([0.0,0.0,0.0])
+    params['scale'] =  mi.Point1f(1.0)
+
+    opt = mi.ad.Adam(
+        lr=0.25,
+        params=virtual_scene_params['light_0.position']
+    )
+    
+    # cube parameters 
+    # dr.enable_grad(params["translation"])
+    # dr.enable_grad(params["scale"])
+    # dr.enable_grad(params["orientation"])
+
 
     import pdb; pdb.set_trace()
 
     results = []
     for light_setup in range(1):
         
-        picture = take_picture(real_scene)
+        #picture = take_picture()
+        picture = mi.Bitmap(np.full((600, 800, 3), 0.5, dtype=np.float32))
 
         epochs = np.array([0])
         losses = np.array([0])
 
         #figure, line = track_losses(epochs, losses)
         # Optimization Loop
+        virtual_scene_params = mi.traverse(virtual_scene)
+
         for epoch in range(5):
 
             print('Epoch: ', epoch)
 
             # clamp if necessarry
             # smallest scale, upper bound
-            update_virtual_lights(virtual_scene, opt)
+            import pdb; pdb.set_trace()
+            # new_params = update_virtual_lights(
+            #     virtual_scene_params,
+            #     params['translation'],
+            #     params['scale'],
+            #     params['orientation']
+            # )
+            virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=8)
+            #virtual_img = save_render(virtual_render, epoch)
+
+            #compare_scenes(picture, virtual_img)
+            
+            loss = error_function(virtual_render, picture)
+            dr.backward(loss)
+            opt.step()
+            virtual_scene_params.update(opt)
             
 
-            virtual_img = render(virtual_scene)
-            compare_scenes(picture, virtual_img)
-            
-
-            loss = error_function(virtual_img, picture)
-            dr.backward(loss, flags=dr.ADFlag.Default | dr.ADFlag.AllowNoGrad)
-            print(opt['translation'])
-            print(opt['orientation'])
-            print(opt['scale'])
-            #opt.step()
-            print(loss)
+            print(params['translation']) 
+            print(params['orientation']) 
+            print(params['scale']) 
+            print('Loss: ', loss)
             
             # Update graph
             #epochs = np.append(epochs, epoch)
@@ -405,7 +562,8 @@ def test_optimizer():
             
 
         # Finished optimizing against one light setup
-        results.append((loss, opt))
+        results.append((loss, params))
+    #compare_scenes(picture, virtual_img)
 
     parameters = sorted(results, key=lambda x: x[0])[0][1]
     # OR take the average
@@ -417,14 +575,11 @@ def test_optimizer():
 
 if __name__ == '__main__':
 
-    scene = mi.load_dict(scene_dict)
-    x = mi.traverse(scene)
     # img = mi.render(scene)
     # plt.imshow(mi.util.convert_to_bitmap(img))
     # plt.axis('off')
-    # plt.show()
 
-    test_optimizer()
+    test_light_optimizer()
 
     print(time.time()-start, "s")
 

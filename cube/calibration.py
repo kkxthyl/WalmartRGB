@@ -128,7 +128,7 @@ def get_transform(translation, scale, orientation, faces_on = ["left", "top", "b
 
 check_board_scene = {
     "type": "scene",
-    "integrator": {"type": "path"},
+    "integrator": {"type": "direct_projective"},
     "sensor": {
         "type": "perspective",
         "sampler": {"type": "independent", "sample_count": 512},
@@ -166,7 +166,7 @@ check_board_scene = {
 
 scene_dict = {
     "type": "scene",
-    "integrator": {"type": "path"},
+    "integrator": {"type": "direct_projective"},
     "sensor": {
         "type": "perspective",
         "sampler": {
@@ -359,7 +359,7 @@ def initialize_test_scene():
     # Build transformation
     T = (
         mi.Transform4f()
-        .translate([2,0,0])
+        .translate([5,0,0])
         .rotate([1, 0, 0], 0)
         .rotate([0, 1, 0], 0)
         .rotate([0, 0, 1], 0)
@@ -375,7 +375,7 @@ def initialize_test_scene():
     virtual_img = mi.render(virtual_scene, virtual_params, spp=8)
     compare_scenes(reference_image, virtual_img)
 
-    initial_light_positions = [virtual_params[f'light_{i}.position'] for i in range(600)]
+    initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
     return virtual_scene, initial_light_positions, reference_image
 
 def test_camera_optimizer():
@@ -425,20 +425,37 @@ def test_light_optimizer():
 
     virtual_scene_params = mi.traverse(virtual_scene)
 
-    opt = mi.ad.Adam(
+    opt = mi.ad.SGD(
         lr=0.01,
-        mask_updates=True
+        #mask_updates=True
     )
     
     opt['translation'] =  mi.Vector3f([1.0,0.0,0.0])
-    opt['roll'] =  mi.Float(1.0)
-    opt['pitch'] =  mi.Float(1.0)
-    opt['yaw'] =  mi.Float(1.0)
-    opt['scale'] =  mi.Float(1.0)
+    dr.enable_grad(opt['translation'])
+    # opt['roll'] =  mi.Float(0.0)
+    # opt['pitch'] =  mi.Float(0.0)
+    # opt['yaw'] =  mi.Float(0.0)
+    # opt['scale'] =  mi.Float(1.0)
 
     import pdb; pdb.set_trace()
+    # Build transformation
+    T = (
+        mi.Transform4f()
+        .translate(opt['translation'])
+        # .rotate([1, 0, 0], opt['roll'])
+        # .rotate([0, 1, 0], opt['pitch'])
+        # .rotate([0, 0, 1], opt['yaw'])
+        # .scale(opt['scale'])
+    )
+
+    # Apply change to scene
+    for i in range(600):
+        virtual_scene_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
+    virtual_scene_params.update()
 
     init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=8)
+
+    print(dr.grad(opt['translation']))
 
     loss_hist = []
     # Apply transform to each light
@@ -448,26 +465,26 @@ def test_light_optimizer():
 
         #figure, line = track_losses(epochs, losses)
         # Optimization Loop
-        for epoch in range(15):
+        for epoch in range(50):
 
             print('Epoch: ', epoch)
 
             # Apply clipping
-            scale_val = dr.clip(opt['scale'], 0.1, 8.0)
-            translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [20.0,20.0,20.0])
-            roll_val = dr.clip(opt['roll'], [0.0], [180.0])
-            pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
-            yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
+            # scale_val = dr.clip(opt['scale'], 0.1, 8.0)
+            # translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [1.0,1.0,1.0])
+            # roll_val = dr.clip(opt['roll'], [0.0], [180.0])
+            # pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
+            # yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
 
-            opt['scale'] = scale_val
-            opt['translation'] = translation_val
-            opt['roll'] = roll_val
-            opt['pitch'] = pitch_val
-            opt['yaw'] = yaw_val
+            # opt['scale'] = scale_val
+            # opt['translation'] = translation_val
+            # print(opt['translation'])
+            # opt['roll'] = roll_val
+            # opt['pitch'] = pitch_val
+            # opt['yaw'] = yaw_val
 
 
             # print(opt['scale'])
-            # print(opt['translation'])
             # print(opt['roll'])
             # print(opt['pitch'])
             # print(opt['yaw'])
@@ -476,21 +493,21 @@ def test_light_optimizer():
             T = (
                 mi.Transform4f()
                 .translate(opt['translation'])
-                .rotate([1, 0, 0], opt['roll'])
-                .rotate([0, 1, 0], opt['pitch'])
-                .rotate([0, 0, 1], opt['yaw'])
-                .scale(opt['scale'])
+                # .rotate([1, 0, 0], opt['roll'])
+                # .rotate([0, 1, 0], opt['pitch'])
+                # .rotate([0, 0, 1], opt['yaw'])
+                # .scale(opt['scale'])
             )
 
-            import pdb; pdb.set_trace()
             # Apply change to scene
             for i in range(600):
                 virtual_scene_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-                print(i)
             virtual_scene_params.update()
 
-            import pdb; pdb.set_trace()
-            virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=8)
+            print(initial_light_positions[0])
+            print(virtual_scene_params[f'light_{i}.position'])
+
+            virtual_render = mi.render(virtual_scene, virtual_scene_params, seed=epoch, spp=8)
             
             if epoch % 5 == 0:
                 compare_scenes(picture, virtual_render)
@@ -498,6 +515,7 @@ def test_light_optimizer():
             loss = error_function(virtual_render, picture)
             dr.backward(loss)
             opt.step()
+            print(opt['translation'])
 
 
             print('Loss: ', loss)
@@ -517,13 +535,14 @@ def test_light_optimizer():
     axs[0][1].axis('off')
     axs[0][1].set_title('Initial Image')
 
-    axs[1][0].imshow(mi.util.convert_to_bitmap(mi.render(virtual_scene, spp=1024)))
+    axs[1][0].imshow(mi.util.convert_to_bitmap(virtual_render))
     axs[1][0].axis('off')
     axs[1][0].set_title('Optimized image')
 
     axs[1][1].imshow(mi.util.convert_to_bitmap(picture))
     axs[1][1].axis('off')
     axs[1][1].set_title('Reference Image')
+    plt.show()
 
     #parameters = sorted(results, key=lambda x: x[0])[0][1]
     # OR take the average

@@ -30,8 +30,9 @@ class CameraController:
         Loads the EDSDK library and sets up the function prototypes.
         """
 
+        self.led_test = led_test
+
         if led_test:
-            self.led_test = led_test
             # Skip loading the SDK if in LED test mode.
             self.edsdk = None
             self.camera = None
@@ -47,6 +48,11 @@ class CameraController:
 
         self.camera = None
         self._init_function_prototypes()
+
+        # Initialize the SDK.
+        self._check(self.edsdk.EdsInitializeSDK())
+        print("EDSDK initialized.")
+
 
     def _check(self, err):
         """Helper function to check for errors returned by the SDK functions."""
@@ -107,11 +113,6 @@ class CameraController:
             # Skip camera initialization if in LED test mode.
             return
 
-
-        # Initialize the SDK.
-        self._check(self.edsdk.EdsInitializeSDK())
-        print("EDSDK initialized.")
-
         # Retrieve the camera list.
         camList = ctypes.c_void_p()
         self._check(self.edsdk.EdsGetCameraList(ctypes.byref(camList)))
@@ -170,22 +171,22 @@ class CameraController:
         # Retrieve the SD card volume (assumed at index 0).
         volume = ctypes.c_void_p()
         self._check(self.edsdk.EdsGetChildAtIndex(self.camera, 0, ctypes.byref(volume)))
-        print("Volume (SD card) obtained.")
+        # print("Volume (SD card) obtained.")
 
         # Access the DCIM folder (assumed at index 0 of volume).
         dcim_folder = ctypes.c_void_p()
         self._check(self.edsdk.EdsGetChildAtIndex(volume, 0, ctypes.byref(dcim_folder)))
-        print("DCIM folder obtained.")
+        # print("DCIM folder obtained.")
 
         # Access the folder containing images (for example, 'canon100' assumed at index 0).
         image_folder = ctypes.c_void_p()
         self._check(self.edsdk.EdsGetChildAtIndex(dcim_folder, 0, ctypes.byref(image_folder)))
-        print("Image folder obtained.")
+        # print("Image folder obtained.")
 
         # Get the file count in the folder.
         image_count = ctypes.c_uint(0)
         self._check(self.edsdk.EdsGetChildCount(image_folder, ctypes.byref(image_count)))
-        print("Initial file count in folder:", image_count.value)
+        # print("Initial file count in folder:", image_count.value)
         if image_count.value == 0:
             raise Exception("No images found in folder.")
 
@@ -193,7 +194,7 @@ class CameraController:
         file_index = image_count.value - 1
         file_ref = ctypes.c_void_p()
         self._check(self.edsdk.EdsGetChildAtIndex(image_folder, file_index, ctypes.byref(file_ref)))
-        print("Most recent file reference obtained.")
+        # print("Most recent file reference obtained.")
 
         # Retrieve file information.
         dir_info = self.EdsDirectoryItemInfo()
@@ -215,7 +216,7 @@ class CameraController:
             self.kEdsAccess_ReadWrite,
             ctypes.byref(file_stream)
         ))
-        print(f"Local file stream created: {local_filename}")
+        # print(f"Local file stream created: {local_filename}")
 
         # Download the file.
         self._check(self.edsdk.EdsDownload(file_ref, file_size, file_stream))
@@ -232,7 +233,7 @@ class CameraController:
                 print("Session closed.")
             except Exception as e:
                 print("Error closing session:", e)
-            self.camera = None
+            # self.camera = None
 
     def terminate_sdk(self):
         try:

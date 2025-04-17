@@ -25,14 +25,14 @@ class LEDController:
 
     null_lights = [169,300,470]
 
-    LEFT_START = 0
-    LEFT_END = 168
+    TOP_START = 0
+    TOP_END = 168
     RIGHT_START = 170
     RIGHT_END = 299
-    TOP_START = 301
-    TOP_END = 469
-    BACK_START = 471
-    BACK_END = 599
+    BACK_START = 301
+    BACK_END = 469
+    LEFT_START = 471
+    LEFT_END = 599
 
     def __init__(self, host=None, hw_address=None, camera_test=False):
         """
@@ -134,10 +134,11 @@ class LEDController:
             r, g, b: Color values.
             w      : Brightness (weight) value.
         """
+
         if face < 0 or face > 3:
             raise ValueError("Face index must be between 0 and 5.")
         
-        patt = [self.make_pixel(0, 0, 0, 0)] * self.device_data["number_of_led"]
+        patt = self.get_empty_pattern()
 
         if face == self.LEFT:
             for i in range(self.LEFT_START, self.LEFT_END):
@@ -162,7 +163,7 @@ class LEDController:
             r, g, b: Color values.
             w      : Brightness (weight) value.
         """
-        patt = [self.make_pixel(r, g, b, w)] * self.device_data["number_of_led"]
+        patt = self.get_empty_pattern()
         for i in self.null_lights:
             patt[i] = self.make_pixel(0, 0, 0, 0)
         return patt
@@ -185,8 +186,16 @@ class LEDController:
         Returns:
             A list of pixel bytes for all LEDs with the combined face patterns.
         """
-        total_leds = self.device_data["number_of_led"]
-        combined = [self.make_pixel(0, 0, 0, 0)] * total_leds
+
+        print("combining patterns")
+
+        combined = self.get_empty_pattern()
+
+        # print("Left face active section:", left[LEDController.LEFT_START:LEDController.LEFT_END])
+        # print("Right face active section:", right[LEDController.RIGHT_START:LEDController.RIGHT_END])
+        # print("Top face active section:", top[LEDController.TOP_START:LEDController.TOP_END])
+        # print("Back face active section:", back[LEDController.BACK_START:LEDController.BACK_END])
+
 
         # Fill the combined pattern with the provided face patterns
         combined[self.LEFT_START:self.LEFT_END] = left[self.LEFT_START:self.LEFT_END]
@@ -195,6 +204,15 @@ class LEDController:
         combined[self.BACK_START:self.BACK_END] = back[self.BACK_START:self.BACK_END]
 
         return combined
+
+    def get_empty_pattern(self):
+        """
+        Create an empty pattern with all LEDs turned off.
+
+        Returns:
+            A list of pixel bytes representing an empty pattern.
+        """
+        return [self.make_pixel(0, 0, 0, 0)] * self.device_data["number_of_led"]
 
 if __name__ == "__main__":
     # Create an instance of the controller; device discovery happens automatically.

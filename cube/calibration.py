@@ -150,57 +150,14 @@ def get_transform(translation, scale, orientation, faces_on = ["left", "top", "b
 
 
 
-scene_dict = {
-    "type": "scene",
-    "integrator": {"type": "path"},
-    "sensor": {
-        "type": "perspective",
-        "sampler": {"type": "independent", "sample_count": 512},
-        "to_world": mi.ScalarTransform4f().look_at(
-            origin=[0, -2, 19], target=[0, -5, 0], up=[0, 1, 0]
-        ),
-        "film": {
-            "type": "hdrfilm",
-            "width": 800,
-            "height": 600,
-            "pixel_format": "rgb"
-        },
-    },
-    "env": {
-        "type": "constant",
-        "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
-    },
-    "checkerboard": {
-        "type": "rectangle",
-        "to_world": mi.ScalarTransform4f()
-            .translate([0, -5, 0])
-            .rotate([1, 0, 0], -90)
-            .scale([8, 8, 1]),
-        "bsdf": {
-            "type": "diffuse",
-            "reflectance": {
-                "type": "checkerboard",
-                "color0": {"type": "rgb", "value": [1.0, 1.0, 1.0]},
-                "color1": {"type": "rgb", "value": [0.0, 0.0, 0.0]},
-                "to_uv": mi.ScalarTransform4f().scale(mi.ScalarPoint3f(10, 10, 1))
-            }
-        }
-    }
-}
-
 # scene_dict = {
 #     "type": "scene",
 #     "integrator": {"type": "path"},
 #     "sensor": {
 #         "type": "perspective",
-#         "sampler": {
-#             "type": "independent",
-#             "sample_count": 512
-#         },
+#         "sampler": {"type": "independent", "sample_count": 512},
 #         "to_world": mi.ScalarTransform4f().look_at(
-#             origin=[0, 0, 18],
-#             target=[0, 0, 0],
-#             up=[0, 1, 0]
+#             origin=[0, -2, 19], target=[0, -5, 0], up=[0, 1, 0]
 #         ),
 #         "film": {
 #             "type": "hdrfilm",
@@ -213,153 +170,141 @@ scene_dict = {
 #         "type": "constant",
 #         "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
 #     },
-#     "cube-back":{
-#         "type": "obj",
-#         "filename": "cube.obj",
+#     "checkerboard": {
+#         "type": "rectangle",
 #         "to_world": mi.ScalarTransform4f()
-#             .translate([0, 0, -10])  
-#         , 
-#         "bsdf": {
-#             "type": "twosided",
-#             "bsdf": {
-#                 "type": "diffuse",
-#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-#             }
-#         }
-#     },
-
-#     "cube-top":{
-#         "type": "obj",
-#         "filename": "cube.obj",
-#         "to_world": mi.ScalarTransform4f()
-#             .translate([0, 10, 0])  
-#         ,  
-#         "bsdf": {
-#             "type": "twosided",
-#             "bsdf": {
-#                 "type": "diffuse",
-#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-#             }
-#         }
-#     }, 
-#     "cube-left":{
-#         "type": "obj",
-#         "filename": "cube.obj",
-#         "to_world": mi.ScalarTransform4f()
-#             .translate([10,0, 0]) 
-#         ,  
-#         "bsdf": {
-#             "type": "twosided",
-#             "bsdf": {
-#                 "type": "diffuse",
-#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-#             }
-#         }
-#     }, 
-#     "cube-right":{
-#         "type": "obj",
-#         "filename": "cube.obj",
-#         "to_world": mi.ScalarTransform4f()
-#             .translate([-10, 0, 0]) 
-#         , 
-#         "bsdf": {
-#             "type": "twosided",
-#             "bsdf": {
-#                 "type": "diffuse",
-#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-#             }
-#         }
-#     }, 
-#     "cube-bottom":{
-#         "type": "obj",
-#         "filename": "cube.obj",
-#         "to_world": mi.ScalarTransform4f()
-#             .translate([0, -10, 0])  
-#         , 
-#         "bsdf": {
-#             "type": "twosided",
-#             "bsdf": {
-#                 "type": "diffuse",
-#                 "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-#             }
-#         }
-#     },
-#     "center_sphere": {
-#         "type": "sphere",
-#         "to_world": mi.ScalarTransform4f().translate([0, 0, 0]).scale(2),  # Adjust position & size
+#             .translate([0, -5, 0])
+#             .rotate([1, 0, 0], -90)
+#             .scale([8, 8, 1]),
 #         "bsdf": {
 #             "type": "diffuse",
-#             # "reflectance": {
-#             #     "type": "rgb",
-#             #     "value": [0.5, 0.5, 0.5]
-#             # }
 #             "reflectance": {
 #                 "type": "checkerboard",
-#                 "color0": {"type": "rgb", "value": [0.8, 0.8, 0.8]},
-#                 "color1": {"type": "rgb", "value": [0.2, 0.2, 0.2]},
-#                 "to_uv": mi.Transform4f().scale([5, 5, 5])
-
-
+#                 "color0": {"type": "rgb", "value": [1.0, 1.0, 1.0]},
+#                 "color1": {"type": "rgb", "value": [0.0, 0.0, 0.0]},
+#                 "to_uv": mi.ScalarTransform4f().scale(mi.ScalarPoint3f(10, 10, 1))
 #             }
 #         }
 #     }
 # }
 
-
-def render_scene(emitters, config="RGB", save_path=None):
-    scene_dict = {
-        "type": "scene",
-        "integrator": {"type": "path"},
-        "sensor": {
-            "type": "perspective",
-            "sampler": {"type": "independent", "sample_count": 512},
-            "to_world": mi.ScalarTransform4f().look_at(
-                origin=[0, -2, 19], target=[0, -5, 0], up=[0, 1, 0]
-            ),
-            "film": {
-                "type": "hdrfilm",
-                "width": 800,
-                "height": 600,
-                "pixel_format": "rgb"
-            },
+scene_dict = {
+    "type": "scene",
+    "integrator": {"type": "path"},
+    "sensor": {
+        "type": "perspective",
+        "sampler": {
+            "type": "independent",
+            "sample_count": 512
         },
-        "env": {
-            "type": "constant",
-            "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
+        "to_world": mi.ScalarTransform4f().look_at(
+            origin=[0, 0, 18],
+            target=[0, 0, 0],
+            up=[0, 1, 0]
+        ),
+        "film": {
+            "type": "hdrfilm",
+            "width": 800,
+            "height": 600,
+            "pixel_format": "rgb"
         },
-        "checkerboard": {
-            "type": "rectangle",
-            "to_world": mi.ScalarTransform4f()
-                .translate([0, -5, 0])
-                .rotate([1, 0, 0], -90)
-                .scale([8, 8, 1]),
+    },
+    "env": {
+        "type": "constant",
+        "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
+    },
+    "cube-back":{
+        "type": "obj",
+        "filename": "cube.obj",
+        "to_world": mi.ScalarTransform4f()
+            .translate([0, 0, -10])  
+        , 
+        "bsdf": {
+            "type": "twosided",
             "bsdf": {
                 "type": "diffuse",
-                "reflectance": {
-                    "type": "checkerboard",
-                    "color0": {"type": "rgb", "value": [1.0, 1.0, 1.0]},
-                    "color1": {"type": "rgb", "value": [0.0, 0.0, 0.0]},
-                    "to_uv": mi.ScalarTransform4f().scale(mi.Vector3f(10, 10, 1))
-                }
+                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+            }
+        }
+    },
+
+    "cube-top":{
+        "type": "obj",
+        "filename": "cube.obj",
+        "to_world": mi.ScalarTransform4f()
+            .translate([0, 10, 0])  
+        ,  
+        "bsdf": {
+            "type": "twosided",
+            "bsdf": {
+                "type": "diffuse",
+                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+            }
+        }
+    }, 
+    "cube-left":{
+        "type": "obj",
+        "filename": "cube.obj",
+        "to_world": mi.ScalarTransform4f()
+            .translate([10,0, 0]) 
+        ,  
+        "bsdf": {
+            "type": "twosided",
+            "bsdf": {
+                "type": "diffuse",
+                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+            }
+        }
+    }, 
+    "cube-right":{
+        "type": "obj",
+        "filename": "cube.obj",
+        "to_world": mi.ScalarTransform4f()
+            .translate([-10, 0, 0]) 
+        , 
+        "bsdf": {
+            "type": "twosided",
+            "bsdf": {
+                "type": "diffuse",
+                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+            }
+        }
+    }, 
+    "cube-bottom":{
+        "type": "obj",
+        "filename": "cube.obj",
+        "to_world": mi.ScalarTransform4f()
+            .translate([0, -10, 0])  
+        , 
+        "bsdf": {
+            "type": "twosided",
+            "bsdf": {
+                "type": "diffuse",
+                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
+            }
+        }
+    },
+    "center_sphere": {
+        "type": "sphere",
+        "to_world": mi.ScalarTransform4f().translate([0, 0, 0]).scale(2),  # Adjust position & size
+        "bsdf": {
+            "type": "diffuse",
+            # "reflectance": {
+            #     "type": "rgb",
+            #     "value": [0.5, 0.5, 0.5]
+            # }
+            "reflectance": {
+                "type": "checkerboard",
+                "color0": {"type": "rgb", "value": [0.8, 0.8, 0.8]},
+                "color1": {"type": "rgb", "value": [0.2, 0.2, 0.2]},
+                "to_uv": mi.ScalarTransform4f().scale([5, 5, 5])
+
+
             }
         }
     }
+}
 
-    scene_dict.update(emitters)
-
-    scene = mi.load_dict(scene_dict)
-    img = mi.render(scene)
-    bitmap = mi.util.convert_to_bitmap(img)
-
-    if save_path:
-        plt.imshow(bitmap)
-        plt.axis('off')
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        plt.show()
-    else:
-        plt.imshow(bitmap)
-        plt.axis('off')
-        plt.show()
 
 
 def compare_scenes(real_img, virtual_img):
@@ -380,38 +325,13 @@ def compare_scenes(real_img, virtual_img):
 
 def take_picture():
     # TODO: Change lights
+    #return mi.Bitmap(np.full((600, 800, 3), 0.5, dtype=np.float32))
     return mi.TensorXf(np.array(mi.Bitmap('output/CMYK.png')))
 
-    
-def save_render(virtual_img, epoch):
-    plt.imshow(mi.util.convert_to_bitmap(virtual_img))
-    plt.axis('off')
-    file = f"results/virtual_epoch{epoch}.png"
-    plt.savefig(file, dpi=300, bbox_inches='tight')
-    return mi.TensorXf(np.array(mi.Bitmap(file)))
-
-def render(scene, params):
-    ret = mi.render(scene, params, spp=8)
-    return ret
     
 def error_function(image, image_ref):
     return dr.mean(dr.square(image-image_ref))
 
-def update_virtual_lights(params, translation, scale, orientation):
-
-    T = get_transform(
-        translation,
-        scale,
-        orientation
-    )
-
-    # Apply transform to each light
-    for i in range(600):
-        key = f'light_{i}.position'
-        x,y,z = T @ params[key]
-        params[key] = dr.ravel([x,y,z])
-
-    return params
 
 def track_losses(epochs, losses):
 
@@ -431,146 +351,140 @@ def track_losses(epochs, losses):
 
 def initialize_test_scene():
 
+    # Initialize scene
     scene_dict.update(emitters)
-
     virtual_scene = mi.load_dict(scene_dict)
-
     virtual_params = mi.traverse(virtual_scene)
-    virtual_img1 = render(virtual_scene, virtual_params)
+    initial_light_positions = [virtual_params[f'light_{i}.position'] for i in range(600)]
 
-    t = dict()
+    reference_image = mi.render(virtual_scene, virtual_params, spp=8)
+
+    # Build transformation
+    T = (
+        mi.Transform4f()
+        .translate([2,0,0])
+        .rotate([1, 0, 0], 0)
+        .rotate([0, 1, 0], 0)
+        .rotate([0, 0, 1], 0)
+        .scale(1)
+    )
+
     # Misalign virtual scene for testing
-    t['orientation'] =  mi.Point3f(0.0,0.0,0.0)
-    t['translation'] =  mi.Point3f(5.0,0.0,0.0)
-    t['scale'] =  mi.Point1f(1.0)
-    update_virtual_lights(
-        virtual_params,
-        t['translation'],
-        t['scale'] ,
-        t['orientation'],
-    )
+    for i in range(600):
+        virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
+    virtual_params.update()
+
+   
     virtual_img = mi.render(virtual_scene, virtual_params, spp=8)
-    compare_scenes(virtual_img1, virtual_img)
+    compare_scenes(reference_image, virtual_img)
 
-    return virtual_scene 
-
-def attempt_transformation(virtual_scene, opt, img_ref):
-    
-    
-    virtual_params = mi.traverse(virtual_scene).copy()
-    trial_scene = mi.load_dict(virtual_params)
-
-    update_virtual_lights(trial_scene, opt)
-    virtual_img = mi.render(trial_scene)
-    return error_function(virtual_img, img_ref)
-
-
-
-def test_camera_optimizer():
-    virtual_scene, real_scene = initialize_test_scenes()
-
-    opt = mi.ad.Adam(
-        lr=0.25
-    )
-
-    # cube parameters 
-    opt['fov'] =  mi.Vector3f(0.0,0.0,0.0)
-    opt['orientation'] =  mi.Vector3f(0.0,0.0,0.0)
-    opt['scale'] =  mi.Vector1f(1.0)
+    initial_light_positions = [virtual_params[f'light_{i}.position'] for i in range(600)]
+    return virtual_scene, initial_light_positions, reference_image
 
 def test_light_optimizer():
 
-
-    virtual_scene = initialize_test_scene()
+    virtual_scene, initial_light_positions, picture = initialize_test_scene()
 
     print('Initializing optimizer...')
 
     virtual_scene_params = mi.traverse(virtual_scene)
-    params = {}
-    params['translation'] =  mi.Vector3f([1.0,0.0,0.0])
-    params['orientation'] =  mi.Vector3f([0.0,0.0,0.0])
-    params['scale'] =  mi.Point1f(1.0)
 
-    opt = mi.ad.Adam(
-        lr=0.25,
-        params=virtual_scene_params['light_0.position']
+    opt = mi.ad.SGD(
+        lr=0.01
     )
     
-    # cube parameters 
-    # dr.enable_grad(params["translation"])
-    # dr.enable_grad(params["scale"])
-    # dr.enable_grad(params["orientation"])
-
+    opt['translation'] =  mi.Vector3f([1.0,0.0,0.0])
+    opt['roll'] =  mi.Float(1.0)
+    opt['pitch'] =  mi.Float(1.0)
+    opt['yaw'] =  mi.Float(1.0)
+    opt['scale'] =  mi.Float(1.0)
 
     import pdb; pdb.set_trace()
 
     results = []
+
+    # Apply transform to each light
     for light_setup in range(1):
         
         #picture = take_picture()
-        picture = mi.Bitmap(np.full((600, 800, 3), 0.5, dtype=np.float32))
 
         epochs = np.array([0])
         losses = np.array([0])
 
         #figure, line = track_losses(epochs, losses)
         # Optimization Loop
-        virtual_scene_params = mi.traverse(virtual_scene)
-
-        for epoch in range(5):
+        for epoch in range(15):
 
             print('Epoch: ', epoch)
 
-            # clamp if necessarry
-            # smallest scale, upper bound
-            import pdb; pdb.set_trace()
-            # new_params = update_virtual_lights(
-            #     virtual_scene_params,
-            #     params['translation'],
-            #     params['scale'],
-            #     params['orientation']
-            # )
-            virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=8)
-            #virtual_img = save_render(virtual_render, epoch)
+            # Apply clipping
+            # scale_val = dr.clip(opt['scale'], 0.1, 8.0)
+            # translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [20.0,20.0,20.0])
+            # roll_val = dr.clip(opt['roll'], [0.0], [180.0])
+            # pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
+            # yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
 
-            #compare_scenes(picture, virtual_img)
+            # opt['scale'] = scale_val
+            # opt['translation'] = translation_val
+            # opt['roll'] = roll_val
+            # opt['pitch'] = pitch_val
+            # opt['yaw'] = yaw_val
+
+
+            print(opt['scale'])
+            print(opt['translation'])
+            print(opt['roll'])
+            print(opt['pitch'])
+            print(opt['yaw'])
+
+            # Build transformation
+            T = (
+                mi.Transform4f()
+                .translate(opt['translation'])
+                .rotate([1, 0, 0], opt['roll'])
+                .rotate([0, 1, 0], opt['pitch'])
+                .rotate([0, 0, 1], opt['yaw'])
+                .scale(opt['scale'])
+            )
+
+            # Apply change to scene
+            for i in range(600):
+                virtual_scene_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
+            virtual_scene_params.update()
+
+            virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=8)
+
             
+            if epoch % 5 == 0:
+                compare_scenes(picture, virtual_render)
+
             loss = error_function(virtual_render, picture)
             dr.backward(loss)
             opt.step()
-            virtual_scene_params.update(opt)
-            
 
-            print(params['translation']) 
-            print(params['orientation']) 
-            print(params['scale']) 
+
             print('Loss: ', loss)
             
             # Update graph
-            #epochs = np.append(epochs, epoch)
-            #losses = np.append(losses, loss)
+            # epochs = np.append(epochs, epoch)
+            # losses = np.append(losses, loss)
 
-            #line.set_xdata(epochs)
-            #line.set_ydata(losses)
-            #plt.xlim([epochs.min()-1, epochs.max()+1])
-            #plt.ylim([losses.min()-0.01, losses.max()+0.01])
-            #figure.canvas.draw()
-            ## This will run the GUI event loop until all 
-            ## UI events currently waiting have been processed
-            #figure.canvas.flush_events()
-            #time.sleep(0.1)
+            # line.set_xdata(epochs)
+            # line.set_ydata(losses)
+            # plt.xlim([epochs.min()-1, epochs.max()+1])
+            # plt.ylim([losses.min()-0.01, losses.max()+0.01])
+            # figure.canvas.draw()
+            # # This will run the GUI event loop until all 
+            # # UI events currently waiting have been processed
+            # figure.canvas.flush_events()
+            # time.sleep(0.1)
             
 
-        # Finished optimizing against one light setup
-        results.append((loss, params))
-    #compare_scenes(picture, virtual_img)
+    compare_scenes(picture, virtual_render)
 
-    parameters = sorted(results, key=lambda x: x[0])[0][1]
+    #parameters = sorted(results, key=lambda x: x[0])[0][1]
     # OR take the average
     #parameters = next(sorted(results, key=lambda x: x[0]))[1]
-
-
-    print(parameters)
 
 
 if __name__ == '__main__':

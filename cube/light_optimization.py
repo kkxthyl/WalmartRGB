@@ -144,32 +144,37 @@ def compare_scenes(ref, render):
 
 
 
-def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, spp=8):
+def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, spp=32):
 
     params = mi.traverse(scene)
     reference = mi.render(reference_scene, params, spp=spp)
-    opt = mi.ad.Adam(lr=0.01)
+    opt = mi.ad.Adam(lr=0.007)
 
     initial_rgb = {
         i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
     }
 
-    # for i in range(len(emitters)):
-    #     init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
-    #     opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
-    #     params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
-
     for i in range(len(emitters)):
-        opt[f'light_{i}_scale'] = mi.Float(0.001)
+        init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
+        opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
+        params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+
+    # for i in range(len(emitters)):
+    #     opt[f'light_{i}_scale'] = mi.Float(0.001)
 
     loss_hist = []
-
+    best_loss = float('inf')
+    best_rgb = None
+    patience = 10
+    wait = 0
     for epoch in range(n_epochs):
         for i in range(len(emitters)):
-            # opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
-            opt[f'light_{i}_scale'] = dr.clip(opt[f'light_{i}_scale'], 0.0, 10.0)
-            scaled = initial_rgb[i] * opt[f'light_{i}_scale']
-            params[f'light_{i}.intensity.value'] = scaled
+            opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
+            params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+
+            # opt[f'light_{i}_scale'] = dr.clip(opt[f'light_{i}_scale'], 0.0, 10.0)
+            # scaled = initial_rgb[i] * opt[f'light_{i}_scale']
+            # params[f'light_{i}.intensity.value'] = scaled
 
         params.update(opt)
         render = mi.render(scene, params, spp=spp)
@@ -178,6 +183,15 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
         dr.backward(loss)
         opt.step()
         loss_hist.append(loss.array[0])
+        if loss.array[0] < best_loss - 1e-6:
+            best_loss = loss.array[0]
+            best_rgb = {i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))}
+            wait = 0
+        else:
+            wait += 1
+            if wait >= patience:
+                print(f"Early stopping at epoch {epoch} (no improvement for {patience} epochs)")
+                break
         print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
 
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
@@ -194,9 +208,13 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
     final_render = mi.render(scene, params, spp=16)
     compare_scenes(reference, final_render)
 
+    # optimized_colors = {
+    #     i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
+    # }
     optimized_colors = {
-        i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
-    }
+    i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
+}
+
 
     return optimized_colors, loss_hist
 
@@ -217,15 +235,19 @@ if __name__ == '__main__':
     color_configs = json.load(open("color_configs.json"))
     CONFIG = "WHITE"
 
+    initial_rgb = json.load(open("emitters_rgb.json"))
     emitters = {}
     for i, (face, pos) in enumerate(all_pos):
         base_color = color_configs[CONFIG].get(face, [1, 1, 1])
+
+        # rgb = initial_rgb.get(f"light_{i}", [0.0, 0.0, 0.0])
         emitters[f'light_{i}'] = {
             "type": "point",
             "position": pos,
             "intensity": {
                 "type": "rgb",
                 "value": [0.003 * c for c in base_color]
+                # "value": rgb
             }
         }
 

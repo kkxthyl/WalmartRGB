@@ -146,22 +146,30 @@ def compare_scenes(ref, render):
 
 def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, spp=8):
 
-    n_epochs = 10    # reduced for faster testing
     params = mi.traverse(scene)
     reference = mi.render(reference_scene, params, spp=spp)
-
     opt = mi.ad.Adam(lr=0.01)
 
+    initial_rgb = {
+        i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
+    }
+
+    # for i in range(len(emitters)):
+    #     init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
+    #     opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
+    #     params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+
     for i in range(len(emitters)):
-        init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
-        opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
-        params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+        opt[f'light_{i}_scale'] = mi.Float(0.001)
 
     loss_hist = []
 
     for epoch in range(n_epochs):
         for i in range(len(emitters)):
-            opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
+            # opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
+            opt[f'light_{i}_scale'] = dr.clip(opt[f'light_{i}_scale'], 0.0, 10.0)
+            scaled = initial_rgb[i] * opt[f'light_{i}_scale']
+            params[f'light_{i}.intensity.value'] = scaled
 
         params.update(opt)
         render = mi.render(scene, params, spp=spp)
@@ -172,11 +180,22 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
         loss_hist.append(loss.array[0])
         print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
 
+        fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+        ax[0].imshow(mi.util.convert_to_bitmap(reference))
+        ax[0].set_title("Reference (HDRI)")
+        ax[0].axis('off')
+        ax[1].imshow(mi.util.convert_to_bitmap(render))
+        ax[1].set_title(f"Render Epoch {epoch}")
+        ax[1].axis('off')
+        plt.tight_layout()
+        plt.pause(0.2)
+        plt.close(fig)
+
     final_render = mi.render(scene, params, spp=16)
     compare_scenes(reference, final_render)
 
     optimized_colors = {
-        f'light_{i}': opt[f'light_{i}_rgb'] for i in range(len(emitters))
+        i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
     }
 
     return optimized_colors, loss_hist
@@ -196,7 +215,7 @@ if __name__ == '__main__':
     all_pos = left + top + back + right
 
     color_configs = json.load(open("color_configs.json"))
-    CONFIG = "RGB"
+    CONFIG = "WHITE"
 
     emitters = {}
     for i, (face, pos) in enumerate(all_pos):
@@ -206,7 +225,7 @@ if __name__ == '__main__':
             "position": pos,
             "intensity": {
                 "type": "rgb",
-                "value": [0.001 * c for c in base_color]
+                "value": [0.003 * c for c in base_color]
             }
         }
 

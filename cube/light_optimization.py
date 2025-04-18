@@ -144,11 +144,11 @@ def compare_scenes(ref, render):
 
 
 
-def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, spp=32):
+def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, spp=8):
 
     params = mi.traverse(scene)
     reference = mi.render(reference_scene, params, spp=spp)
-    opt = mi.ad.Adam(lr=0.007)
+    opt = mi.ad.Adam(lr=0.0001)
 
     initial_rgb = {
         i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
@@ -165,7 +165,7 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
     loss_hist = []
     best_loss = float('inf')
     best_rgb = None
-    patience = 10
+    patience = 5
     wait = 0
     for epoch in range(n_epochs):
         for i in range(len(emitters)):
@@ -202,10 +202,15 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
         ax[1].set_title(f"Render Epoch {epoch}")
         ax[1].axis('off')
         plt.tight_layout()
-        plt.pause(0.2)
+        plt.pause(0.08)
         plt.close(fig)
 
-    final_render = mi.render(scene, params, spp=16)
+
+    for i in range(len(emitters)):
+        params[f'light_{i}.intensity.value'] = best_rgb[i]
+
+    params.update()
+    final_render = mi.render(scene, params, spp=512)
     compare_scenes(reference, final_render)
 
     # optimized_colors = {
@@ -222,7 +227,8 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=50, sp
 if __name__ == '__main__':
     mi.set_variant('llvm_ad_rgb')
 
-    reference = get_reference_hdri_scene("../sample_hdri.exr", spp=8)
+    # reference = get_reference_hdri_scene("../sample_hdri.exr", spp=8)
+    reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
 
     scale = 0.28
     CONST = (scale / 2) + (scale / 5)
@@ -232,26 +238,26 @@ if __name__ == '__main__':
     right = light_grid("right", 10, 15,  CONST, scale)
     all_pos = left + top + back + right
 
-    color_configs = json.load(open("color_configs.json"))
-    CONFIG = "WHITE"
+    # color_configs = json.load(open("color_configs.json"))
+    # CONFIG = "WHITE"
 
     initial_rgb = json.load(open("emitters_rgb.json"))
     emitters = {}
     for i, (face, pos) in enumerate(all_pos):
-        base_color = color_configs[CONFIG].get(face, [1, 1, 1])
+        # base_color = color_configs[CONFIG].get(face, [1, 1, 1])
 
-        # rgb = initial_rgb.get(f"light_{i}", [0.0, 0.0, 0.0])
+        rgb = initial_rgb.get(f"light_{i}", {}).get("rgb", [0.0, 0.0, 0.0])
         emitters[f'light_{i}'] = {
             "type": "point",
             "position": pos,
             "intensity": {
                 "type": "rgb",
-                "value": [0.003 * c for c in base_color]
-                # "value": rgb
+                # "value": [0.003 * c for c in base_color]
+                "value": rgb
             }
         }
 
-    base_scene = build_base_scene(emitters) 
+    base_scene = build_base_scene(emitters)
 
     optimized_rgb, loss_history = optimize_light_intensities(base_scene, emitters, reference)
     print("Final loss:", loss_history[-1])

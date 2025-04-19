@@ -1,5 +1,5 @@
 from Utils import SceneUtils as su
-import config
+import Configs as cf
 import mitsuba as mi
 import matplotlib.pyplot as plt
 

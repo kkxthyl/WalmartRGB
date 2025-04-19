@@ -4,6 +4,7 @@ from Utils import SceneUtils as su
 from Configs import Configs as cf
 import mitsuba as mi
 import matplotlib.pyplot as plt
+from HDRIMap import HDRImap
 
 
 def get_all_positions(scale=1.0):
@@ -49,6 +50,19 @@ def main(hdri_name, calibrate_flag):
     # =======================================
     #             HDRI MAPPING
     # =======================================
+    HDRImap.apply_hdri(
+        emitters,
+        hdri_path,
+        [pos for _, pos in all_pos],
+        scale_factor=0.6,
+        n_clusters=598,
+        scale=0.6
+    )
+
+    HDRImap.export_hdrimap_to_json(
+        emitters, 
+        hdri_path,
+    )
 
     # =======================================
     #           HDRI OPTIMIZATION

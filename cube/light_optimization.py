@@ -250,7 +250,8 @@ if __name__ == '__main__':
     mi.set_variant('llvm_ad_rgb')
 
     # reference = get_reference_hdri_scene("../sample_hdri.exr", spp=8)
-    reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
+    # reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
+    reference = get_reference_hdri_scene("../winter_evening_4k.exr", spp=64)
 
     scale = 0.6
     CONST = (scale / 2) + (scale / 5)

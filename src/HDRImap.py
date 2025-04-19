@@ -6,7 +6,7 @@ import json
 
 class HDRImap(): 
 
-    def apply_hdri(emitters, hdri_path, all_pos, n_clusters=600, scale_factor=1.0, scale=0.6):
+    def apply_hdri(emitters, hdri_path, all_pos, scale_factor, n_clusters=598, scale=0.6):
 
         if (hdri_path is None):
             raise FileNotFoundError("invalid hdri path")

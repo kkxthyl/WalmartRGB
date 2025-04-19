@@ -1,6 +1,7 @@
 import mitsuba as mi
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
 class SceneUtils:
 
@@ -495,3 +496,12 @@ class SceneUtils:
         }})
 
         return scene_dict
+    
+    @staticmethod
+    def get_mask(img1, img2, threshold=30):
+        diff = cv2.absdiff(img1, img2)
+        diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+        mask = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)[1]
+        mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+
+        return mask

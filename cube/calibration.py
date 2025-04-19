@@ -14,7 +14,7 @@ SPP = 2
 
 start = time.time()
 
-mi.set_variant('llvm_ad_rgb')
+mi.set_variant('cuda_ad_rgb')
 def get_mask():
 
     calib = os.path.join(REFERENCE_DIRECTORY, 'mask_calibration.jpg')
@@ -27,8 +27,6 @@ def get_mask():
 
     # creating a rectangle on the mask
     # where the pixels are valued at 255
-    cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
-    import pdb; pdb.set_trace
 
     # plt.subplot(1, 2, 1)
     # plt.imshow(img_empty)
@@ -223,7 +221,7 @@ scene_dict = {
 }
 
 
-def show_results(init_virtual_render, virtual_render, picture, loss_hist):
+def show_results(init_virtual_render, virtual_render, picture, loss_hist, file_name):
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
 
@@ -244,19 +242,21 @@ def show_results(init_virtual_render, virtual_render, picture, loss_hist):
     axs[1][1].axis('off')
     axs[1][1].set_title('Reference Image')
     plt.show()
+    plt.savefig(f'figures/{file_name}.png')
 
-def compare_scenes(real_img, virtual_img):
+def compare_scenes(real_img, virtual_img, file_name):
 
     start = time.time()
 
     f, axarr = plt.subplots(1,2) 
 
     # use the created array to output your multiple images. In this case I have stacked 4 images vertically
-    axarr[0].imshow((real_img))
-    axarr[1].imshow(mi.util.convert_to_bitmap(virtual_img))
+    axarr[0].imshow(real_img)
+    axarr[1].imshow(virtual_img)
 
     print('Comparing virtual and real scenes ({} s)'.format(time.time()-start))
     plt.show()
+    plt.savefig(f'figures/{file_name}')
 
 
 def take_picture():
@@ -328,32 +328,33 @@ def initialize_checker_board_scene():
     return virtual_scene
 
 
-def initialize_test_scene():
+def initialize_test_scene(misalign=False):
 
     # Initialize scene
     check_board_scene.update(get_emitters())
     virtual_scene = mi.load_dict(check_board_scene)
     virtual_params = mi.traverse(virtual_scene)
 
-    # Build transformation
-    T = (
-        mi.Transform4f()
-        .translate([0.5,0.5,0])
-        .rotate([1, 0, 0], 0.2)
-        .rotate([0, 1, 0], 1)
-        .rotate([0, 0, 1], 1.2)
-        .scale(1.01)
-    )
+    if misalign:
+        # Build transformation
+        T = (
+            mi.Transform4f()
+            .translate([0.5,0.5,0])
+            .rotate([1, 0, 0], 0.2)
+            .rotate([0, 1, 0], 1)
+            .rotate([0, 0, 1], 1.2)
+            .scale(1.01)
+        )
 
-    # Misalign virtual scene for testing
-    initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
-    for i in range(600):
-        virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-        virtual_params.update()
+        # Misalign virtual scene for testing
+        initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
+        for i in range(600):
+            virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
+            virtual_params.update()
 
    
-    #virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
-    #compare_scenes(reference_image, virtual_img)
+    # virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
+    # compare_scenes(reference_image, virtual_img)
 
     initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
     return virtual_scene, initial_light_positions 
@@ -363,18 +364,17 @@ def test_camera_optimizer():
     virtual_scene = initialize_checker_board_scene()
     print('Initializing optimizer...')
 
-    import pdb; pdb.set_trace()
     virtual_scene_params = mi.traverse(virtual_scene)
     opt = mi.ad.Adam(
-        lr=0.025,
+        lr=0.1,
         mask_updates=True
     )
     
-    opt['translation'] =  mi.Vector3f([1.0,0.0,0.0])
-    opt['roll'] =  mi.Float(0.0)
-    opt['pitch'] =  mi.Float(0.0)
-    opt['yaw'] =  mi.Float(0.0)
-    opt["sensor.x_fov"] = mi.Float(1.0)
+    opt['translation'] =  mi.Vector3f([2,19,56])
+    # opt['roll'] =  mi.Float(0.0)
+    # opt['pitch'] =  mi.Float(0.0)
+    # opt['yaw'] =  mi.Float(0.0)
+    opt["sensor.x_fov"] = mi.Float(30)
 
     # Use the Plane Sweep Method
     # Elect depth candidates
@@ -382,60 +382,76 @@ def test_camera_optimizer():
     virtual_render = None
     loss = None
 
-    init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
-
-    file = next(Path(REFERENCE_DIRECTORY).glob(f'WHITE*{FILE_TYPE}'))
-    import pdb; pdb.set_trace()
+    file = next(Path(REFERENCE_DIRECTORY).glob(f'*{FILE_TYPE}'))
     picture = cv2.imread(str(file))
     virtual_scene_params.update(get_emitters('WHITE'))
+    init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
 
+    mask = get_mask()
+    picture = cv2.bitwise_and(picture, picture, mask=mask)
+    #picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
+    compare_scenes(picture, init_virtual_render, 'camera_calibration')
+        
+    import pdb; pdb.set_trace()
+    initial_to_world = mi.Transform4f(virtual_scene_params["sensor.to_world"])
+
+    # TEST 
+    picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.threshold(picture, 127, 255, cv2.THRESH_BINARY)[1]
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    reference_area = np.mean([cv2.contourArea(contour) for contour in contours])
 
     # Optimization Loop
-    for epoch in range(4):
+    for epoch in range(100):
 
         print('Epoch: ', epoch)
 
         # Apply clipping
-        translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [20.0,20.0,20.0])
-        roll_val = dr.clip(opt['roll'], [0.0], [180.0])
-        pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
-        yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
-        fov_val = dr.clip(opt['sensor.x_fov'], 0.1, 8.0)
+        translation_val = dr.clip(opt['translation'], -50, 50)
+        fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
+
+    
 
         opt['translation'] = translation_val
-        opt['roll'] = roll_val
-        opt['pitch'] = pitch_val
-        opt['yaw'] = yaw_val
         opt['sensor.x_fov'] = fov_val
 
-
-        # Build transformation
         T = (
             mi.Transform4f()
             .translate(opt['translation'])
+            # .rotate([1, 0, 0], opt['pitch'])
+            # .rotate([0, 1, 0], opt['yaw'])
+            # .rotate([0, 0, 1], opt['roll'])
+            # .scale(opt['scale'])
         )
 
-        U = (
-            mi.Transform4f()
-            .rotate([1, 0, 0], opt['pitch'])
-            .rotate([0, 1, 0], opt['yaw'])
-            .rotate([0, 0, 1], opt['roll'])
-        )
+        # U = (
+        #     mi.Transform4f()
+        #     .rotate([1, 0, 0], opt['pitch'])
+        #     .rotate([0, 1, 0], opt['yaw'])
+        #     .rotate([0, 0, 1], opt['roll'])
+        # )
 
-        origin = T @ [0, 0, 18]
-        up = U @ [0,1,0]
+        #up = @ [0,1,0]
 
-        virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-            origin=[origin[i][0] for i in range(3)],
-            target=[0, 0, 0],
-            up=[up[i][0] for i in range(3)]
-        )
 
-        # Apply change to scene
-        virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"]
+
+        print(opt['translation'])
+        # # Apply change to scene
+        virtual_scene_params["sensor.to_world"] = T @ initial_to_world
+        virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
         virtual_scene_params.update()
 
         virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
+        
+        if epoch % 10 == 0:
+            compare_scenes(picture, virtual_render, f'{epoch}_tens')
+
+        virtual_render = cv2.cvtColor(np.array(virtual_render), cv2.COLOR_BGR2GRAY)
+        import pdb; pdb.set_trace()
+        thresh = cv2.threshold(virtual_render, 127, 255, cv2.THRESH_BINARY)[1]
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        print(np.mean([cv2.contourArea(contour) for contour in contours]))
         
         loss = error_function(virtual_render, picture)
         print(loss)
@@ -445,7 +461,7 @@ def test_camera_optimizer():
         loss_hist.append(loss.array[0])
 
 
-    show_results(init_virtual_render, virtual_render, picture, loss_hist)
+    show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization')
 
 def test_light_optimizer():
 
@@ -482,13 +498,23 @@ def test_light_optimizer():
     
     mask = get_mask()
 
-    for config_file in Path(REFERENCE_DIRECTORY).glob(f'*{FILE_TYPE}'):
+    import pdb; pdb.set_trace()
+    for config_file in Path(REFERENCE_DIRECTORY).glob(f'CMYK*{FILE_TYPE}'):
 
+        
         # Change the lights to match the real scene
         print(config_file)
         config = config_file.name.split('_')[0]
         print(config)
-        virtual_scene_params.update(get_emitters(config))
+        check_board_scene.update(get_emitters(config))
+        virtual_scene = mi.load_dict(check_board_scene)
+        virtual_scene_params = mi.traverse(virtual_scene)
+        virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+            origin=[2,19,56],
+            target=[0,0,0],
+            up=[0,1,0],
+        )
+        virtual_scene_params.update()
 
         for key in opt.keys():
             opt.reset(key)
@@ -497,7 +523,7 @@ def test_light_optimizer():
         picture = cv2.bitwise_and(picture, picture, mask=mask)
 
         init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
-        compare_scenes(picture, init_virtual_render)
+        compare_scenes(picture, mi.util.convert_to_bitmap(init_virtual_render), 'config_file_initial')
 
         loss_hist = []
         virtual_render = None
@@ -511,9 +537,9 @@ def test_light_optimizer():
             # Apply clipping
             scale_val = dr.clip(opt['scale'], 0.1, 8.0)
             translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [20.0,20.0,20.0])
-            roll_val = dr.clip(opt['roll'], [0.0], [180.0])
-            pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
-            yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
+            roll_val = dr.clip(opt['roll'], -0.5, 0.5)
+            pitch_val = dr.clip(opt['pitch'], -0.5, 0.5)
+            yaw_val = dr.clip(opt['yaw'], -0.5, 0.5)
 
             opt['scale'] = scale_val
             opt['translation'] = translation_val
@@ -522,20 +548,26 @@ def test_light_optimizer():
             opt['yaw'] = yaw_val
 
 
+            print(opt['scale'])
+            print(opt['translation'])
+            print(opt['roll'])
+            print(opt['pitch'])
+            print(opt['yaw'])
+
             # Build transformation
             T = (
                 mi.Transform4f()
                 .translate(opt['translation'])
-                .rotate([1, 0, 0], opt['pitch'])
-                .rotate([0, 1, 0], opt['yaw'])
-                .rotate([0, 0, 1], opt['roll'])
+                .rotate([1, 0, 0], 100*opt['pitch'])
+                .rotate([0, 1, 0], 100*opt['yaw'])
+                .rotate([0, 0, 1], 100*opt['roll'])
                 .scale(opt['scale'])
             )
 
             # Apply change to scene
-            for i in range(1):
+            for i in range(600):
                 virtual_scene_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-                virtual_scene_params.update()
+            virtual_scene_params.update()
 
             virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
             
@@ -544,9 +576,11 @@ def test_light_optimizer():
             opt.step()
 
 
+            print(loss)
             loss_hist.append(loss.array[0])
 
-        show_results(init_virtual_render, virtual_render, picture, loss_hist)
+        print('Showing results!')
+        show_results(init_virtual_render, virtual_render, picture, loss_hist, f'{config_file.name}_results')
 
         result = {
             'scale' : opt['scale'],
@@ -556,13 +590,12 @@ def test_light_optimizer():
             'yaw' : opt['yaw'],
         }
         results.append((result, loss))
-        break
-            
     #compare_scenes(picture, virtual_render)
 
 
-    import pdb; pdb.set_trace()
     params, loss = sorted(results, key=lambda x: x[1])[0]
+    for k,v in params.items():
+        params[k] = str(v)
     with open('results/light_setup.json', 'w') as f:
         json.dump(params, f)
 
@@ -577,12 +610,115 @@ def open_parameters(file_name='results/light_setup.json'):
 
     return params
 
+def camera_pose_estimation():
+    virtual_scene = initialize_checker_board_scene()
+
+    virtual_scene_params = mi.traverse(virtual_scene)
+
+    # virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+    #     target=[0,0,0],
+    #     up=[int(up[i][0]) for i in range(3)],
+    # )
+
+
+    # file = next(Path(REFERENCE_DIRECTORY).glob('mask_calibration.jpg'))
+    # picture = cv2.imread(str(file))
+    init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
+    picture = mi.util.convert_to_bitmap(init_virtual_render)
+    mask = get_mask()
+    picture = cv2.bitwise_and(picture, picture, mask=mask)
+    #picture = cv2.imread('chessboard.jpg')
+    imgray = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
+    ret, thresh = cv2.threshold(imgray, 200, 255, 0)
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    #cv2.drawContours(thresh, contours, -1, (0,255,0), 3)
+
+    # print(contours)
+    corners = []
+    for cnt in contours:
+        x, y = cnt[0][0]
+        #print(thresh)
+        picture = cv2.circle(picture, (x,y), 10, (0,0,255), 10) 
+
+    objectPoints = np.array([(x, y) for x,y in zip(range(len(corners)),range(len(corners)))])
+    imagePoints = np.array(corners)
+    cameraMatrix = cameraMatrix = np.array([
+    [800, 0, 320],
+    [0, 800, 240],
+    [0,   0,   1]
+    ], dtype=np.float32)
+    distCoeffs = np.zeros(5)
+
+    success, rvec, tvec = cv2.solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs)
+    print(success, rvec, tvec)
+
     
 if __name__ == '__main__':
 
 
-    #test_light_optimizer()
-    test_camera_optimizer()
+
+
+    # U = (
+    #     mi.Transform4f()
+    #     .rotate([1, 0, 0], 0)
+    #     .rotate([0, 1, 0], 65)
+    #     .rotate([0, 0, 1], 0)
+    # )
+
+    # up = U @ [0,1,0]
+
+
+
+    #compare_scenes(picture, picture, 'corners')
+
+    # # # virtual_scene_params.update(get_emitters('WHITE'))
+
+
+    # picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
+    
+    # # for i in range(picture.shape[0]):
+    # #     for j in range(picture.shape[1]):
+            
+    # #         if any(picture[i][j]):
+
+    # #             print(picture[i][j])
+    # # detect corners with the goodFeaturesToTrack function. 
+    # corners = np.int0(corners) 
+    
+    # # we iterate through each corner,  
+    # # making a circle at each point that we think is a corner. 
+    # for i in corners: 
+    #     x, y = i.ravel() 
+    #     cv2.circle(picture, (x, y), 3, 255, -1) 
+
+    # plt.imshow(picture)
+    # # plt.savefig('new222.png')
+    # mask = get_mask()
+
+    #for config_file in Path(REFERENCE_DIRECTORY).glob(f'*{FILE_TYPE}'):
+
+        # Change the lights to match the real scene
+
+    # config_file = Path('../calibration_images/COOL_combined.jpg')
+    # print(config_file)
+    # config = config_file.name.split('_')[0]
+    # print(config)
+    # picture = cv2.imread(str(config_file))
+    # #picture = cv2.bitwise_and(picture, picture, mask=mask)
+    # #compare_scenes(picture, picture, config_file.name)
+    # plt.imshow(picture)
+    # plt.savefig('figures/test.png')
+
+
+    test_light_optimizer()
+
+    
+
+
+
+
+    # test_light_optimizer()
+    # test_camera_optimizer()
     # x = cv2.imread('assets/gnome.jpg')
     
     # for i in range(1):

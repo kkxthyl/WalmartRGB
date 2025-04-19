@@ -2,14 +2,14 @@ from pathlib import Path
 import mitsuba as mi
 import matplotlib.pyplot as plt
 import numpy as np
-import colorsys
 import time
 import drjit as dr
 import json
 import cv2 
 
 REFERENCE_DIRECTORY = 'output'
-SPP = 8
+FILE_TYPE = 'png'
+SPP = 2
 
 start = time.time()
 
@@ -89,43 +89,10 @@ def get_emitters(config='RGB'):
 
     return emitters
 
-def idx_to_face(idx):
-    if idx < 150:
-        return "left"
-    elif idx < 300:
-        return "top"
-    elif idx < 450:
-        return "back"
-    elif idx < 600:
-        return "right"
-    else:
-        return None
     
-def get_transform(translation, scale, orientation, faces_on = ["left", "top", "back", "right"]):
-    x, y, z = translation
 
-    s = scale
-    if isinstance(scale, mi.Point1f):
-        s = scale[0][0]
-    x_r, y_r, z_r = orientation
-
-    transform = (
-        mi.Transform4f()
-        .translate(translation)
-        .rotate([1, 0, 0], x_r)
-        .rotate([0, 1, 0], y_r)
-        .rotate([0, 0, 1], z_r)
-        .scale(s)
-    )
-
-    return transform
-
-
-
-ref_path = next(Path('output').glob('*png'))
+ref_path = next(Path('output').glob(f'*{FILE_TYPE}'))
 ref = cv2.imread(str(ref_path))
-
-
 
 
 check_board_scene = {
@@ -274,6 +241,9 @@ def track_losses(epochs, losses):
     
     return figure, line
 
+def point_to_list(points, dim=3):
+    return [points[i][0] for i in range(3)]
+
 def initialize_checker_board_scene():
 
     virtual_scene = mi.load_dict(check_board_scene)
@@ -283,9 +253,27 @@ def initialize_checker_board_scene():
 
     print("Real FOV: ", virtual_params['sensor.x_fov'])
     # Build transformation
+    T = (
+        mi.Transform4f()
+        .translate([0,0,0])
+    )
+
+    U = (
+        mi.Transform4f()
+        .rotate([1, 0, 0], 0)
+        .rotate([0, 1, 0], 0)
+        .rotate([0, 0, 1], 0)
+    )
 
     # Misalign virtual scene for testing
-    virtual_params['sensor.x_fov'] = 5
+    virtual_params['sensor.x_fov'] = virtual_params['sensor.x_fov'] *0.9
+
+    virtual_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+        origin=point_to_list(T@[18,0,0]),
+        target=[0, 0, 0],
+        up=point_to_list(U@[0,1,0])
+    )
+
     virtual_params.update()
 
    
@@ -298,8 +286,8 @@ def initialize_checker_board_scene():
 def initialize_test_scene():
 
     # Initialize scene
-    scene_dict.update(get_emitters())
-    virtual_scene = mi.load_dict(scene_dict)
+    check_board_scene.update(get_emitters())
+    virtual_scene = mi.load_dict(check_board_scene)
     virtual_params = mi.traverse(virtual_scene)
 
     # Build transformation
@@ -316,10 +304,10 @@ def initialize_test_scene():
     initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
     for i in range(600):
         virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-    virtual_params.update()
+        virtual_params.update()
 
    
-    virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
+    #virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
     #compare_scenes(reference_image, virtual_img)
 
     initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
@@ -330,39 +318,81 @@ def test_camera_optimizer():
     virtual_scene, picture = initialize_checker_board_scene()
     print('Initializing optimizer...')
 
-    virtual_scene_params = mi.traverse(virtual_scene)
-
     import pdb; pdb.set_trace()
+    virtual_scene_params = mi.traverse(virtual_scene)
+    opt = mi.ad.Adam(
+        lr=0.025,
+        mask_updates=True
+    )
+    
+    opt['translation'] =  mi.Vector3f([1.0,0.0,0.0])
+    opt['roll'] =  mi.Float(0.0)
+    opt['pitch'] =  mi.Float(0.0)
+    opt['yaw'] =  mi.Float(0.0)
+    opt["sensor.x_fov"] = mi.Float(1.0)
 
-    best_depth = 1.0
-    best_loss = 1E4
     # Use the Plane Sweep Method
     # Elect depth candidates
-    for candidate in np.linspace(20, 40, 50):
+    loss_hist = []
+    virtual_render = None
+    loss = None
 
-        print(f'{candidate=}')
+    init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
+    # Optimization Loop
+    for epoch in range(1):
+
+        print('Epoch: ', epoch)
+
+        # Apply clipping
+        translation_val = dr.clip(opt['translation'], [0.0,0.0,0.0], [20.0,20.0,20.0])
+        roll_val = dr.clip(opt['roll'], [0.0], [180.0])
+        pitch_val = dr.clip(opt['pitch'], [0.0], [180.0])
+        yaw_val = dr.clip(opt['yaw'], [0.0], [180.0])
+        fov_val = dr.clip(opt['sensor.x_fov'], 0.1, 8.0)
+
+        opt['translation'] = translation_val
+        opt['roll'] = roll_val
+        opt['pitch'] = pitch_val
+        opt['yaw'] = yaw_val
+        opt['sensor.x_fov'] = fov_val
+
+
+        # Build transformation
+        T = (
+            mi.Transform4f()
+            .translate(opt['translation'])
+        )
+
+        U = (
+            mi.Transform4f()
+            .rotate([1, 0, 0], opt['pitch'])
+            .rotate([0, 1, 0], opt['yaw'])
+            .rotate([0, 0, 1], opt['roll'])
+        )
+
+        origin = T @ [0, 0, 18]
+        up = U @ [0,1,0]
+
+        virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+            origin=[origin[i][0] for i in range(3)],
+            target=[0, 0, 0],
+            up=[up[i][0] for i in range(3)]
+        )
 
         # Apply change to scene
-        virtual_scene_params["sensor.x_fov"] = mi.Float(candidate)
+        virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"]
         virtual_scene_params.update()
 
         virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
-
-        loss = error_function(virtual_render, picture)
         
-        if loss < best_loss:
-            best_loss = loss
-            best_depth = candidate
-            print(best_depth) 
+        loss = error_function(virtual_render, picture)
+        dr.backward(loss)
+        opt.step()
+
+        loss_hist.append(loss.array[0])
 
 
-        print('Loss: ', loss)
-
-    print(best_depth, best_loss)
-    virtual_scene_params["sensor.x_fov"] = best_depth
-    virtual_scene_params.update()
-    virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
-    compare_scenes(picture, virtual_render)
+    show_results(init_virtual_render, virtual_render, picture, loss_hist)
 
 def test_light_optimizer():
 
@@ -386,12 +416,18 @@ def test_light_optimizer():
     opt['yaw'] =  mi.Float(0.0)
     opt['scale'] =  mi.Float(1.0)
 
+    result = {
+        'scale' : str(opt['scale'][0]),
+        'translation' : str(opt['translation']),
+        'roll' : str(opt['roll'][0]),
+        'pitch' : str(opt['pitch'][0]),
+        'yaw' : str(opt['yaw'][0]),
+    }
+
     for k, v in opt.items():
         print(k, dr.grad(v))
 
-    for config_file in Path('output').glob('*png'):
-
-
+    for config_file in Path('output').glob(f'*{FILE_TYPE}'):
 
         # Change the lights to match the real scene
         print(config_file)
@@ -400,7 +436,6 @@ def test_light_optimizer():
 
         for key in opt.keys():
             opt.reset(key)
-
         
         picture = cv2.imread(str(config_file))
 
@@ -412,7 +447,7 @@ def test_light_optimizer():
         loss = None
 
         # Optimization Loop
-        for epoch in range(2):
+        for epoch in range(10):
 
             print('Epoch: ', epoch)
 
@@ -430,20 +465,21 @@ def test_light_optimizer():
             opt['yaw'] = yaw_val
 
 
+            import pdb; pdb.set_trace()
             # Build transformation
             T = (
                 mi.Transform4f()
                 .translate(opt['translation'])
-                .rotate([1, 0, 0], opt['roll'])
-                .rotate([0, 1, 0], opt['pitch'])
-                .rotate([0, 0, 1], opt['yaw'])
+                .rotate([1, 0, 0], opt['pitch'])
+                .rotate([0, 1, 0], opt['yaw'])
+                .rotate([0, 0, 1], opt['roll'])
                 .scale(opt['scale'])
             )
 
             # Apply change to scene
-            for i in range(600):
+            for i in range(1):
                 virtual_scene_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-            virtual_scene_params.update()
+                virtual_scene_params.update()
 
             virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
             
@@ -474,10 +510,18 @@ def test_light_optimizer():
     with open('results/light_setup.json', 'w') as f:
         json.dump(params, f)
 
-    #parameters = sorted(results, key=lambda x: x[0])[0][1]
-    # OR take the average
-    #parameters = next(sorted(results, key=lambda x: x[0]))[1]
+def open_parameters(file_name='results/light_setup.json'):
+    with open(file_name) as f:
+        params = json.load(f)
+        params['translation'] = mi.Vector3f(*eval(params['translation']))
+        params['scale'] = mi.Float(eval(params['scale']))
+        params['roll'] = mi.Float(eval(params['roll']))
+        params['pitch'] = mi.Float(eval(params['pitch']))
+        params['yaw'] = mi.Float(eval(params['yaw']))
 
+    return params
+
+    
 if __name__ == '__main__':
 
     test_light_optimizer()

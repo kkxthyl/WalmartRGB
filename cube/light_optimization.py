@@ -144,23 +144,16 @@ def compare_scenes(ref, render):
 
 
 
-def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, spp=8):
+def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, spp=24):
 
     params = mi.traverse(scene)
     reference = mi.render(reference_scene, params, spp=spp)
-    opt = mi.ad.Adam(lr=0.0001)
-
-    initial_rgb = {
-        i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
-    }
+    opt = mi.ad.Adam(lr=0.0003)
 
     for i in range(len(emitters)):
         init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
         opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
         params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
-
-    # for i in range(len(emitters)):
-    #     opt[f'light_{i}_scale'] = mi.Float(0.001)
 
     loss_hist = []
     best_loss = float('inf')
@@ -171,10 +164,6 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, s
         for i in range(len(emitters)):
             opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
             params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
-
-            # opt[f'light_{i}_scale'] = dr.clip(opt[f'light_{i}_scale'], 0.0, 10.0)
-            # scaled = initial_rgb[i] * opt[f'light_{i}_scale']
-            # params[f'light_{i}.intensity.value'] = scaled
 
         params.update(opt)
         render = mi.render(scene, params, spp=spp)
@@ -213,12 +202,9 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, s
     final_render = mi.render(scene, params, spp=512)
     compare_scenes(reference, final_render)
 
-    # optimized_colors = {
-    #     i: dr.detach(params[f'light_{i}.intensity.value']) for i in range(len(emitters))
-    # }
     optimized_colors = {
     i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
-}
+    }
 
 
     return optimized_colors, loss_hist
@@ -230,7 +216,7 @@ if __name__ == '__main__':
     # reference = get_reference_hdri_scene("../sample_hdri.exr", spp=8)
     reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
 
-    scale = 0.28
+    scale = 0.3
     CONST = (scale / 2) + (scale / 5)
     left  = light_grid("left",  10, 15, -CONST, scale)
     top   = light_grid("top",   10, 15,  CONST, scale)

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import mitsuba as mi
 import matplotlib.pyplot as plt
@@ -7,13 +8,55 @@ import drjit as dr
 import json
 import cv2 
 
-REFERENCE_DIRECTORY = 'output'
-FILE_TYPE = 'png'
+REFERENCE_DIRECTORY = '../calibration_images'
+FILE_TYPE = 'combined.jpg'
 SPP = 2
 
 start = time.time()
 
 mi.set_variant('llvm_ad_rgb')
+def get_mask():
+
+    calib = os.path.join(REFERENCE_DIRECTORY, 'mask_calibration.jpg')
+    blank = os.path.join(REFERENCE_DIRECTORY, 'mask_blank.jpg')
+
+    img_empty = cv2.imread(blank)
+    img_obj = cv2.imread(calib)
+
+    mask = np.zeros(img_obj.shape[:2], dtype="uint8")
+
+    # creating a rectangle on the mask
+    # where the pixels are valued at 255
+    cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
+    import pdb; pdb.set_trace
+
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(img_empty)
+    # plt.axis('off')
+
+    # plt.subplot(1, 2, 2)
+    # plt.imshow(img_obj)
+    # plt.axis('off')
+
+    # plt.show()
+
+    diff = cv2.absdiff(img_empty, img_obj)
+    # plt.imshow(diff, cmap='gray')
+    # plt.axis('off')
+    # plt.show()
+
+    # normalized = cv2.normalize(diff, None, 0, 1, cv2.NORM_MINMAX)
+    # plt.imshow(normalized, cmap='gray')
+    # plt.show()
+
+    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+    mask = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)[1]
+    mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+
+    # plt.imshow(mask)
+
+    gray_image = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+    return gray_image
 
 def light_grid(face, n1, n2, const_val):
     positions = []
@@ -91,7 +134,7 @@ def get_emitters(config='RGB'):
 
     
 
-ref_path = next(Path('output').glob(f'*{FILE_TYPE}'))
+ref_path = next(Path(REFERENCE_DIRECTORY).glob(f'*{FILE_TYPE}'))
 ref = cv2.imread(str(ref_path))
 
 
@@ -246,41 +289,43 @@ def point_to_list(points, dim=3):
 
 def initialize_checker_board_scene():
 
+    check_board_scene.update(get_emitters('WHITE'))
     virtual_scene = mi.load_dict(check_board_scene)
     virtual_params = mi.traverse(virtual_scene)
+    
 
-    reference_image = mi.render(virtual_scene, virtual_params, spp=SPP)
+    # reference_image = mi.render(virtual_scene, virtual_params, spp=SPP)
 
     print("Real FOV: ", virtual_params['sensor.x_fov'])
-    # Build transformation
-    T = (
-        mi.Transform4f()
-        .translate([0,0,0])
-    )
+    # # Build transformation
+    # T = (
+    #     mi.Transform4f()
+    #     .translate([0,0,0])
+    # )
 
-    U = (
-        mi.Transform4f()
-        .rotate([1, 0, 0], 0)
-        .rotate([0, 1, 0], 0)
-        .rotate([0, 0, 1], 0)
-    )
+    # U = (
+    #     mi.Transform4f()
+    #     .rotate([1, 0, 0], 0)
+    #     .rotate([0, 1, 0], 0)
+    #     .rotate([0, 0, 1], 0)
+    # )
 
-    # Misalign virtual scene for testing
-    virtual_params['sensor.x_fov'] = virtual_params['sensor.x_fov'] *0.9
+    # # Misalign virtual scene for testing
+    # virtual_params['sensor.x_fov'] = virtual_params['sensor.x_fov'] *0.9
 
-    virtual_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-        origin=point_to_list(T@[18,0,0]),
-        target=[0, 0, 0],
-        up=point_to_list(U@[0,1,0])
-    )
+    # virtual_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+    #     origin=point_to_list(T@[18,0,0]),
+    #     target=[0, 0, 0],
+    #     up=point_to_list(U@[0,1,0])
+    # )
 
-    virtual_params.update()
+    # virtual_params.update()
 
    
-    virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
-    compare_scenes(reference_image, virtual_img)
+    #virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
+    #compare_scenes(reference_image, virtual_img)
 
-    return virtual_scene, reference_image
+    return virtual_scene
 
 
 def initialize_test_scene():
@@ -315,7 +360,7 @@ def initialize_test_scene():
 
 def test_camera_optimizer():
 
-    virtual_scene, picture = initialize_checker_board_scene()
+    virtual_scene = initialize_checker_board_scene()
     print('Initializing optimizer...')
 
     import pdb; pdb.set_trace()
@@ -338,8 +383,15 @@ def test_camera_optimizer():
     loss = None
 
     init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
+
+    file = next(Path(REFERENCE_DIRECTORY).glob(f'WHITE*{FILE_TYPE}'))
+    import pdb; pdb.set_trace()
+    picture = cv2.imread(str(file))
+    virtual_scene_params.update(get_emitters('WHITE'))
+
+
     # Optimization Loop
-    for epoch in range(1):
+    for epoch in range(4):
 
         print('Epoch: ', epoch)
 
@@ -386,6 +438,7 @@ def test_camera_optimizer():
         virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
         
         loss = error_function(virtual_render, picture)
+        print(loss)
         dr.backward(loss)
         opt.step()
 
@@ -426,18 +479,22 @@ def test_light_optimizer():
 
     for k, v in opt.items():
         print(k, dr.grad(v))
+    
+    mask = get_mask()
 
-    for config_file in Path('output').glob(f'*{FILE_TYPE}'):
+    for config_file in Path(REFERENCE_DIRECTORY).glob(f'*{FILE_TYPE}'):
 
         # Change the lights to match the real scene
         print(config_file)
-        config = config_file.name.split('.')[0]
+        config = config_file.name.split('_')[0]
+        print(config)
         virtual_scene_params.update(get_emitters(config))
 
         for key in opt.keys():
             opt.reset(key)
         
         picture = cv2.imread(str(config_file))
+        picture = cv2.bitwise_and(picture, picture, mask=mask)
 
         init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
         compare_scenes(picture, init_virtual_render)
@@ -465,7 +522,6 @@ def test_light_optimizer():
             opt['yaw'] = yaw_val
 
 
-            import pdb; pdb.set_trace()
             # Build transformation
             T = (
                 mi.Transform4f()
@@ -524,8 +580,9 @@ def open_parameters(file_name='results/light_setup.json'):
     
 if __name__ == '__main__':
 
-    test_light_optimizer()
-    #test_camera_optimizer()
+
+    #test_light_optimizer()
+    test_camera_optimizer()
     # x = cv2.imread('assets/gnome.jpg')
     
     # for i in range(1):
@@ -557,6 +614,7 @@ if __name__ == '__main__':
 
 
     print(time.time()-start, "s")
+
 
 
 

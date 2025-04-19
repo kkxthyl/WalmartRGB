@@ -1,3 +1,4 @@
+from pathlib import Path
 import mitsuba as mi
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,6 +8,7 @@ import drjit as dr
 import json
 import cv2 
 
+REFERENCE_DIRECTORY = 'output'
 SPP = 8
 
 start = time.time()
@@ -63,26 +65,29 @@ right_pos = light_grid("right", 10, 15,  4.5)
 all_pos = left_pos + top_pos + back_pos + right_pos
 
 
-num_emitters = len(all_pos)
-print(f"Number of emitters: {num_emitters}")
-emitters = {}
+def get_emitters(config='RGB'):
 
-CONFIG = "RGB"
+    num_emitters = len(all_pos)
+    print(f"Number of emitters: {num_emitters}")
+    emitters = {}
 
-for i, (face, pos) in enumerate(all_pos):
-    color = get_light_color(face, CONFIG)
-    emitters[f"light_{i}"] = {
-        "type": "point",
-        "position": pos,
-        "intensity": {
-            "type": "rgb",
-            "value": color
+    #CONFIG = "RGB"
+    for i, (face, pos) in enumerate(all_pos):
+        color = get_light_color(face, config)
+        emitters[f"light_{i}"] = {
+            "type": "point",
+            "position": pos,
+            "intensity": {
+                "type": "rgb",
+                "value": color
+            }
         }
-    }
-    
-    
-for key, val in emitters['light_0'].items():
-    print( f"{key}: {val}")
+        
+        
+    # for key, val in emitters['light_0'].items():
+    #     print( f"{key}: {val}")
+
+    return emitters
 
 def idx_to_face(idx):
     if idx < 150:
@@ -113,15 +118,12 @@ def get_transform(translation, scale, orientation, faces_on = ["left", "top", "b
         .scale(s)
     )
 
-    # for light in emitters.values():
-    #     orig_pos = light["position"]
-    #     new_pos = transform @ mi.Point3f(orig_pos)
-    #     light["position"] = new_pos
-
-    # return
-
     return transform
 
+
+
+ref_path = next(Path('output').glob('*png'))
+ref = cv2.imread(str(ref_path))
 
 
 
@@ -137,8 +139,8 @@ check_board_scene = {
         ),
         "film": {
             "type": "hdrfilm",
-            "width": 800,
-            "height": 600,
+            "width": ref.shape[1],
+            "height": ref.shape[0],
             "pixel_format": "rgb"
         },
     },
@@ -180,85 +182,14 @@ scene_dict = {
         ),
         "film": {
             "type": "hdrfilm",
-            "width": 800,
-            "height": 600,
+            "width": ref.shape[1],
+            "height": ref.shape[0],
             "pixel_format": "rgb"
         },
     },
     "env": {
         "type": "constant",
         "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
-    },
-    "cube-back":{
-        "type": "obj",
-        "filename": "cube.obj",
-        "to_world": mi.ScalarTransform4f()
-            .translate([0, 0, -10])  
-        , 
-        "bsdf": {
-            "type": "twosided",
-            "bsdf": {
-                "type": "diffuse",
-                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-            }
-        }
-    },
-
-    "cube-top":{
-        "type": "obj",
-        "filename": "cube.obj",
-        "to_world": mi.ScalarTransform4f()
-            .translate([0, 10, 0])  
-        ,  
-        "bsdf": {
-            "type": "twosided",
-            "bsdf": {
-                "type": "diffuse",
-                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-            }
-        }
-    }, 
-    "cube-left":{
-        "type": "obj",
-        "filename": "cube.obj",
-        "to_world": mi.ScalarTransform4f()
-            .translate([10,0, 0]) 
-        ,  
-        "bsdf": {
-            "type": "twosided",
-            "bsdf": {
-                "type": "diffuse",
-                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-            }
-        }
-    }, 
-    "cube-right":{
-        "type": "obj",
-        "filename": "cube.obj",
-        "to_world": mi.ScalarTransform4f()
-            .translate([-10, 0, 0]) 
-        , 
-        "bsdf": {
-            "type": "twosided",
-            "bsdf": {
-                "type": "diffuse",
-                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-            }
-        }
-    }, 
-    "cube-bottom":{
-        "type": "obj",
-        "filename": "cube.obj",
-        "to_world": mi.ScalarTransform4f()
-            .translate([0, -10, 0])  
-        , 
-        "bsdf": {
-            "type": "twosided",
-            "bsdf": {
-                "type": "diffuse",
-                "reflectance": {"type": "rgb", "value": [0.2, 0.2, 0.2]}
-            }
-        }
     },
     "center_sphere": {
         "type": "sphere",
@@ -282,21 +213,40 @@ scene_dict = {
 }
 
 
+def show_results(init_virtual_render, virtual_render, picture, loss_hist):
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+
+    axs[0][0].plot(loss_hist)
+    axs[0][0].set_xlabel('iteration')
+    axs[0][0].set_ylabel('Loss')
+    axs[0][0].set_title(f'Parameter error plot')
+
+    axs[0][1].imshow(mi.util.convert_to_bitmap(init_virtual_render))
+    axs[0][1].axis('off')
+    axs[0][1].set_title('Initial Image')
+
+    axs[1][0].imshow(mi.util.convert_to_bitmap(virtual_render))
+    axs[1][0].axis('off')
+    axs[1][0].set_title('Optimized image')
+
+    axs[1][1].imshow(mi.util.convert_to_bitmap(picture))
+    axs[1][1].axis('off')
+    axs[1][1].set_title('Reference Image')
+    plt.show()
 
 def compare_scenes(real_img, virtual_img):
 
-    #mi.set_variant('scalar_rgb')
     start = time.time()
 
     f, axarr = plt.subplots(1,2) 
 
     # use the created array to output your multiple images. In this case I have stacked 4 images vertically
-    axarr[0].imshow(mi.util.convert_to_bitmap(real_img))
+    axarr[0].imshow((real_img))
     axarr[1].imshow(mi.util.convert_to_bitmap(virtual_img))
 
     print('Comparing virtual and real scenes ({} s)'.format(time.time()-start))
     plt.show()
-    #mi.set_variant('llvm_ad_rgb')
 
 
 def take_picture():
@@ -331,7 +281,6 @@ def initialize_checker_board_scene():
 
     reference_image = mi.render(virtual_scene, virtual_params, spp=SPP)
 
-
     print("Real FOV: ", virtual_params['sensor.x_fov'])
     # Build transformation
 
@@ -349,12 +298,9 @@ def initialize_checker_board_scene():
 def initialize_test_scene():
 
     # Initialize scene
-    check_board_scene.update(emitters)
-    virtual_scene = mi.load_dict(check_board_scene)
+    scene_dict.update(get_emitters())
+    virtual_scene = mi.load_dict(scene_dict)
     virtual_params = mi.traverse(virtual_scene)
-    initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
-
-    reference_image = mi.render(virtual_scene, virtual_params, spp=SPP)
 
     # Build transformation
     T = (
@@ -367,16 +313,17 @@ def initialize_test_scene():
     )
 
     # Misalign virtual scene for testing
+    initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
     for i in range(600):
         virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
     virtual_params.update()
 
    
     virtual_img = mi.render(virtual_scene, virtual_params, spp=SPP)
-    compare_scenes(reference_image, virtual_img)
+    #compare_scenes(reference_image, virtual_img)
 
     initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(600)]
-    return virtual_scene, initial_light_positions, reference_image
+    return virtual_scene, initial_light_positions 
 
 def test_camera_optimizer():
 
@@ -419,14 +366,17 @@ def test_camera_optimizer():
 
 def test_light_optimizer():
 
-    virtual_scene, initial_light_positions, picture = initialize_test_scene()
+    virtual_scene, initial_light_positions = initialize_test_scene()
 
     print('Initializing optimizer...')
 
+    results = []
+    
+    # Apply transform to each light
+    
     virtual_scene_params = mi.traverse(virtual_scene)
-
     opt = mi.ad.Adam(
-        lr=0.01,
+        lr=0.025,
         mask_updates=True
     )
     
@@ -436,24 +386,33 @@ def test_light_optimizer():
     opt['yaw'] =  mi.Float(0.0)
     opt['scale'] =  mi.Float(1.0)
 
-
     for k, v in opt.items():
         print(k, dr.grad(v))
 
-    import pdb; pdb.set_trace()
+    for config_file in Path('output').glob('*png'):
 
-    init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
-    virtual_render = None
 
-    loss_hist = []
-    # Apply transform to each light
-    for light_setup in range(1):
+
+        # Change the lights to match the real scene
+        print(config_file)
+        config = config_file.name.split('.')[0]
+        virtual_scene_params.update(get_emitters(config))
+
+        for key in opt.keys():
+            opt.reset(key)
+
         
-        #picture = take_picture()
+        picture = cv2.imread(str(config_file))
 
-        #figure, line = track_losses(epochs, losses)
+        init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
+        compare_scenes(picture, init_virtual_render)
+
+        loss_hist = []
+        virtual_render = None
+        loss = None
+
         # Optimization Loop
-        for epoch in range(50):
+        for epoch in range(2):
 
             print('Epoch: ', epoch)
 
@@ -470,9 +429,6 @@ def test_light_optimizer():
             opt['pitch'] = pitch_val
             opt['yaw'] = yaw_val
 
-
-            for k, v in opt.items():
-                print(k, v)
 
             # Build transformation
             T = (
@@ -491,51 +447,73 @@ def test_light_optimizer():
 
             virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SPP)
             
-            if epoch % 5 == 0:
-                compare_scenes(picture, virtual_render)
-
             loss = error_function(virtual_render, picture)
             dr.backward(loss)
             opt.step()
 
 
-            print('Loss: ', loss)
             loss_hist.append(loss.array[0])
-            
 
+        show_results(init_virtual_render, virtual_render, picture, loss_hist)
+
+        result = {
+            'scale' : opt['scale'],
+            'translation' : opt['translation'],
+            'roll' : opt['roll'],
+            'pitch' : opt['pitch'],
+            'yaw' : opt['yaw'],
+        }
+        results.append((result, loss))
+        break
+            
     #compare_scenes(picture, virtual_render)
 
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
 
-    axs[0][0].plot(loss_hist)
-    axs[0][0].set_xlabel('iteration')
-    axs[0][0].set_ylabel('Loss')
-    axs[0][0].set_title('Parameter error plot')
-
-    axs[0][1].imshow(mi.util.convert_to_bitmap(init_virtual_render))
-    axs[0][1].axis('off')
-    axs[0][1].set_title('Initial Image')
-
-    axs[1][0].imshow(mi.util.convert_to_bitmap(virtual_render))
-    axs[1][0].axis('off')
-    axs[1][0].set_title('Optimized image')
-
-    axs[1][1].imshow(mi.util.convert_to_bitmap(picture))
-    axs[1][1].axis('off')
-    axs[1][1].set_title('Reference Image')
-    plt.show()
+    import pdb; pdb.set_trace()
+    params, loss = sorted(results, key=lambda x: x[1])[0]
+    with open('results/light_setup.json', 'w') as f:
+        json.dump(params, f)
 
     #parameters = sorted(results, key=lambda x: x[0])[0][1]
     # OR take the average
     #parameters = next(sorted(results, key=lambda x: x[0]))[1]
 
-
 if __name__ == '__main__':
 
     test_light_optimizer()
     #test_camera_optimizer()
+    # x = cv2.imread('assets/gnome.jpg')
+    
+    # for i in range(1):
+    #     x = cv2.pyrDown(x)
+
+    # print(x.shape)
+    # import pdb; pdb.set_trace()
+
+    # scene_dict['sensor']['film']['width'] = x.shape[1]
+    # scene_dict['sensor']['film']['height'] = x.shape[0]
+    # scene_dict.update()
+    # virtual_scene, initial_light_positions, reference_image = initialize_test_scene()
+
+    # image = mi.render(virtual_scene, spp=128)
+
+
+
+
+
+    # import pdb; pdb.set_trace()
+
+
+    # f, axarr = plt.subplots(1,2) 
+
+    # # use the created array to output your multiple images. In this case I have stacked 4 images vertically
+    # axarr[0].imshow(x)
+    # axarr[1].imshow(mi.util.convert_to_bitmap(image))
+    # plt.show()
+
 
     print(time.time()-start, "s")
+
 
 
 

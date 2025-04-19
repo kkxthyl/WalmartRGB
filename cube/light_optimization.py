@@ -7,30 +7,66 @@ import time
 
 mi.set_variant('llvm_ad_rgb')
 
-
 def light_grid(face, n1, n2, const_val, scale=1.0):
     positions = []
     half = scale / 2
+
     if face == "top":
         xs = np.linspace(-half, half, n1)
-        zs = np.linspace(-half, half, n2)
-        for x in xs:
-            for z in zs:
+        zs = np.linspace(-half, half, n2)[::-1]
+
+        for row_idx, z in enumerate(zs):
+            if row_idx % 2 == 0:
+                x_iter = xs[::-1]
+            else:
+                x_iter = xs
+
+            for x in x_iter:
                 positions.append((face, [x, const_val, z]))
+
     elif face == "back":
         xs = np.linspace(-half, half, n1)
-        ys = np.linspace(-half, half, n2)
-        for x in xs:
-            for y in ys:
+        ys = np.linspace(-half, half, n2)[::-1]
+
+        for row_idx, x in enumerate(xs):
+            if row_idx % 2 == 0:
+                y_iter = ys[::-1]
+            else:
+                y_iter = ys
+
+            for y in y_iter:
                 positions.append((face, [x, y, const_val]))
-    elif face == "left" or face == "right":
+
+    elif face == "left":
         ys = np.linspace(-half, half, n1)
         zs = np.linspace(-half, half, n2)
-        for y in ys:
-            for z in zs:
+
+        for row_idx, z in enumerate(zs):
+            if row_idx >= 10:
+                continue
+            if row_idx % 2 == 0:
+                y_iter = ys[::-1]
+            else:
+                y_iter = ys
+
+            for y in y_iter:
+                positions.append((face, [const_val, y, z]))
+
+    elif face == "right":
+        ys = np.linspace(-half, half, n1)
+        zs = np.linspace(-half, half, n2)
+
+        for row_idx, z in enumerate(zs):
+            if row_idx >= 10:
+                continue
+            if row_idx % 2 == 0:
+                y_iter = ys[::-1]
+            else:
+                y_iter = ys
+
+            for y in y_iter:
                 positions.append((face, [const_val, y, z]))
     return positions
-
 
 def build_base_scene(emitters):
     scene_dict = {
@@ -148,7 +184,7 @@ def optimize_light_intensities(scene, emitters, reference_scene, n_epochs=200, s
 
     params = mi.traverse(scene)
     reference = mi.render(reference_scene, params, spp=spp)
-    opt = mi.ad.Adam(lr=0.0003)
+    opt = mi.ad.Adam(lr=0.00025)
 
     for i in range(len(emitters)):
         init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
@@ -214,9 +250,10 @@ if __name__ == '__main__':
     mi.set_variant('llvm_ad_rgb')
 
     # reference = get_reference_hdri_scene("../sample_hdri.exr", spp=8)
-    reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
+    # reference = get_reference_hdri_scene("../bloom.exr", spp=64) # bloem
+    reference = get_reference_hdri_scene("../winter_evening_4k.exr", spp=64)
 
-    scale = 0.3
+    scale = 0.6
     CONST = (scale / 2) + (scale / 5)
     left  = light_grid("left",  10, 15, -CONST, scale)
     top   = light_grid("top",   10, 15,  CONST, scale)
@@ -230,7 +267,6 @@ if __name__ == '__main__':
     initial_rgb = json.load(open("emitters_rgb.json"))
     emitters = {}
     for i, (face, pos) in enumerate(all_pos):
-        # base_color = color_configs[CONFIG].get(face, [1, 1, 1])
 
         rgb = initial_rgb.get(f"light_{i}", {}).get("rgb", [0.0, 0.0, 0.0])
         emitters[f'light_{i}'] = {
@@ -247,3 +283,6 @@ if __name__ == '__main__':
 
     optimized_rgb, loss_history = optimize_light_intensities(base_scene, emitters, reference)
     print("Final loss:", loss_history[-1])
+
+    with open("optimized_emitters_rgb.json", "w") as f:
+        json.dump(emitters, f, indent=4)

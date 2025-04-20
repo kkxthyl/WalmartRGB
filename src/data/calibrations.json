@@ -1,5 +1,5 @@
 {
-    "calibration_idx": 4,
+    "calibration_idx": 19,
     "scene_calibration_params": {
         "scale": "[0.89588]",
         "translation": "[[1.14758, -0.0188213, 0.129185]]",
@@ -9,7 +9,7 @@
     },
     "camera_calibration_params": {
         "translation": "[[1.14758, -0.0188213, 0.129185]]",
-        "camera_fov": "0.0"
+        "sensor.x_fov": "0.0"
     },
     "hdri_mapping": {
         "light_0": {

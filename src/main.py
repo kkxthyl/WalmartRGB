@@ -85,31 +85,37 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         #          CAMERA OPTIMIZATION
         # =======================================
         print("\n3. Camera Optimization") if show_debug else None
-        # TODO: Add camera parameters file to check first before attempting optimization
+        run_optimization = calibrate_physical or calibrate_flag
         try:
             camera_setup = SetupCalibration.open_camera_parameters(config_file)
-            print('Successful!')
+        except KeyError:
+            run_optimization = True
+
+        if run_optimization:
+            camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs, config_file)
             if show_debug:
                 print("Camera setup:")
                 for k, v in camera_setup.items():
                     print(f"  {k, v}")
-        except KeyError as k:
-            camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs, config_file)
+            
 
         # =======================================
         #    TRANSFORM OPTIMIZATION
         # =======================================
         print("\n4. Transform Optimization") if show_debug else None
+        run_optimization = calibrate_physical or calibrate_flag
         try:
             light_setup = SetupCalibration.open_light_parameters(config_file)
         except KeyError:
+            run_optimization = True
+        
+        if run_optimization:
             light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder,
-                                                            calibration_color_configs, calibration_light_configs, camera_setup, config_file)
-
-        if show_debug:
-            print("Light setup:")
-            for k, v in light_setup.items():
-                print(f"  {k, v}")
+                                                        calibration_color_configs, calibration_light_configs, camera_setup, config_file)
+            if show_debug:
+                print("Light setup:")
+                for k, v in light_setup.items():
+                    print(f"  {k, v}")
 
         # Build transformation
         emitters = SetupCalibration.get_emitters(all_pos, 'WHITE', calibration_color_configs)

@@ -146,25 +146,44 @@ class SceneUtils:
         return cube_dir
     
     @staticmethod
-    def get_base_scene_dict():
-        scene_dict = {
-            "type": "scene",
-            "integrator": {"type": "path"},
-            "sensor": {
+    def get_base_scene_dict(low_res=False):
+        if low_res:
+            entry = {
                 "type": "perspective",
                 "sampler": {"type": "independent", "sample_count": 512},
                 "to_world": mi.ScalarTransform4f().look_at(
-                    origin=[0, 0.05, 0.35],
-                    target=[0, 0, 0],
-                    up=[0, 1, 0]
+                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
+                    target=mi.ScalarPoint3f(0, 0, 0),
+                    up=mi.ScalarPoint3f(0, 1, 0)
+                ),
+                "film": {
+                    "type": "hdrfilm",
+                    "width": 800,
+                    "height": 600,
+                    "pixel_format": "rgb"
+                }
+            }
+        else:
+            entry = {
+                "type": "perspective",
+                "sampler": {"type": "independent", "sample_count": 512},
+                "to_world": mi.ScalarTransform4f().look_at(
+                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
+                    target=mi.ScalarPoint3f(0, 0, 0),
+                    up=mi.ScalarPoint3f(0, 1, 0)
                 ),
                 "film": {
                     "type": "hdrfilm",
                     "width": 5184,
                     "height": 3456,
                     "pixel_format": "rgb"
-                },
-            },
+                }
+            }
+
+        scene_dict = {
+            "type": "scene",
+            "integrator": {"type": "path"},
+            "sensor": entry,
             "env": {
                 "type": "constant",
                 "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}
@@ -172,9 +191,9 @@ class SceneUtils:
             "checkerboard": {
                 "type": "rectangle",
                 "to_world": mi.ScalarTransform4f()
-                    .translate([0, 0, 0])
-                    .rotate([1, 0, 0], -90)
-                    .scale([0.2, 0.2, 1.0]),
+                    .translate(mi.ScalarPoint3f(0, 0, 0))
+                    .rotate(mi.ScalarPoint3f(1, 0, 0), -90)
+                    .scale(mi.ScalarPoint3f(0.2, 0.2, 1.0)),
                 "bsdf": {
                     "type": "diffuse",
                     "reflectance": {

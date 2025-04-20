@@ -32,10 +32,11 @@ def get_all_positions(scale=1.0):
     return left + top + back + right
 
 
-def main(hdri_name, calibrate_flag):
+def main(hdri_name, calibrate_flag, show_debug=False):
     # =======================================
     #                SETUP
     # =======================================
+    print("1. Setup") if show_debug else None
 
     hdri_path = os.path.join("hdri", hdri_name)
 
@@ -62,6 +63,7 @@ def main(hdri_name, calibrate_flag):
         # =======================================
         #            DATA COLLECTION 
         # =======================================
+        print("2. Data Collection") if show_debug else None
         
         # CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
 
@@ -77,7 +79,7 @@ def main(hdri_name, calibrate_flag):
         # =======================================
         #          CAMERA OPTIMIZATION
         # =======================================
-
+        print("3. Camera Optimization") if show_debug else None
         # TODO: Add camera parameters file to check first before attempting optimization
         # camera_setup = None
         # if camera_setup is None:
@@ -86,7 +88,7 @@ def main(hdri_name, calibrate_flag):
         # =======================================
         #    TRANSFORM OPTIMIZATION    
         # =======================================
-
+        print("4. Transform Optimization") if show_debug else None
         light_setup = SetupCalibration.open_light_parameters(calibration_light_configs)
         if light_setup is None:
             light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder, calibration_color_configs, calibration_light_configs)
@@ -107,6 +109,7 @@ def main(hdri_name, calibrate_flag):
         # =======================================
         #             HDRI MAPPING
         # =======================================
+        print("5. HDRI Mapping") if show_debug else None
         HDRImap.apply_hdri(
             emitters,
             hdri_path,
@@ -128,7 +131,7 @@ def main(hdri_name, calibrate_flag):
     if not os.path.exists(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json"):
         calibration = json.load(open("data/calibrations.json", "r"))
         initial_rgbs = calibration.get("hdri_mapping", {})
-        reference = HDRIOpt.get_reference_hdri_scene(hdri_path, spp=64)
+        reference = HDRIOpt.get_reference_hdri_scene(hdri_path, spp=512)
 
         # assign mapped intensities to fresh emitters
         optim_emitters = {}
@@ -142,7 +145,7 @@ def main(hdri_name, calibrate_flag):
                     "value": rgb
                 }
             }
-        base_scene_dict = su.get_base_scene_dict()
+        base_scene_dict = su.get_base_scene_dict(low_res=True)
         
         base_scene_dict.update(optim_emitters)
         base_scene = mi.load_dict(base_scene_dict)
@@ -150,27 +153,29 @@ def main(hdri_name, calibrate_flag):
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
-            lr=0.00025,
+            lr=0.00015,
             n_epochs=200,
+            spp=8,
+            visualize_steps=False
         )
         print("Best loss for intensity optimization:", best_loss)
         
-        with open(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json", "w") as f:
+        with open(f"data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json", "w") as f:
             json.dump(optim_emitters, f, indent=4)
 
     # =======================================
     #            PHYSICAL MAPPING
     # =======================================
+    print("6. Physical Mapping") if show_debug else None
 
-    led = LEDController()
-
-    led_emitters = led.get_emitters_from_json(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json")
-    patt = led.get_pattern_from_emitters(led_emitters)
-    
-    led.display_pattern(patt)
+    # led = LEDController()
+    #
+    # led_emitters = led.get_emitters_from_json(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json")
+    # patt = led.get_pattern_from_emitters(led_emitters)
+    #
+    # led.display_pattern(patt)
 
     # scene_dict = su.get_base_scene_dict()
-
 
 
 if __name__ == '__main__':
@@ -182,7 +187,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args.hdri)
-    print(args.calibrate)
+    debug_flag = True
 
-    main(args.hdri, args.calibrate)
+    print(f"HDRI FILE: {args.hdri}") if debug_flag else None
+    print(f"CALIBRATION FLAG: {args.calibrate}") if debug_flag else None
+
+    main(args.hdri, args.calibrate, debug_flag)

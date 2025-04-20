@@ -7,7 +7,7 @@ import json
 class HDRIOptimization:
 
     @staticmethod
-    def get_reference_hdri_scene(hdri_path, spp=8, hide_hdri=True):
+    def get_reference_hdri_scene(hdri_path, spp=24, hide_hdri=True):
         hdri = mi.Bitmap(hdri_path).convert(
             mi.Bitmap.PixelFormat.RGB,
             mi.Struct.Type.Float32
@@ -29,8 +29,10 @@ class HDRIOptimization:
                 ),
                 "film": {
                     "type": "hdrfilm",
-                    "width": 5184,
-                    "height": 3456,
+                    # "width": 5184,
+                    # "height": 3456,
+                    "width": 800,
+                    "height": 600,
                     "pixel_format": "rgb"
                 },
             },
@@ -62,7 +64,7 @@ class HDRIOptimization:
         return scene
 
     @staticmethod
-    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=24):
+    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=8, visualize_steps=False):
 
         params = mi.traverse(scene)
         reference = mi.render(reference_scene, params, spp=spp)
@@ -103,6 +105,7 @@ class HDRIOptimization:
 
             print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
 
+        if visualize_steps:
             # visualization
             fig, ax = plt.subplots(1, 2, figsize=(10, 4))
             ax[0].imshow(mi.util.convert_to_bitmap(reference))
@@ -114,7 +117,6 @@ class HDRIOptimization:
             plt.tight_layout()
             plt.pause(0.08)
             plt.close(fig)
-
 
         for i in range(len(emitters)):
             params[f'light_{i}.intensity.value'] = best_rgb[i]

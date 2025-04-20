@@ -33,6 +33,19 @@ class SetupCalibration:
 			params['yaw'] = mi.Float(eval(params['yaw']))
 
 		return params
+
+	@staticmethod
+	def open_camera_parameters(file_path):
+
+		if not os.path.exists(file_path):
+			return None
+  
+		with open(file_path) as f:
+			params = json.load(f)
+			params['translation'] = eval(params['translation'])
+			params['sensor.x_fov'] = mi.Float(eval(params['sensor.x_fov']))
+
+		return params
 	  
 	@staticmethod
 	def write_parameters(params, file_path):
@@ -209,7 +222,7 @@ class SetupCalibration:
 
 		best_loss = 1E10
 		result = {}
-		for i in np.linspace(0,0.3,5):
+		for i in np.linspace(0.2,0.3,5):
 
 			translation = [0, i, 0.35]
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
@@ -224,16 +237,25 @@ class SetupCalibration:
 
 			merged = np.array(vrender)
 			merged[mask] = (0,0,0)
-			merged[mask] = vrender[mask]
+			#merged[mask] = picture[mask]
 
-			loss = np.mean(np.square(virtual_render-picture))
+			loss = np.mean(merged)
+			print(loss)
 
 			if loss < best_loss:
-				SetupCalibration.compare_scenes(merged, picture, str(i))
 				best_loss = loss
+				SetupCalibration.compare_scenes(merged, picture, str(i))
 				result['translation'] = translation
 
 			
+		virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+			origin=result['translation'],
+			target=[0, 0, 0],
+			up=[0,1,0]
+		)
+		virtual_scene_params.update()
+		virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
+		print(result['translation'])
 		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(virtual_render), 'sweep')
 
 		loss_hist = []
@@ -241,7 +263,7 @@ class SetupCalibration:
 		loss = None
 
 		# Optimization Loop
-		for epoch in range(100):
+		for epoch in range(50):
 
 			print(epoch, end='\r')
 			# Apply clipping
@@ -258,7 +280,7 @@ class SetupCalibration:
 			dr.backward(loss)
 			opt.step()
 
-			if epoch % 5 == 0:
+			if epoch % 10 == 0:
 				vimg = mi.util.convert_to_bitmap(virtual_render)
 				SetupCalibration.compare_scenes(picture, vimg, str(epoch))
 
@@ -271,7 +293,7 @@ class SetupCalibration:
 		return result
 
 	@staticmethod
-	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path):
+	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters):
 
 		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
@@ -326,13 +348,14 @@ class SetupCalibration:
 			virtual_scene = mi.load_dict(scene_dict)
 			virtual_scene_params = mi.traverse(virtual_scene)
 
-			# TODO: Use camera optimization
+			import pdb; pdb.set_trace()
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				#origin=[2,19,56],
-				origin =[0, 0.5, 0.35],
+				origin =camera_parameters['translation'],
 				target=[0,0,0],
 				up=[0,1,0],
 			)
+			virtual_scene_params["sensor.x_fov"] = camera_parameters['sensor.x_fov']
+
 			virtual_scene_params.update()
 
 			# Use a new optimization for each calibration iamge
@@ -350,7 +373,7 @@ class SetupCalibration:
 			loss = None
 
 			# Optimization Loop
-			for epoch in range(10):
+			for epoch in range(50):
 
 				print('Epoch: ', epoch)
 

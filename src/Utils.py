@@ -160,8 +160,8 @@ class SceneUtils:
                 ),
                 "film": {
                     "type": "hdrfilm",
-                    "width": 800,
-                    "height": 600,
+                    "width": 5184,
+                    "height": 3456,
                     "pixel_format": "rgb"
                 },
             },
@@ -605,18 +605,27 @@ class ConfigUtils:
     def set_camera_calibration_params(self, raw_mapping):
         """Replace the raw camera_calibration_params dict and save."""
         # raw_mapping should be a dict of strings
-        self.set_value("camera_calibration_params", raw_mapping)
+        self.data["camera_calibration_params"] = raw_mapping
+
+        # 2) save only to your original path
+        self.save()
 
 
 
     # hdri_mapping utilities
     def get_hdri_mapping(self):
         """Return the entire hdri_mapping object."""
-        return self.get_value("hdri_mapping")
+        try:
+            return self.get_value("hdri_mapping")
+        except KeyError:
+            return {}
 
     def set_hdri_mapping(self, mapping):
         """Replace the entire hdri_mapping object and save."""
-        self.set_value("hdri_mapping", mapping)
+        self.data["hdri_mapping"] = mapping
+
+        # 2) save only to your original path
+        self.save()
 
     # # individual light helpers (optional)
     # def get_light_rgb(self, light):

@@ -6,6 +6,7 @@ import json
 
 class HDRIOptimization:
 
+    @staticmethod
     def get_reference_hdri_scene(hdri_path, spp=8, hide_hdri=True):
         hdri = mi.Bitmap(hdri_path).convert(
             mi.Bitmap.PixelFormat.RGB,
@@ -28,8 +29,8 @@ class HDRIOptimization:
                 ),
                 "film": {
                     "type": "hdrfilm",
-                    "width": 800,
-                    "height": 600,
+                    "width": 5184,
+                    "height": 3456,
                     "pixel_format": "rgb"
                 },
             },
@@ -132,6 +133,5 @@ class HDRIOptimization:
         optimized_colors = {
         i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
         }
-
-
         return optimized_colors, best_loss
+    

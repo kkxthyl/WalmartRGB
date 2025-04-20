@@ -7,6 +7,7 @@ from Utils import ConfigUtils
 
 class HDRImap(): 
 
+    @staticmethod
     def apply_hdri(emitters, hdri_path, all_pos, hidr_scale_factor, n_clusters=598, scale=0.6):
 
         if (hdri_path is None):
@@ -102,6 +103,7 @@ class HDRImap():
             
         return emitters
     
+    @staticmethod
     def export_hdrimap_to_json(emitters, filename):
         data = {}
 
@@ -111,5 +113,9 @@ class HDRImap():
                 "rgb": [round(v, 6) for v in rgb] 
             }
 
-        with open(filename, "w") as f:
-            ConfigUtils.set_hdri_mapping(json.dump(data, f, indent=4))
+        out = ConfigUtils(filename)
+        out.set_hdri_mapping(data)
+        out.save()
+
+        # with open(filename, "w") as f:
+        #     ConfigUtils.set_hdri_mapping(self, json.dump(data, f, indent=4))

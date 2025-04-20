@@ -9,18 +9,21 @@ import json
 import cv2 
 from Utils import SceneUtils
 
-
-mi.set_variant('llvm_ad_rgb')
 class SetupCalibration:
 
 	FILE_TYPE = 'combined.jpg'
 	SPP = 2
 	LIGHT_SETUP_FILE = 'results/light_setup.json'
 	CAMERA_SETUP_FILE = 'results/camera_setup.json'
+	MASK_FULL_FILE = 'mask_calibration.jpg'
+	MASK_EMPTY_FILE = 'mask_blank.jpg'
 
 	@staticmethod
 	def open_light_parameters(file_path):
 
+		if not os.path.exists(file_path):
+			return None
+  
 		with open(file_path) as f:
 			params = json.load(f)
 			params['translation'] = mi.Vector3f(*eval(params['translation']))
@@ -64,25 +67,14 @@ class SetupCalibration:
 		plt.savefig(f'figures/{file_name}.png')
 
 	@staticmethod
-	def get_emitters(config):
-     
-		# 10 x 15 = 150 lights per face
-		left_pos  = SceneUtils.light_grid("left",  13, 13, -4.5)  
-		top_pos   = SceneUtils.light_grid("top",   13, 13,  4.5)   
-		back_pos  = SceneUtils.light_grid("back",  13, 13, -4.5)  
-		right_pos = SceneUtils.light_grid("right", 13, 13,  4.5)   
-
-		print(len(left_pos) , len(top_pos)  , len(back_pos) , len(right_pos))
-		# all_pos = top_pos + back_pos + left_pos + right_pos
-		all_pos = left_pos + top_pos + back_pos + right_pos
-
-
+	def get_emitters(all_pos, config, color_configs_file=None):
+    
 		num_emitters = len(all_pos)
 		print(f"Number of emitters: {num_emitters}")
 		emitters = {}
 
 		for i, (face, pos) in enumerate(all_pos):
-			color = SetupCalibration.get_light_color(face, config)
+			color = SetupCalibration.get_light_color(face, config, color_configs_file)
 			emitters[f"light_{i}"] = {
 				"type": "point",
 				"position": pos,
@@ -96,8 +88,8 @@ class SetupCalibration:
 
 	
 	@staticmethod
-	def get_light_color(face, config_name):
-		with open(SetupCalibration.COLOR_CONFIGS_FILE) as f:
+	def get_light_color(face, config_name, color_configs_file=None):
+		with open(color_configs_file) as f:
 			color_configs = json.load(f)
 
 		if config_name not in color_configs:
@@ -109,25 +101,15 @@ class SetupCalibration:
 		return color
 
 	@staticmethod
-	def initialize_virtual_scene(misalign=False):
+	def initialize_virtual_scene(all_pos, color_configs_file, misalign=False):
 
 		# Initialize scene
 		scene_dict = SceneUtils.get_base_scene_dict()
 		scene_dict = SceneUtils.add_checkerboard_to_scene_dict(scene_dict)
 
 
-		configs = json.load(open(SetupCalibration.COLOR_CONFIGS_FILE))
+		configs = json.load(open(color_configs_file))
 		print(configs.keys())
-
-		# 10 x 15 = 150 lights per face
-		left_pos  = SceneUtils.light_grid("left",  13, 13, -4.5)  
-		top_pos   = SceneUtils.light_grid("top",   13, 13,  4.5)   
-		back_pos  = SceneUtils.light_grid("back",  13, 13, -4.5)  
-		right_pos = SceneUtils.light_grid("right", 13, 13,  4.5)   
-
-		print(len(left_pos) , len(top_pos)  , len(back_pos) , len(right_pos))
-		all_pos = left_pos + top_pos + back_pos + right_pos
-
 
 		num_emitters = len(all_pos)
 		print(f"Number of emitters: {num_emitters}")
@@ -135,7 +117,7 @@ class SetupCalibration:
 
 		config = "RGB"
 		for i, (face, pos) in enumerate(all_pos):
-			color = SetupCalibration.get_light_color(face, config)
+			color = SetupCalibration.get_light_color(face, config, color_configs_file)
 			emitters[f"light_{i}"] = {
 				"type": "point",
 				"position": pos,
@@ -172,9 +154,9 @@ class SetupCalibration:
 		return virtual_scene, scene_dict, initial_light_positions 
 
 	@staticmethod
-	def optimize_camera(calibration_images_folder):
+	def optimize_camera(emitter_positions, calibration_images_folder, color_configs_file):
 
-		virtual_scene, scene_dict, _ = SetupCalibration.initialize_virtual_scene()
+		virtual_scene, scene_dict, _ = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
 		print('Initializing optimizer...')
 
@@ -196,7 +178,7 @@ class SetupCalibration:
 
 		file = next(Path(calibration_images_folder).glob(f'*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
-		virtual_scene_params.update(SetupCalibration.get_emitters('WHITE'))
+		virtual_scene_params.update(SetupCalibration.get_emitters(emitter_positions, 'WHITE', color_configs_file))
 		init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
 		# Mask the object
@@ -208,7 +190,7 @@ class SetupCalibration:
 
 		mask = SceneUtils.get_mask(img_empty, img_obj)
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-		mask = np.alltrue(mask != [0, 0, 0], axis=2)
+		# mask = np.alltrue(mask != [0, 0, 0], axis=2)
 
 		picture = cv2.bitwise_and(picture, picture, mask=mask)
 		#picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
@@ -232,7 +214,6 @@ class SetupCalibration:
 			translation_val = dr.clip(opt['translation'], -50, 50)
 			fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
 
-		
 
 			opt['translation'] = translation_val
 			opt['sensor.x_fov'] = fov_val
@@ -250,6 +231,7 @@ class SetupCalibration:
 			virtual_scene_params.update()
 
 			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
+			virtual_render = cv2.cvtColor(np.array(virtual_render), cv2.COLOR_BGR2GRAY)
 			
 
 			# TODO: Test code
@@ -258,11 +240,13 @@ class SetupCalibration:
 			# contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 			# print(np.mean([cv2.contourArea(contour) for contour in contours]))
 			
-			loss = dr.mean(dr.square(virtual_render-picture))
+			import pdb; pdb.set_trace()
+			loss = mi.Float(np.mean(dr.sqr(virtual_render-picture)))
 			dr.backward(loss)
 			opt.step()
 
 			loss_hist.append(loss.array[0])
+			
 
 
 
@@ -273,9 +257,9 @@ class SetupCalibration:
 
 
 	@staticmethod
-	def optimize_lights(calibration_images_folder, results_path):
+	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path):
 
-		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene()
+		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
 		print('Initializing optimizer...')
 
@@ -311,7 +295,7 @@ class SetupCalibration:
 			config, face = config_file.stem.split('_')
 
 			# Update emitters based on the configuration used for the calibration image
-			emitters = SetupCalibration.get_emitters(config)
+			emitters = SetupCalibration.get_emitters(emitter_positions, config, color_configs_file)
 			if face == 'combined':
 				emitters = SceneUtils.update_emitters(emitters, faces_on=[face])
 			else:
@@ -381,12 +365,12 @@ class SetupCalibration:
 				virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 				
 				# Backpropagate and take a step
-				loss = dr.mean(dr.sqr(virtual_render-picture))
+				loss = dr.mean(dr.sqr(virtual_render-mi.TensorXf(picture)))
 				dr.backward(loss)
 				opt.step()
 
 				print(loss)
-				loss_hist.append(loss.array[0])
+				loss_hist.append(loss)
 
 			SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, f'{config_file.name}_results')
 
@@ -398,13 +382,14 @@ class SetupCalibration:
 				'yaw' : opt['yaw'],
 			}
 			results.append((result, loss))
+			break
 		#compare_scenes(picture, virtual_render)
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]
 
 		SetupCalibration.write_parameters(params, results_path)
-		return params
+		return params, 
 	
 class TestSetupCalibration:
 

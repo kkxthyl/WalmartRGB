@@ -3,20 +3,24 @@ import argparse
 import matplotlib.pyplot as plt
 import json
 import mitsuba as mi
-mi.set_variant('llvm_rgb')
+from Utils import SceneUtils
 
 from Utils import SceneUtils as su
 from Utils import ConfigUtils as cu
 from Configs import Configs as cf
+mi.set_variant(cf.mitsuba_variant)
+
 from HDRImap import HDRImap
 from setup_calibration import SetupCalibration
 from HDRIOptimization import HDRIOptimization as HDRIOpt
 from DataCollection import DataCollection
 from LEDController import LEDController
 
-config_file = "src/data/calibrations.json"
-calibration_images_folder = "src/data/calibration_images"
-calibration_color_configs = "assets/color_configs.json"
+config_file = "data/calibrations.json"
+calibration_images_folder = "data/calibration_images"
+calibration_color_configs = "../assets/color_configs.json"
+
+calibration_light_configs = "data/light_setup.json"
 
 
 def get_all_positions(scale=1.0):
@@ -53,43 +57,52 @@ def main(hdri_name, calibrate_flag):
         
         calibration_idx += 1
         ConfigFile.set_calibration_idx(calibration_idx)
+        # calibration_color_configs = open(calibration_color_, "r")
 
         # =======================================
         #            DATA COLLECTION 
         # =======================================
         
-        CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
+        # CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
 
-        # Capture Mask Images
-        CollectionController.take_mask_images()
+        # # Capture Mask Images
+        # CollectionController.take_mask_images()
 
-        # Capture Calibration Images
-        CollectionController.capture_optimization_images(config_path=calibration_color_configs)
+        # # Capture Calibration Images
+        # CollectionController.capture_optimization_images(config_path=calibration_color_configs)
 
-        # Close the camera SDK
-        CollectionController.close_sdk()
+        # # Close the camera SDK
+        # CollectionController.close_sdk()
 
         # =======================================
         #          CAMERA OPTIMIZATION
         # =======================================
 
         # TODO: Add camera parameters file to check first before attempting optimization
-        camera_setup = None
-        if camera_setup is None:
-            camera_setup = SetupCalibration.optimize_camera()
+        # camera_setup = None
+        # if camera_setup is None:
+        #     camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs)
             
         # =======================================
         #    TRANSFORM OPTIMIZATION    
         # =======================================
 
-        light_setup = SetupCalibration.open_light_parameters(config_file)
+        light_setup = SetupCalibration.open_light_parameters(calibration_light_configs)
         if light_setup is None:
-            light_setup = SetupCalibration.optimize_lights(calibration_images_folder, config_file)
-
+            light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder, calibration_color_configs, calibration_light_configs)
 
         for k, v in light_setup.items():
             print(k, v)
 
+        # Build transformation
+        emitters = SetupCalibration.get_emitters(all_pos, 'WHITE', calibration_color_configs)
+        emitters = SceneUtils.update_emitters(
+            emitters, 
+            [light_setup['translation'][0][0], light_setup['translation'][1][0], light_setup['translation'][2][0]],
+            light_setup['scale'][0],
+            [light_setup['roll'][0], light_setup['pitch'][0], light_setup['yaw'][0]]
+        )
+                                   
 
         # =======================================
         #             HDRI MAPPING
@@ -105,7 +118,7 @@ def main(hdri_name, calibrate_flag):
 
         HDRImap.export_hdrimap_to_json(
             emitters, 
-            os.path.join("intermediary_data/2_HDRI_mapping_results", "hdrimap.json")
+            config_file
         )
 
     # =======================================
@@ -113,12 +126,15 @@ def main(hdri_name, calibrate_flag):
     # =======================================
 
     if not os.path.exists(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json"):
-        initial_rgbs = json.load("intermediary_data/2_HDRI_mapping_results/hdrimap.json")
+        calibration = json.load(open("data/calibrations.json", "r"))
+        initial_rgbs = calibration.get("hdri_mapping", {})
         reference = HDRIOpt.get_reference_hdri_scene(hdri_path, spp=64)
-        emitters = {}
+
+        # assign mapped intensities to fresh emitters
+        optim_emitters = {}
         for i, (face, pos) in enumerate(all_pos):
             rgb = initial_rgbs.get(f"light_{i}", {}).get("rgb", [0.0, 0.0, 0.0])
-            emitters[f'light_{i}'] = {
+            optim_emitters[f'light_{i}'] = {
                 "type": "point",
                 "position": pos,
                 "intensity": {
@@ -126,18 +142,21 @@ def main(hdri_name, calibrate_flag):
                     "value": rgb
                 }
             }
-        base_scene = su.get_base_scene_dict(emitters=emitters)
-            
-        optimized_colors, best_loss = HDRIOpt.optimize_light_intensities(
+        base_scene_dict = su.get_base_scene_dict()
+        
+        base_scene_dict.update(optim_emitters)
+        base_scene = mi.load_dict(base_scene_dict)
+        _, best_loss = HDRIOpt.optimize_light_intensities(
             scene=base_scene,
-            emitters=emitters,
+            emitters=optim_emitters,
             reference_scene=reference,
             lr=0.00025,
             n_epochs=200,
         )
+        print("Best loss for intensity optimization:", best_loss)
         
         with open(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json", "w") as f:
-            json.dump(emitters, f, indent=4)
+            json.dump(optim_emitters, f, indent=4)
 
     # =======================================
     #            PHYSICAL MAPPING
@@ -157,7 +176,7 @@ def main(hdri_name, calibrate_flag):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--hdri', type=str, default="sample_hdri.exr",
-                        help="Name of the HDRI file (e.g., 'studio.exr')")
+                        help="Name of the HDRI file (e.g., 'sample_hdri.exr')")
     parser.add_argument('--calibrate', action='store_true',
                         help="Enable calibration mode")
 

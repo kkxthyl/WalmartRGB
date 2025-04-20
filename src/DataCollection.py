@@ -2,7 +2,6 @@ from CameraController import CameraController
 from LEDController import LEDController
 import json
 import time
-import xled
 
 class DataCollection:
 

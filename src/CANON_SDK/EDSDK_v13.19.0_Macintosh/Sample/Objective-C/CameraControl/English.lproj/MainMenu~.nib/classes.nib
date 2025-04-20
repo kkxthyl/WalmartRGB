@@ -1,0 +1,59 @@
+{
+    IBClasses = (
+        {CLASS = AEModePopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = ActionButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
+        {
+            ACTIONS = {action = id; close = id; }; 
+            CLASS = AppController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_AEMode" = AEModePopUp; 
+                "_AFOn" = ActionButton; 
+                "_Av" = AvPopUp; 
+                "_EVFView" = id; 
+                "_EndEVF" = ActionButton; 
+                "_EvfAFMode" = EVFAFModePopUp; 
+                "_EvfAFOff" = ActionButton; 
+                "_EvfAFOn" = ActionButton; 
+                "_Exposure" = ExposurePopUp; 
+                "_FocusDown" = ActionButton; 
+                "_FocusFar1" = ActionButton; 
+                "_FocusFar2" = ActionButton; 
+                "_FocusFar3" = ActionButton; 
+                "_FocusLeft" = ActionButton; 
+                "_FocusNear1" = ActionButton; 
+                "_FocusNear2" = ActionButton; 
+                "_FocusNear3" = ActionButton; 
+                "_FocusRight" = ActionButton; 
+                "_FocusUp" = ActionButton; 
+                "_ImageQualityPopUp" = PropertyComboBox; 
+                "_Iso" = IsoPopUp; 
+                "_Metering" = MeteringPopUp; 
+                "_PressingCompletely" = ActionButton; 
+                "_PressingHalfway" = ActionButton; 
+                "_PressingOff" = ActionButton; 
+                "_Progress" = id; 
+                "_StartEVF" = ActionButton; 
+                "_TakePicture" = ActionButton; 
+                "_Tv" = TVPopUp; 
+                "_Zoom_Fit" = ActionButton; 
+                "_Zoom_x5" = ActionButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = AvPopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = DownloadProgress; LANGUAGE = ObjC; SUPERCLASS = NSProgressIndicator; }, 
+        {CLASS = EVFAFModePopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = EvfPictureView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = EvfZoomButton; LANGUAGE = ObjC; SUPERCLASS = ActionButton; }, 
+        {CLASS = ExposurePopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = ImageQualityPopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = IsoPopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = MeteringPopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = PropertyComboBox; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
+        {CLASS = TVPopUp; LANGUAGE = ObjC; SUPERCLASS = PropertyComboBox; }, 
+        {CLASS = ZoomSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,7 @@
+jupyter
+numpy
+mitsuba
+matplotlib
+scikit-learn
+xled
+opencv-python

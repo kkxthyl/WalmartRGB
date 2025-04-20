@@ -1,0 +1,663 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		16CDED470E3F0C13003E5ADE /* EVFAFModePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CDED450E3F0C13003E5ADE /* EVFAFModePopUp.m */; };
+		16D466480E3FF87300872364 /* EvfAFCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D466470E3FF87300872364 /* EvfAFCommand.m */; };
+		16D6FF170E4A98FC00EB0284 /* PressingShutterButtomCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D6FF150E4A98FC00EB0284 /* PressingShutterButtomCommand.m */; };
+		611681080C05159600FD2B74 /* DownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 611681070C05159600FD2B74 /* DownloadProgress.m */; };
+		6145882C0BD75D2E00C7CD05 /* CloseSessionCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145882A0BD75D2E00C7CD05 /* CloseSessionCommand.m */; };
+		6145882D0BD75D2E00C7CD05 /* OpenSessionCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145882B0BD75D2E00C7CD05 /* OpenSessionCommand.m */; };
+		6145882F0BD75D3900C7CD05 /* cameraCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145882E0BD75D3900C7CD05 /* cameraCommand.m */; };
+		614588330BD75D5D00C7CD05 /* GetPropertyCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588300BD75D5D00C7CD05 /* GetPropertyCommand.m */; };
+		614588340BD75D5D00C7CD05 /* GetPropertyDescCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588310BD75D5D00C7CD05 /* GetPropertyDescCommand.m */; };
+		614588350BD75D5D00C7CD05 /* SetPropertyCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588320BD75D5D00C7CD05 /* SetPropertyCommand.m */; };
+		614588380BD75D8100C7CD05 /* DownloadCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588360BD75D8100C7CD05 /* DownloadCommand.m */; };
+		614588390BD75D8100C7CD05 /* TakePictureCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588370BD75D8100C7CD05 /* TakePictureCommand.m */; };
+		6145883F0BD75D9900C7CD05 /* DownloadEvfCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145883A0BD75D9900C7CD05 /* DownloadEvfCommand.m */; };
+		614588410BD75D9900C7CD05 /* DriveLensCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145883C0BD75D9900C7CD05 /* DriveLensCommand.m */; };
+		614588420BD75D9900C7CD05 /* EndEvfCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145883D0BD75D9900C7CD05 /* EndEvfCommand.m */; };
+		614588430BD75D9900C7CD05 /* StartEvfCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145883E0BD75D9900C7CD05 /* StartEvfCommand.m */; };
+		614588460BD75DB500C7CD05 /* SaveSettingCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588440BD75DB500C7CD05 /* SaveSettingCommand.m */; };
+		614588470BD75DB500C7CD05 /* SetCapacityCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588450BD75DB500C7CD05 /* SetCapacityCommand.m */; };
+		6145884E0BD75DCB00C7CD05 /* cameraController.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588480BD75DCB00C7CD05 /* cameraController.m */; };
+		6145884F0BD75DCB00C7CD05 /* cameraEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588490BD75DCB00C7CD05 /* cameraEvent.m */; };
+		614588500BD75DCB00C7CD05 /* cameraEventListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145884A0BD75DCB00C7CD05 /* cameraEventListener.m */; };
+		614588510BD75DCB00C7CD05 /* CameraEvfData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145884B0BD75DCB00C7CD05 /* CameraEvfData.m */; };
+		614588520BD75DCB00C7CD05 /* cameraModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145884C0BD75DCB00C7CD05 /* cameraModel.m */; };
+		614588570BD75DF000C7CD05 /* ActionEdsRef.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588550BD75DF000C7CD05 /* ActionEdsRef.m */; };
+		614588580BD75DF000C7CD05 /* ActionEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588560BD75DF000C7CD05 /* ActionEvent.m */; };
+		614588630BD75E1000C7CD05 /* ActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588590BD75E1000C7CD05 /* ActionButton.m */; };
+		614588640BD75E1000C7CD05 /* AEModePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145885A0BD75E1000C7CD05 /* AEModePopUp.m */; };
+		614588660BD75E1000C7CD05 /* AvPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145885C0BD75E1000C7CD05 /* AvPopUp.m */; };
+		614588670BD75E1000C7CD05 /* EvfPictureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145885D0BD75E1000C7CD05 /* EvfPictureView.m */; };
+		614588680BD75E1000C7CD05 /* ExposurePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145885E0BD75E1000C7CD05 /* ExposurePopUp.m */; };
+		614588690BD75E1000C7CD05 /* IsoPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6145885F0BD75E1000C7CD05 /* IsoPopUp.m */; };
+		6145886A0BD75E1000C7CD05 /* MeteringPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588600BD75E1000C7CD05 /* MeteringPopUp.m */; };
+		6145886B0BD75E1000C7CD05 /* PropertyPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588610BD75E1000C7CD05 /* PropertyPopUp.m */; };
+		6145886C0BD75E1000C7CD05 /* TVPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 614588620BD75E1000C7CD05 /* TVPopUp.m */; };
+		614690300C8F967D0051052C /* ImageQualityPopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6146902F0C8F967D0051052C /* ImageQualityPopUp.m */; };
+		615DF7250E9DDC4A00BA2A5F /* EvfZoomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 615DF7240E9DDC4A00BA2A5F /* EvfZoomButton.m */; };
+		61C5267E0BD845750062486C /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61C5267D0BD845750062486C /* AppController.m */; };
+		61E425340B9B98A700CB9D04 /* Thread.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E425320B9B98A700CB9D04 /* Thread.m */; };
+		61E426240B9BD1AF00CB9D04 /* Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E426220B9BD1AF00CB9D04 /* Processor.m */; };
+		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CEE78243112E117300B632B1 /* EDSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE78242112E117300B632B1 /* EDSDK.framework */; };
+		CEE78245112E117E00B632B1 /* EDSDK.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEE78242112E117300B632B1 /* EDSDK.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		20EC68650B8ECB6900EFB1B8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEE78245112E117E00B632B1 /* EDSDK.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		16CDED450E3F0C13003E5ADE /* EVFAFModePopUp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EVFAFModePopUp.m; path = view/EVFAFModePopUp.m; sourceTree = "<group>"; };
+		16D466470E3FF87300872364 /* EvfAFCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EvfAFCommand.m; path = command/EvfAFCommand.m; sourceTree = "<group>"; };
+		16D6FF150E4A98FC00EB0284 /* PressingShutterButtomCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PressingShutterButtomCommand.m; path = command/PressingShutterButtomCommand.m; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* CameraControl_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraControl_Prefix.pch; sourceTree = "<group>"; };
+		611681070C05159600FD2B74 /* DownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = DownloadProgress.m; path = view/DownloadProgress.m; sourceTree = "<group>"; };
+		6145882A0BD75D2E00C7CD05 /* CloseSessionCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = CloseSessionCommand.m; path = command/CloseSessionCommand.m; sourceTree = "<group>"; };
+		6145882B0BD75D2E00C7CD05 /* OpenSessionCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = OpenSessionCommand.m; path = command/OpenSessionCommand.m; sourceTree = "<group>"; };
+		6145882E0BD75D3900C7CD05 /* cameraCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = cameraCommand.m; path = command/cameraCommand.m; sourceTree = "<group>"; };
+		614588300BD75D5D00C7CD05 /* GetPropertyCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = GetPropertyCommand.m; path = command/GetPropertyCommand.m; sourceTree = "<group>"; };
+		614588310BD75D5D00C7CD05 /* GetPropertyDescCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = GetPropertyDescCommand.m; path = command/GetPropertyDescCommand.m; sourceTree = "<group>"; };
+		614588320BD75D5D00C7CD05 /* SetPropertyCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = SetPropertyCommand.m; path = command/SetPropertyCommand.m; sourceTree = "<group>"; };
+		614588360BD75D8100C7CD05 /* DownloadCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = DownloadCommand.m; path = command/DownloadCommand.m; sourceTree = "<group>"; };
+		614588370BD75D8100C7CD05 /* TakePictureCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = TakePictureCommand.m; path = command/TakePictureCommand.m; sourceTree = "<group>"; };
+		6145883A0BD75D9900C7CD05 /* DownloadEvfCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DownloadEvfCommand.m; path = command/DownloadEvfCommand.m; sourceTree = "<group>"; };
+		6145883C0BD75D9900C7CD05 /* DriveLensCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = DriveLensCommand.m; path = command/DriveLensCommand.m; sourceTree = "<group>"; };
+		6145883D0BD75D9900C7CD05 /* EndEvfCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EndEvfCommand.m; path = command/EndEvfCommand.m; sourceTree = "<group>"; };
+		6145883E0BD75D9900C7CD05 /* StartEvfCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StartEvfCommand.m; path = command/StartEvfCommand.m; sourceTree = "<group>"; };
+		614588440BD75DB500C7CD05 /* SaveSettingCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = SaveSettingCommand.m; path = command/SaveSettingCommand.m; sourceTree = "<group>"; };
+		614588450BD75DB500C7CD05 /* SetCapacityCommand.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = SetCapacityCommand.m; path = command/SetCapacityCommand.m; sourceTree = "<group>"; };
+		614588480BD75DCB00C7CD05 /* cameraController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cameraController.m; path = camera/cameraController.m; sourceTree = "<group>"; };
+		614588490BD75DCB00C7CD05 /* cameraEvent.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = cameraEvent.m; path = camera/cameraEvent.m; sourceTree = "<group>"; };
+		6145884A0BD75DCB00C7CD05 /* cameraEventListener.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = cameraEventListener.m; path = camera/cameraEventListener.m; sourceTree = "<group>"; };
+		6145884B0BD75DCB00C7CD05 /* CameraEvfData.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = CameraEvfData.m; path = camera/CameraEvfData.m; sourceTree = "<group>"; };
+		6145884C0BD75DCB00C7CD05 /* cameraModel.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = cameraModel.m; path = camera/cameraModel.m; sourceTree = "<group>"; };
+		614588550BD75DF000C7CD05 /* ActionEdsRef.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = ActionEdsRef.m; path = action/ActionEdsRef.m; sourceTree = "<group>"; };
+		614588560BD75DF000C7CD05 /* ActionEvent.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = ActionEvent.m; path = action/ActionEvent.m; sourceTree = "<group>"; };
+		614588590BD75E1000C7CD05 /* ActionButton.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = ActionButton.m; path = view/ActionButton.m; sourceTree = "<group>"; };
+		6145885A0BD75E1000C7CD05 /* AEModePopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = AEModePopUp.m; path = view/AEModePopUp.m; sourceTree = "<group>"; };
+		6145885C0BD75E1000C7CD05 /* AvPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = AvPopUp.m; path = view/AvPopUp.m; sourceTree = "<group>"; };
+		6145885D0BD75E1000C7CD05 /* EvfPictureView.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = EvfPictureView.m; path = view/EvfPictureView.m; sourceTree = "<group>"; };
+		6145885E0BD75E1000C7CD05 /* ExposurePopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = ExposurePopUp.m; path = view/ExposurePopUp.m; sourceTree = "<group>"; };
+		6145885F0BD75E1000C7CD05 /* IsoPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = IsoPopUp.m; path = view/IsoPopUp.m; sourceTree = "<group>"; };
+		614588600BD75E1000C7CD05 /* MeteringPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = MeteringPopUp.m; path = view/MeteringPopUp.m; sourceTree = "<group>"; };
+		614588610BD75E1000C7CD05 /* PropertyPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = PropertyPopUp.m; path = view/PropertyPopUp.m; sourceTree = "<group>"; };
+		614588620BD75E1000C7CD05 /* TVPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = TVPopUp.m; path = view/TVPopUp.m; sourceTree = "<group>"; };
+		6146902F0C8F967D0051052C /* ImageQualityPopUp.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = ImageQualityPopUp.m; path = view/ImageQualityPopUp.m; sourceTree = "<group>"; };
+		615DF7240E9DDC4A00BA2A5F /* EvfZoomButton.m */ = {isa = PBXFileReference; fileEncoding = 0; lastKnownFileType = sourcecode.c.objc; name = EvfZoomButton.m; path = view/EvfZoomButton.m; sourceTree = "<group>"; };
+		61C5267D0BD845750062486C /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
+		61E425320B9B98A700CB9D04 /* Thread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Thread.m; sourceTree = "<group>"; };
+		61E426220B9BD1AF00CB9D04 /* Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Processor.m; sourceTree = "<group>"; };
+		661AD1992AC64FD70019B402 /* CameraControl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CameraControl.entitlements; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CE0203071548CADF009B2AAC /* CameraControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEE78242112E117300B632B1 /* EDSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EDSDK.framework; path = ../../../EDSDK/Framework/EDSDK.framework; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				CEE78243112E117300B632B1 /* EDSDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				611681070C05159600FD2B74 /* DownloadProgress.m */,
+				6145885D0BD75E1000C7CD05 /* EvfPictureView.m */,
+				616962AF0B9E3880008E2C03 /* PopUp */,
+				616962B00B9E3894008E2C03 /* ActionButton */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE0203071548CADF009B2AAC /* CameraControl.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20EC69430B8EE80F00EFB1B8 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				61E426220B9BD1AF00CB9D04 /* Processor.m */,
+				614588480BD75DCB00C7CD05 /* cameraController.m */,
+				614588490BD75DCB00C7CD05 /* cameraEvent.m */,
+				6145884A0BD75DCB00C7CD05 /* cameraEventListener.m */,
+				6145884B0BD75DCB00C7CD05 /* CameraEvfData.m */,
+				6145884C0BD75DCB00C7CD05 /* cameraModel.m */,
+			);
+			name = Camera;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CameraControl */ = {
+			isa = PBXGroup;
+			children = (
+				661AD1992AC64FD70019B402 /* CameraControl.entitlements */,
+				61C5267D0BD845750062486C /* AppController.m */,
+				61E425320B9B98A700CB9D04 /* Thread.m */,
+				CEE78242112E117300B632B1 /* EDSDK.framework */,
+				617FE4D80B9805C7001FF4B7 /* Command */,
+				20EC69430B8EE80F00EFB1B8 /* Camera */,
+				61A601A80B981F1000B69841 /* Action */,
+				080E96DDFE201D6D7F000001 /* View */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = CameraControl;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* CameraControl_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		616962AF0B9E3880008E2C03 /* PopUp */ = {
+			isa = PBXGroup;
+			children = (
+				16CDED450E3F0C13003E5ADE /* EVFAFModePopUp.m */,
+				6146902F0C8F967D0051052C /* ImageQualityPopUp.m */,
+				6145885A0BD75E1000C7CD05 /* AEModePopUp.m */,
+				6145885C0BD75E1000C7CD05 /* AvPopUp.m */,
+				6145885E0BD75E1000C7CD05 /* ExposurePopUp.m */,
+				6145885F0BD75E1000C7CD05 /* IsoPopUp.m */,
+				614588600BD75E1000C7CD05 /* MeteringPopUp.m */,
+				614588610BD75E1000C7CD05 /* PropertyPopUp.m */,
+				614588620BD75E1000C7CD05 /* TVPopUp.m */,
+			);
+			name = PopUp;
+			sourceTree = "<group>";
+		};
+		616962B00B9E3894008E2C03 /* ActionButton */ = {
+			isa = PBXGroup;
+			children = (
+				615DF7240E9DDC4A00BA2A5F /* EvfZoomButton.m */,
+				614588590BD75E1000C7CD05 /* ActionButton.m */,
+			);
+			name = ActionButton;
+			sourceTree = "<group>";
+		};
+		617CB4920BA6A62B004E643D /* EVF */ = {
+			isa = PBXGroup;
+			children = (
+				6145883A0BD75D9900C7CD05 /* DownloadEvfCommand.m */,
+				6145883D0BD75D9900C7CD05 /* EndEvfCommand.m */,
+				6145883E0BD75D9900C7CD05 /* StartEvfCommand.m */,
+				16D466470E3FF87300872364 /* EvfAFCommand.m */,
+			);
+			name = EVF;
+			sourceTree = "<group>";
+		};
+		617FE4D80B9805C7001FF4B7 /* Command */ = {
+			isa = PBXGroup;
+			children = (
+				614588440BD75DB500C7CD05 /* SaveSettingCommand.m */,
+				614588450BD75DB500C7CD05 /* SetCapacityCommand.m */,
+				6145882E0BD75D3900C7CD05 /* cameraCommand.m */,
+				6145883C0BD75D9900C7CD05 /* DriveLensCommand.m */,
+				61D853340B9E9EF100D21779 /* Session */,
+				61D853320B9E9EAF00D21779 /* Property */,
+				61D853330B9E9ED700D21779 /* TakePicture */,
+				617CB4920BA6A62B004E643D /* EVF */,
+			);
+			name = Command;
+			sourceTree = "<group>";
+		};
+		61A601A80B981F1000B69841 /* Action */ = {
+			isa = PBXGroup;
+			children = (
+				614588550BD75DF000C7CD05 /* ActionEdsRef.m */,
+				614588560BD75DF000C7CD05 /* ActionEvent.m */,
+			);
+			name = Action;
+			sourceTree = "<group>";
+		};
+		61D853320B9E9EAF00D21779 /* Property */ = {
+			isa = PBXGroup;
+			children = (
+				614588300BD75D5D00C7CD05 /* GetPropertyCommand.m */,
+				614588310BD75D5D00C7CD05 /* GetPropertyDescCommand.m */,
+				614588320BD75D5D00C7CD05 /* SetPropertyCommand.m */,
+			);
+			name = Property;
+			sourceTree = "<group>";
+		};
+		61D853330B9E9ED700D21779 /* TakePicture */ = {
+			isa = PBXGroup;
+			children = (
+				16D6FF150E4A98FC00EB0284 /* PressingShutterButtomCommand.m */,
+				614588360BD75D8100C7CD05 /* DownloadCommand.m */,
+				614588370BD75D8100C7CD05 /* TakePictureCommand.m */,
+			);
+			name = TakePicture;
+			sourceTree = "<group>";
+		};
+		61D853340B9E9EF100D21779 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				6145882A0BD75D2E00C7CD05 /* CloseSessionCommand.m */,
+				6145882B0BD75D2E00C7CD05 /* OpenSessionCommand.m */,
+			);
+			name = Session;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* CameraControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CameraControl" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+				20EC68650B8ECB6900EFB1B8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CameraControl;
+			productInstallPath = "$(HOME)/Applications";
+			productName = CameraControl;
+			productReference = CE0203071548CADF009B2AAC /* CameraControl.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CameraControl" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CameraControl */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* CameraControl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				61E425340B9B98A700CB9D04 /* Thread.m in Sources */,
+				61E426240B9BD1AF00CB9D04 /* Processor.m in Sources */,
+				6145882C0BD75D2E00C7CD05 /* CloseSessionCommand.m in Sources */,
+				6145882D0BD75D2E00C7CD05 /* OpenSessionCommand.m in Sources */,
+				6145882F0BD75D3900C7CD05 /* cameraCommand.m in Sources */,
+				614588330BD75D5D00C7CD05 /* GetPropertyCommand.m in Sources */,
+				614588340BD75D5D00C7CD05 /* GetPropertyDescCommand.m in Sources */,
+				614588350BD75D5D00C7CD05 /* SetPropertyCommand.m in Sources */,
+				614588380BD75D8100C7CD05 /* DownloadCommand.m in Sources */,
+				614588390BD75D8100C7CD05 /* TakePictureCommand.m in Sources */,
+				6145883F0BD75D9900C7CD05 /* DownloadEvfCommand.m in Sources */,
+				614588410BD75D9900C7CD05 /* DriveLensCommand.m in Sources */,
+				614588420BD75D9900C7CD05 /* EndEvfCommand.m in Sources */,
+				614588430BD75D9900C7CD05 /* StartEvfCommand.m in Sources */,
+				614588460BD75DB500C7CD05 /* SaveSettingCommand.m in Sources */,
+				614588470BD75DB500C7CD05 /* SetCapacityCommand.m in Sources */,
+				6145884E0BD75DCB00C7CD05 /* cameraController.m in Sources */,
+				6145884F0BD75DCB00C7CD05 /* cameraEvent.m in Sources */,
+				614588500BD75DCB00C7CD05 /* cameraEventListener.m in Sources */,
+				614588510BD75DCB00C7CD05 /* CameraEvfData.m in Sources */,
+				614588520BD75DCB00C7CD05 /* cameraModel.m in Sources */,
+				614588570BD75DF000C7CD05 /* ActionEdsRef.m in Sources */,
+				614588580BD75DF000C7CD05 /* ActionEvent.m in Sources */,
+				614588630BD75E1000C7CD05 /* ActionButton.m in Sources */,
+				614588640BD75E1000C7CD05 /* AEModePopUp.m in Sources */,
+				614588660BD75E1000C7CD05 /* AvPopUp.m in Sources */,
+				614588670BD75E1000C7CD05 /* EvfPictureView.m in Sources */,
+				614588680BD75E1000C7CD05 /* ExposurePopUp.m in Sources */,
+				614588690BD75E1000C7CD05 /* IsoPopUp.m in Sources */,
+				6145886A0BD75E1000C7CD05 /* MeteringPopUp.m in Sources */,
+				6145886B0BD75E1000C7CD05 /* PropertyPopUp.m in Sources */,
+				6145886C0BD75E1000C7CD05 /* TVPopUp.m in Sources */,
+				61C5267E0BD845750062486C /* AppController.m in Sources */,
+				611681080C05159600FD2B74 /* DownloadProgress.m in Sources */,
+				614690300C8F967D0051052C /* ImageQualityPopUp.m in Sources */,
+				16CDED470E3F0C13003E5ADE /* EVFAFModePopUp.m in Sources */,
+				16D466480E3FF87300872364 /* EvfAFCommand.m in Sources */,
+				16D6FF170E4A98FC00EB0284 /* PressingShutterButtomCommand.m in Sources */,
+				615DF7250E9DDC4A00BA2A5F /* EvfZoomButton.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CameraControl.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../EDSDK/Framework,
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = CameraControl_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					../../../EDSDK/Header,
+					./view,
+					./command,
+					./action,
+					./camera,
+					.,
+				);
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CameraControl;
+				INSTALL_PATH = "$(HOME)/Applications";
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = (
+					"$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))",
+					"@loader_path/../Frameworks/",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.canon.CameraControl;
+				PRODUCT_NAME = CameraControl;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALID_ARCHS = "x86_64 arm64";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CameraControl.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../EDSDK/Framework,
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../edsdk/EDSDK/Framework\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../EDSDK/Framework\"";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = (
+					../../../EDSDK/Header,
+					./view,
+					./command,
+					./action,
+					./camera,
+					.,
+				);
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CameraControl;
+				INSTALL_PATH = "$(HOME)/Applications";
+				"LD_MAP_FILE_PATH[arch=*]" = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.canon.CameraControl;
+				PRODUCT_NAME = CameraControl;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				VALID_ARCHS = "x86_64 arm64";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __MACOS__;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../EDSDK/Header,
+					./view,
+					./command,
+					./action,
+					./camera,
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = CameraControl;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = CameraControl;
+				SDKROOT = "";
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __MACOS__;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../EDSDK/Header,
+					./view,
+					./command,
+					./action,
+					./camera,
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = CameraControl;
+				PRODUCT_NAME = CameraControl;
+				SDKROOT = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CameraControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CameraControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

@@ -22,6 +22,8 @@ class DataCollection:
         self.led = LEDController(camera_test=camera_test)
         self.calibration_folder = calibration_folder
         self.color_configs = None
+        self.camera_test = camera_test
+        self.led_test = led_test
 
     def get_color_configs(self, config_path='assets/color_configs_test.json'):
         with open(config_path, 'r') as file:

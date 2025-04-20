@@ -80,13 +80,13 @@ class HDRIOptimization:
         x_fov = cam_opt['sensor.x_fov']
 
         base_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-            origin=mi.ScalarPoint3f(translation),
+            origin=mi.ScalarPoint3f(*translation),
             target=mi.ScalarPoint3f(0, 0, 0),
             up=mi.ScalarPoint3f(0, 1, 0)
         )
         base_params["sensor.x_fov"] = x_fov
         ref_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-            origin=mi.ScalarPoint3f(translation),
+            origin=mi.ScalarPoint3f(*translation),
             target=mi.ScalarPoint3f(0, 0, 0),
             up=mi.ScalarPoint3f(0, 1, 0)
         )

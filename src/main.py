@@ -89,6 +89,10 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         try:
             camera_setup = SetupCalibration.open_camera_parameters(config_file)
             print('Successful!')
+            if show_debug:
+                print("Camera setup:")
+                for k, v in camera_setup.items():
+                    print(f"  {k, v}")
         except KeyError as k:
             camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs, config_file)
 
@@ -124,7 +128,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             emitters,
             hdri_path,
             [pos for _, pos in all_pos],
-            light_cfg=calibration_light_configs,
+            light_cfg=config_file,
             hidr_scale_factor=0.003,
             n_clusters=598,
             scale=0.6,
@@ -170,8 +174,8 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
-            light_cfg=calibration_light_configs,
-            cam_cfg=calibration_camera_configs,
+            light_cfg=config_file,
+            cam_cfg=config_file,
             lr=0.00025,
             n_epochs=100,
             spp=16,

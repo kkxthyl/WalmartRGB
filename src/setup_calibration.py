@@ -40,7 +40,7 @@ class SetupCalibration:
 		params = cu.get_camera_calibration_params()
   
 		params['translation'] = eval(params['translation'])
-		params['sensor.x_fov'] = mi.Float(eval(params['sensor.x_fov']))
+		params['sensor.x_fov'] = mi.Float(eval(params['camera_fov']))
 
 		return params
 	  

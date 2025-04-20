@@ -8,6 +8,7 @@ import drjit as dr
 import json
 import cv2 
 from Utils import SceneUtils
+from Utils import ConfigUtils
 
 class SetupCalibration:
 
@@ -21,39 +22,28 @@ class SetupCalibration:
 	@staticmethod
 	def open_light_parameters(file_path):
 
-		if not os.path.exists(file_path):
-			return None
+		cu = ConfigUtils(file_path)
+		params = cu.get_scene_calibration_params()
 
-		with open(file_path) as f:
-			params = json.load(f)
-			params['translation'] = mi.Vector3f(*eval(params['translation']))
-			params['scale'] = mi.Float(eval(params['scale']))
-			params['roll'] = mi.Float(eval(params['roll']))
-			params['pitch'] = mi.Float(eval(params['pitch']))
-			params['yaw'] = mi.Float(eval(params['yaw']))
+		params['translation'] = mi.Vector3f(*eval(params['translation']))
+		params['scale'] = mi.Float(eval(params['scale']))
+		params['roll'] = mi.Float(eval(params['roll']))
+		params['pitch'] = mi.Float(eval(params['pitch']))
+		params['yaw'] = mi.Float(eval(params['yaw']))
 
 		return params
 
 	@staticmethod
 	def open_camera_parameters(file_path):
 
-		if not os.path.exists(file_path):
-			return None
+		cu = ConfigUtils(file_path)
+		params = cu.get_camera_calibration_params()
   
-		with open(file_path) as f:
-			params = json.load(f)
-			params['translation'] = eval(params['translation'])
-			params['sensor.x_fov'] = mi.Float(eval(params['sensor.x_fov']))
+		params['translation'] = eval(params['translation'])
+		params['sensor.x_fov'] = mi.Float(eval(params['sensor.x_fov']))
 
 		return params
 	  
-	@staticmethod
-	def write_parameters(params, file_path):
-		for k,v in params.items():
-			params[k] = str(v)
-		with open(file_path, 'w') as f:
-			json.dump(params, f)
-		
 
 	@staticmethod
 	def show_results(init_virtual_render, virtual_render, picture, loss_hist, file_name):
@@ -181,7 +171,7 @@ class SetupCalibration:
 
  
 	@staticmethod
-	def optimize_camera(emitter_positions, calibration_images_folder, color_configs_file):
+	def optimize_camera(emitter_positions, calibration_images_folder, color_configs_file, config_file):
 
 		virtual_scene, scene_dict, _ = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
@@ -290,11 +280,15 @@ class SetupCalibration:
 
 		result['sensor.x_fov'] = mi.Float(opt['sensor.x_fov'])
 		SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization')
-		SetupCalibration.write_parameters(result, SetupCalibration.CAMERA_SETUP_FILE)
+
+		cu = ConfigUtils(config_file)
+		for k,v in result.items():
+			result[k] = str(v)
+		cu.set_camera_calibration_params(result)
 		return result
 
 	@staticmethod
-	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters):
+	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters, config_file):
 
 		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
@@ -351,7 +345,6 @@ class SetupCalibration:
 			virtual_scene = mi.load_dict(scene_dict)
 			virtual_scene_params = mi.traverse(virtual_scene)
 
-			import pdb; pdb.set_trace()
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
 				origin =camera_parameters['translation'],
 				target=[0,0,0],
@@ -379,6 +372,9 @@ class SetupCalibration:
 			virtual_render = None
 			loss = None
 
+			best_loss = float('inf')
+
+			patience = 5
 			# Optimization Loop
 			for epoch in range(50):
 
@@ -413,11 +409,22 @@ class SetupCalibration:
 				virtual_scene_params.update()
 
 				virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
-				
+
 				# Backpropagate and take a step
 				loss = dr.mean(dr.sqr(virtual_render-mi.TensorXf(picture)))
 				dr.backward(loss)
 				opt.step()
+
+				# early stopping
+				if loss.array[0] < best_loss - 1e-6:
+					best_loss = loss.array[0]
+					wait = 0
+				else:
+					wait += 1
+					if wait >= patience:
+						print(f"Stopped at epoch {epoch} (no improvement for {patience} epochs)")
+						break
+
 
 				print(loss)
 				loss_hist.append(loss.array[0])
@@ -437,36 +444,10 @@ class SetupCalibration:
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]
 
+		cu = ConfigUtils(config_file)
+		for k,v in params.items():
+			params[k] = str(v)
+		cu.set_scene_calibration_params(params)
 		SetupCalibration.write_parameters(params, results_path)
 		return params
 	
-class TestSetupCalibration:
-
-	def test_light_optimizer():
-		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene()
-
-		virtual_params = mi.traverse(virtual_scene)
-
-		# Build transformation
-		T = (
-			mi.Transform4f()
-			.translate([0.5,0.5,0])
-			.rotate([1, 0, 0], 0.2)
-			.rotate([0, 1, 0], 1)
-			.rotate([0, 0, 1], 1.2)
-			.scale(1.01)
-		)
-
-		# Misalign virtual scene for testing
-		initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(len(emitters))]
-		for i in range(len(emitters)):
-			virtual_params[f'light_{i}.position'] = T @ initial_light_positions[i] 
-			virtual_params.update()
-
-		initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(len(emitters))]
-
-	 
-	
-if __name__ == '__main__':
-	#SetupCalibration.optimize_lights()
-	SetupCalibration.optimize_camera()

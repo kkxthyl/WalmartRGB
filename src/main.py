@@ -86,18 +86,22 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         print("\n3. Camera Optimization") if show_debug else None
         # TODO: Add camera parameters file to check first before attempting optimization
-        camera_setup = SetupCalibration.open_camera_parameters(calibration_camera_configs)
-        if camera_setup is None:
-            camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs)
+        try:
+            camera_setup = SetupCalibration.open_camera_parameters(config_file)
+            print('Successful!')
+        except KeyError as k:
+            raise k
+            camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs, config_file)
 
         # =======================================
         #    TRANSFORM OPTIMIZATION
         # =======================================
         print("\n4. Transform Optimization") if show_debug else None
-        light_setup = SetupCalibration.open_light_parameters(calibration_light_configs)
-        if light_setup is None:
+        try:
+            light_setup = SetupCalibration.open_light_parameters(config_file)
+        except KeyError:
             light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder,
-                                                           calibration_color_configs, calibration_light_configs, camera_setup)
+                                                            calibration_color_configs, calibration_light_configs, camera_setup, config_file)
 
         if show_debug:
             print("Light setup:")

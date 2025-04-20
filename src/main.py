@@ -90,7 +90,6 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             camera_setup = SetupCalibration.open_camera_parameters(config_file)
             print('Successful!')
         except KeyError as k:
-            raise k
             camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs, config_file)
 
         # =======================================

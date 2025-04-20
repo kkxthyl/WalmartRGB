@@ -1,8 +1,12 @@
 import mitsuba as mi
 import matplotlib.pyplot as plt
 import drjit as dr
-
+import json
+from Utils import SceneUtils as su
+from setup_calibration import SetupCalibration as SC
 output_dir = "figures"
+
+
 class HDRIOptimization:
 
     @staticmethod
@@ -57,22 +61,47 @@ class HDRIOptimization:
                 }
             }
         }
-
+        scene_dict = su.add_checkerboard_to_scene_dict(scene_dict)
         scene = mi.load_dict(scene_dict)
 
         return scene
 
     @staticmethod
-    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=16, patience=5,
-                                   visualize_steps=False):
+    def optimize_light_intensities(scene, emitters, reference_scene, light_cfg, cam_cfg, lr=0.00025, n_epochs=200, spp=16,
+                                   patience=5, visualize_steps=False):
 
-        params = mi.traverse(scene)
-        reference = mi.render(reference_scene, params, spp=512)
+        base_params = mi.traverse(scene)
+        ref_params = mi.traverse(reference_scene)
+
+        light_opt = SC.open_light_parameters(light_cfg)
+        cam_opt = SC.open_camera_parameters(cam_cfg)
+
+        print(cam_opt)
+        translation = cam_opt['translation']
+        x_fov = cam_opt['sensor.x_fov']
+        base_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+            origin=mi.ScalarPoint3f(translation),
+            target=mi.ScalarPoint3f(0, 0, 0),
+            up=mi.ScalarPoint3f(0, 1, 0)
+        )
+        base_params["sensor.x_fov"] = x_fov
+
+        ref_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+            origin=mi.ScalarPoint3f(translation),
+            target=mi.ScalarPoint3f(0, 0, 0),
+            up=mi.ScalarPoint3f(0, 1, 0)
+        )
+        ref_params["sensor.x_fov"] = x_fov
+
+        base_params.update()
+        ref_params.update()
+
+        reference = mi.render(reference_scene, ref_params, spp=512)
         opt = mi.ad.Adam(lr=lr)
         for i in range(len(emitters)):
-            init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
+            init_rgb = dr.detach(base_params[f'light_{i}.intensity.value'])
             opt[f'light_{i}_rgb'] = mi.Color3f(init_rgb)
-            params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+            base_params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
 
         loss_hist = []
         best_loss = float('inf')
@@ -83,10 +112,10 @@ class HDRIOptimization:
         for epoch in range(n_epochs):
             for i in range(len(emitters)):
                 opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
-                params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
+                base_params[f'light_{i}.intensity.value'] = opt[f'light_{i}_rgb']
 
-            params.update(opt)
-            render = mi.render(scene, params, spp=spp)
+            base_params.update(opt)
+            render = mi.render(scene, base_params, spp=spp)
             loss = dr.mean(dr.square(render - reference))
 
             dr.backward(loss)
@@ -121,10 +150,10 @@ class HDRIOptimization:
             print(f"Epoch {epoch + 1:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
 
         for i in range(len(emitters)):
-            params[f'light_{i}.intensity.value'] = best_rgb[i]
+            base_params[f'light_{i}.intensity.value'] = best_rgb[i]
 
-        params.update()
-        final_render = mi.render(scene, params, spp=512)
+        base_params.update()
+        final_render = mi.render(scene, base_params, spp=512)
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 
         if visualize_steps:

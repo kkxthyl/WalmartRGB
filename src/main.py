@@ -156,6 +156,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
                 }
             }
         base_scene_dict = su.get_base_scene_dict(low_res=True)
+        base_scene_dict = su.add_checkerboard_to_scene_dict(base_scene_dict)
 
         base_scene_dict.update(optim_emitters)
         base_scene = mi.load_dict(base_scene_dict)
@@ -164,6 +165,8 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
+            light_cfg=calibration_light_configs,
+            cam_cfg=calibration_camera_configs,
             lr=0.000175,
             n_epochs=50,
             spp=16,

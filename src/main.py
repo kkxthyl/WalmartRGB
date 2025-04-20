@@ -22,6 +22,7 @@ calibration_images_folder = "data/calibration_images"
 calibration_color_configs = "../assets/color_configs.json"
 
 calibration_light_configs = "data/light_setup.json"
+calibration_camera_configs = "data/camera_setup.json"
 
 
 def get_all_positions(scale=1.0):
@@ -85,9 +86,9 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         print("\n3. Camera Optimization") if show_debug else None
         # TODO: Add camera parameters file to check first before attempting optimization
-        # camera_setup = None
-        # if camera_setup is None:
-        #     camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs)
+        camera_setup = SetupCalibration.open_camera_parameters(calibration_camera_configs)
+        if camera_setup is None:
+            camera_setup = SetupCalibration.optimize_camera(all_pos, calibration_images_folder, calibration_color_configs)
 
         # =======================================
         #    TRANSFORM OPTIMIZATION
@@ -96,7 +97,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         light_setup = SetupCalibration.open_light_parameters(calibration_light_configs)
         if light_setup is None:
             light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder,
-                                                           calibration_color_configs, calibration_light_configs)
+                                                           calibration_color_configs, calibration_light_configs, camera_setup)
 
         if show_debug:
             print("Light setup:")

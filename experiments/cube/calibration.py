@@ -221,28 +221,6 @@ scene_dict = {
 }
 
 
-def show_results(init_virtual_render, virtual_render, picture, loss_hist, file_name):
-
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
-
-    axs[0][0].plot(loss_hist)
-    axs[0][0].set_xlabel('iteration')
-    axs[0][0].set_ylabel('Loss')
-    axs[0][0].set_title(f'Parameter error plot')
-
-    axs[0][1].imshow(mi.util.convert_to_bitmap(init_virtual_render))
-    axs[0][1].axis('off')
-    axs[0][1].set_title('Initial Image')
-
-    axs[1][0].imshow(mi.util.convert_to_bitmap(virtual_render))
-    axs[1][0].axis('off')
-    axs[1][0].set_title('Optimized image')
-
-    axs[1][1].imshow(mi.util.convert_to_bitmap(picture))
-    axs[1][1].axis('off')
-    axs[1][1].set_title('Reference Image')
-    plt.show()
-    plt.savefig(f'figures/{file_name}.png')
 
 def compare_scenes(real_img, virtual_img, file_name):
 

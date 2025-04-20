@@ -1,13 +1,8 @@
 from CameraController import CameraController
 from LEDController import LEDController
 import json
-import numpy as np
 import time
 import xled
-import io
-import struct
-import math
-import random
 
 class DataCollection:
 
@@ -29,7 +24,7 @@ class DataCollection:
         self.calibration_folder = calibration_folder
         self.color_configs = None
 
-    def get_color_configs(self, config_path='cube/color_configs.json'):
+    def get_color_configs(self, config_path='assets/color_configs_test.json'):
         with open(config_path, 'r') as file:
             self.color_configs = json.load(file)
         return self.color_configs
@@ -109,7 +104,7 @@ class DataCollection:
         self.take_image()
         self.download_latest_image(filename)
 
-    def capture_optimization_images(self, config_path='cube/color_configs.json'):
+    def capture_optimization_images(self, config_path='assets/color_configs_test.json'):
         if self.color_configs is None:
             self.get_color_configs(config_path)
         

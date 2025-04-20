@@ -5,6 +5,7 @@ import math
 import random
 import time
 import numpy as np
+import json
 
 from xled.response import ApplicationResponse
 
@@ -213,6 +214,65 @@ class LEDController:
             A list of pixel bytes representing an empty pattern.
         """
         return [self.make_pixel(0, 0, 0, 0)] * self.device_data["number_of_led"]
+
+    def get_emitters_from_json(self, json_path):
+        """
+        Read an emitters JSON dump and return a mapping:
+            { index: { 'r': ..., 'g': ..., 'b': ... }, … }
+        
+        Args:
+            json_path (str): Path to the emitters.json file.
+
+        Returns:
+            dict[int, dict]: { emitter_index: {'r':R, 'g':G, 'b':B}, … }
+        """
+        with open(json_path, 'r') as f:
+            emitters = json.load(f)
+
+        color_map = {}
+        for name, data in emitters.items():
+            # Parse out the integer index from keys like "light_42"
+            try:
+                idx = int(name.split('_', 1)[1])
+            except (IndexError, ValueError):
+                # Skip any unexpected keys
+                continue
+
+            # Drill into the JSON structure to find the [r, g, b] radiance
+            radiance = (
+                data
+                .get('intensity', {})
+                # .get('radiance', {})
+                .get('value')
+            )
+
+            # Validate and store
+            if (
+                isinstance(radiance, (list, tuple)) 
+                and len(radiance) == 3
+            ):
+                r, g, b = radiance
+                color_map[idx] = {'r': r*100, 'g': g*100, 'b': b*100}
+
+        return color_map
+
+    def get_pattern_from_emitters(self, colors):
+        patt = self.get_empty_pattern()
+
+        for i, color in colors.items():
+            # print(i)
+            # print(color)
+            idx = i
+            if i > 168:
+                idx += 1
+            # if i > 298:
+            #     idx += 1
+            if i > 467:
+                idx += 1
+            patt[idx] = self.make_pixel(color['r']*255, color['g']*255, color['b']*255, 255)
+
+        return patt
+
 
 if __name__ == "__main__":
     # Create an instance of the controller; device discovery happens automatically.

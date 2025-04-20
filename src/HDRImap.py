@@ -3,10 +3,11 @@ from scipy.spatial import cKDTree
 import mitsuba as mi
 import numpy as np
 import json
+from Utils import ConfigUtils
 
 class HDRImap(): 
 
-    def apply_hdri(emitters, hdri_path, all_pos, scale_factor, n_clusters=598, scale=0.6):
+    def apply_hdri(emitters, hdri_path, all_pos, hidr_scale_factor, n_clusters=598, scale=0.6):
 
         if (hdri_path is None):
             raise FileNotFoundError("invalid hdri path")
@@ -95,7 +96,7 @@ class HDRImap():
             mapped_color = avg_color / (1 + avg_color)
             # Normalize
             distance_scale = np.linalg.norm(np.array([scale, scale, scale]))
-            final_color = (mapped_color * scale_factor) / distance_scale
+            final_color = (mapped_color * hidr_scale_factor) / distance_scale
 
             emitters[f"light_{idx}"]["intensity"]["value"] = final_color.tolist()
             
@@ -111,4 +112,4 @@ class HDRImap():
             }
 
         with open(filename, "w") as f:
-            json.dump(data, f, indent=4)
+            ConfigUtils.set_hdri_mapping(json.dump(data, f, indent=4))

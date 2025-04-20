@@ -2,6 +2,7 @@ import mitsuba as mi
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+import json
 
 class SceneUtils:
 
@@ -460,18 +461,18 @@ class SceneUtils:
 
         return updated_emitters
 
-    # @staticmethod
-    # def idx_to_face(idx):
-    #     if idx < 150:
-    #         return "left"
-    #     elif idx < 300:
-    #         return "top"
-    #     elif idx < 450:
-    #         return "back"
-    #     elif idx < 600:
-    #         return "right"
-    #     else:
-    #         return None
+    @staticmethod
+    def idx_to_face(idx):
+        if idx < 150:
+            return "left"
+        elif idx < 300:
+            return "top"
+        elif idx < 450:
+            return "back"
+        elif idx < 600:
+            return "right"
+        else:
+            return None
 
     @staticmethod
     def add_checkerboard_to_scene_dict(scene_dict):
@@ -505,3 +506,123 @@ class SceneUtils:
         mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
         return mask
+
+class ConfigUtils:
+    """
+    Utility class for loading, getting, setting, and saving configuration
+    stored in a nested JSON structure. Automatically saves on each set operation.
+    """
+    def __init__(self, path):
+        """Initialize with the file path and load the JSON data."""
+        self.path = path
+        self.data = self._load_json(path)
+
+    def _load_json(self, path):
+        """Load JSON from the given file path."""
+        with open(path, 'r') as f:
+            return json.load(f)
+
+    def save(self, path=None):
+        """Save the current data back to file (indent=4)."""
+        target = path if path else self.path
+        with open(target, 'w') as f:
+            json.dump(self.data, f, indent=4)
+
+    def get_value(self, path):
+        """
+        Get a nested value by key path.
+          path: either "a.b.c" or ["a","b","c"]
+        """
+        keys = path.split('.') if isinstance(path, str) else path
+        cur = self.data
+        for key in keys:
+            cur = cur[key]
+        return cur
+
+    def set_value(self, path, value):
+        """
+        Set a nested value by key path and immediately save file.
+          path: either "a.b.c" or ["a","b","c"]
+        """
+        keys = path.split('.') if isinstance(path, str) else path
+        cur = self.data
+        for key in keys[:-1]:
+            cur = cur[key]
+        cur[keys[-1]] = value
+        # auto-save after set
+        self.save()
+
+
+
+
+    # Top-level convenience methods
+
+    # calibration_idx
+    def get_calibration_idx(self):
+        return self.get_value("calibration_idx")
+
+    def set_calibration_idx(self, idx):
+        self.set_value("calibration_idx", idx)
+
+
+
+    # scene_calibration_params (raw dict of JSON-strings)
+    def get_scene_param(self, param):
+        raw = self.get_value(f"scene_calibration_params.{param}")
+        return json.loads(raw)
+
+    def set_scene_param(self, param, vals):
+        self.set_value(f"scene_calibration_params.{param}", json.dumps(vals))
+
+    def get_scene_calibration_params(self):
+        """Return the raw scene_calibration_params dict (values are JSON-strings)."""
+        return self.get_value("scene_calibration_params")
+
+    def set_scene_calibration_params(self, raw_mapping):
+        """Replace the raw scene_calibration_params dict and save."""
+        # raw_mapping should be a dict of strings (JSON-strings)
+        self.set_value("scene_calibration_params", raw_mapping)
+
+
+
+
+    # camera_calibration_params (raw dict)
+    def get_camera_param(self, param):
+        raw = self.get_value(f"camera_calibration_params.{param}")
+        try:
+            return json.loads(raw)
+        except (TypeError, json.JSONDecodeError):
+            return raw
+
+    def set_camera_param(self, param, vals):
+        val = json.dumps(vals) if not isinstance(vals, str) else vals
+        self.set_value(f"camera_calibration_params.{param}", val)
+
+    def get_camera_calibration_params(self):
+        """Return the raw camera_calibration_params dict (values are strings)."""
+        return self.get_value("camera_calibration_params")
+
+    def set_camera_calibration_params(self, raw_mapping):
+        """Replace the raw camera_calibration_params dict and save."""
+        # raw_mapping should be a dict of strings
+        self.set_value("camera_calibration_params", raw_mapping)
+
+
+
+    # hdri_mapping utilities
+    def get_hdri_mapping(self):
+        """Return the entire hdri_mapping object."""
+        return self.get_value("hdri_mapping")
+
+    def set_hdri_mapping(self, mapping):
+        """Replace the entire hdri_mapping object and save."""
+        self.set_value("hdri_mapping", mapping)
+
+    # # individual light helpers (optional)
+    # def get_light_rgb(self, light):
+    #     """Get RGB list for a specific light (e.g., 'light_3')."""
+    #     return self.get_value(f"hdri_mapping.{light}.rgb")
+
+    # def set_light_rgb(self, light, rgb):
+    #     """Set RGB list for a specific light and save."""
+    #     self.set_value(f"hdri_mapping.{light}.rgb", rgb)

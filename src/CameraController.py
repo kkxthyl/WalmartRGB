@@ -16,6 +16,18 @@ class CameraController:
     kEdsFileCreateDisposition_CreateAlways = 2
     kEdsAccess_ReadWrite = 2
 
+    kEdsPropID_ISOSpeed = 0x00000402    # ISO sensitivity setting value :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
+    kEdsPropID_Av =       0x00000405    # Aperture value at time of shooting :contentReference[oaicite:2]{index=2}&#8203;:contentReference[oaicite:3]{index=3}
+    kEdsPropID_Tv =       0x00000406    # Shutter speed setting value :contentReference[oaicite:4]{index=4}&#8203;:contentReference[oaicite:5]{index=5}
+
+    class EdsPropertyDesc(ctypes.Structure):
+        _fields_ = [
+            ("form",       ctypes.c_int32),
+            ("access",     ctypes.c_int32),
+            ("numElements",ctypes.c_int32),
+            ("propDesc",   ctypes.c_int32 * 128),
+        ]
+
     # Define the Directory Item Structure (for file information)
     class EdsDirectoryItemInfo(ctypes.Structure):
         _fields_ = [
@@ -103,6 +115,13 @@ class CameraController:
         ]
         self.edsdk.EdsGetDirectoryItemInfo.restype = ctypes.c_int
 
+        self.edsdk.EdsGetPropertyDesc.argtypes = [
+            ctypes.c_void_p, 
+            ctypes.c_uint32, 
+            ctypes.POINTER(CameraController.EdsPropertyDesc)
+        ]
+        self.edsdk.EdsGetPropertyDesc.restype = ctypes.c_int
+
     def open_camera(self):
         """
         Initialize the SDK, retrieve the first available camera,
@@ -153,6 +172,47 @@ class CameraController:
             self.kEdsCameraCommand_ShutterButton_Completely
         ))
         print("Capture triggered.")
+
+    def set_property(self, prop_id, value):
+        """
+        Set a camera property (must be a UInt32).
+        prop_id: one of the kEdsPropID_… constants
+        value: the raw code (e.g. 0x30 for Av=5.6, 0x70 for Tv=1/125, or 100 for ISO 100).
+        """
+        data = ctypes.c_uint32(value)
+        self._check(self.edsdk.EdsSetPropertyData(
+            self.camera,
+            prop_id,
+            0,  # param index (always 0 for these single‑value properties)
+            ctypes.sizeof(data),
+            ctypes.byref(data)
+        ))
+        print(f"Property 0x{prop_id:08X} set to 0x{value:08X}")
+
+    def set_iso(self, iso_value):
+        """
+        iso_value: e.g. 100, 200, 400, etc.
+        Note: you may wish to call _get_property_desc(kEdsPropID_ISOSpeed)
+        to verify that iso_value is supported.
+        """
+        self.set_property(self.kEdsPropID_ISOSpeed, iso_value)
+
+    def set_aperture(self, av_code):
+        """
+        av_code: one of the codes returned by _get_property_desc(kEdsPropID_Av).
+        e.g. 0x30 for f/5.6, 0x20 for f/2.8, etc. :contentReference[oaicite:10]{index=10}&#8203;:contentReference[oaicite:11]{index=11}
+        """
+        self.set_property(self.kEdsPropID_Av, av_code)
+
+    def set_shutter_speed(self, tv_code):
+        """
+        tv_code: one of the codes returned by _get_property_desc(kEdsPropID_Tv).
+        e.g. 0x70 for 1/125 s, 0x60 for 1/30 s, etc. :contentReference[oaicite:12]{index=12}&#8203;:contentReference[oaicite:13]{index=13}
+        """
+        self.set_property(self.kEdsPropID_Tv, tv_code)
+
+
+
 
     def download_image(self, local_filename="downloaded_image.jpg"):
         """
@@ -241,6 +301,18 @@ class CameraController:
             print("EDSDK terminated.")
         except Exception as e:
             print("Error terminating SDK:", e)
+
+
+    def _get_property_desc(self, prop_id):
+        desc = CameraController.EdsPropertyDesc()
+        # call into the SDK
+        self._check(self.edsdk.EdsGetPropertyDesc(
+            self.camera,
+            prop_id,
+            ctypes.byref(desc)
+        ))
+        # pull out only the valid entries
+        return list(desc.propDesc[:desc.numElements])
 
 
 # ================================

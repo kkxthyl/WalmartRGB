@@ -11,12 +11,12 @@ from Utils import SceneUtils
 
 class SetupCalibration:
 
-	FILE_TYPE = 'combined.jpg'
+	FILE_TYPE = 'jpg'
 	SPP = 2
-	LIGHT_SETUP_FILE = 'results/light_setup.json'
-	CAMERA_SETUP_FILE = 'results/camera_setup.json'
-	MASK_FULL_FILE = 'mask_calibration.jpg'
-	MASK_EMPTY_FILE = 'mask_blank.jpg'
+	LIGHT_SETUP_FILE = 'data/light_setup.json'
+	CAMERA_SETUP_FILE = 'data/camera_setup.json'
+	MASK_FULL_FILE = 'mask_obj.jpg'
+	MASK_EMPTY_FILE = 'mask_no_obj.jpg'
 
 	@staticmethod
 	def open_light_parameters(file_path):
@@ -68,7 +68,7 @@ class SetupCalibration:
 
 	@staticmethod
 	def get_emitters(all_pos, config, color_configs_file=None):
-    
+	
 		num_emitters = len(all_pos)
 		print(f"Number of emitters: {num_emitters}")
 		emitters = {}
@@ -154,6 +154,18 @@ class SetupCalibration:
 		return virtual_scene, scene_dict, initial_light_positions 
 
 	@staticmethod
+	def compare_scenes(real_img, virtual_img, file_name):
+
+		f, axarr = plt.subplots(1,2) 
+
+		# use the created array to output your multiple images. In this case I have stacked 4 images vertically
+		axarr[0].imshow(real_img)
+		axarr[1].imshow(virtual_img)
+
+		plt.savefig(f'figures/{file_name}')
+
+ 
+	@staticmethod
 	def optimize_camera(emitter_positions, calibration_images_folder, color_configs_file):
 
 		virtual_scene, scene_dict, _ = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
@@ -167,7 +179,7 @@ class SetupCalibration:
 		)
 		
 
-		opt['translation'] =  mi.Vector3f([2,19,56])
+		opt['translation'] =  mi.Vector3f([0,0,0])
 		opt["sensor.x_fov"] = mi.Float(30)
 
 		# Use the Plane Sweep Method
@@ -179,34 +191,28 @@ class SetupCalibration:
 		file = next(Path(calibration_images_folder).glob(f'*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
 		virtual_scene_params.update(SetupCalibration.get_emitters(emitter_positions, 'WHITE', color_configs_file))
+		virtual_scene_params.update()
+
 		init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
 		# Mask the object
-		calib = os.path.join(calibration_images_folder, 'mask_calibration.jpg')
-		blank = os.path.join(calibration_images_folder, 'mask_blank.jpg')
+		calib = os.path.join(calibration_images_folder, SetupCalibration.MASK_FULL_FILE)
+		blank = os.path.join(calibration_images_folder, SetupCalibration.MASK_EMPTY_FILE)
 
 		img_empty = cv2.imread(blank)
 		img_obj = cv2.imread(calib)
 
 		mask = SceneUtils.get_mask(img_empty, img_obj)
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-		# mask = np.alltrue(mask != [0, 0, 0], axis=2)
-
-		picture = cv2.bitwise_and(picture, picture, mask=mask)
-		#picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
-		#compare_scenes(picture, init_virtual_render, 'camera_calibration')
+		mask = mask.astype(bool)
+		picture[~mask] = (0,0,0)
+		picture = mi.TensorXf(picture)
 			
 		initial_to_world = mi.Transform4f(virtual_scene_params["sensor.to_world"])
-
-		# TEST 
-		picture = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
-		thresh = cv2.threshold(picture, 127, 255, cv2.THRESH_BINARY)[1]
-		contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		
-		reference_area = np.mean([cv2.contourArea(contour) for contour in contours])
+		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(init_virtual_render), 'calib')
 
 		# Optimization Loop
-		for epoch in range(100):
+		for epoch in range(10):
 
 			print('Epoch: ', epoch)
 
@@ -220,38 +226,43 @@ class SetupCalibration:
 
 			T = (
 				mi.Transform4f()
-				.translate(opt['translation'])
+				.translate(5*opt['translation'])
 			)
 
 
 			print(opt['translation'])
+			
 			# # Apply change to scene
-			virtual_scene_params["sensor.to_world"] = T @ initial_to_world
+			origin = T@ [0, 0.5, 0.35]
+			#virtual_scene_params["sensor.to_world"] = T @ initial_to_world
+			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+				origin=[origin[i][0] for i in range(3)],
+				target=[0, 0, 0],
+				up=[0,1,0]
+			)
+
 			virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
 			virtual_scene_params.update()
 
 			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
-			virtual_render = cv2.cvtColor(np.array(virtual_render), cv2.COLOR_BGR2GRAY)
-			
 
-			# TODO: Test code
-			# virtual_render = cv2.cvtColor(np.array(virtual_render), cv2.COLOR_BGR2GRAY)
-			# thresh = cv2.threshold(virtual_render, 127, 255, cv2.THRESH_BINARY)[1]
-			# contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-			# print(np.mean([cv2.contourArea(contour) for contour in contours]))
+			if epoch % 5 == 0:
+				SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(virtual_render), str(epoch))
 			
-			import pdb; pdb.set_trace()
-			loss = mi.Float(np.mean(dr.sqr(virtual_render-picture)))
+			loss = dr.mean(dr.sqr(virtual_render-picture))
 			dr.backward(loss)
 			opt.step()
+			print(loss)
 
 			loss_hist.append(loss.array[0])
 			
 
-
-
+		result = {
+			'translation'  : opt['translation'],
+			'sensor.x_fov'  : opt['sensor.x_fov']
+		}
 		SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization')
-		SetupCalibration.write_parameters(opt, SetupCalibration.CAMERA_SETUP_FILE)
+		SetupCalibration.write_parameters(result, SetupCalibration.CAMERA_SETUP_FILE)
 		return opt
 
 
@@ -290,16 +301,18 @@ class SetupCalibration:
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 		mask = mask.astype(bool)
 		
-		for config_file in Path(calibration_images_folder).glob(f'CMYK*{SetupCalibration.FILE_TYPE}'):
+		for config_file in Path(calibration_images_folder).glob(f'*{SetupCalibration.FILE_TYPE}'):
 
 			config, face = config_file.stem.split('_')
+
+			print(config, face)
 
 			# Update emitters based on the configuration used for the calibration image
 			emitters = SetupCalibration.get_emitters(emitter_positions, config, color_configs_file)
 			if face == 'combined':
-				emitters = SceneUtils.update_emitters(emitters, faces_on=[face])
-			else:
 				emitters = SceneUtils.update_emitters(emitters)
+			else:
+				emitters = SceneUtils.update_emitters(emitters, faces_on=[face])
 
 			scene_dict.update(emitters)
 
@@ -309,7 +322,8 @@ class SetupCalibration:
 
 			# TODO: Use camera optimization
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				origin=[2,19,56],
+				#origin=[2,19,56],
+				origin =[0, 0.5, 0.35],
 				target=[0,0,0],
 				up=[0,1,0],
 			)
@@ -370,8 +384,9 @@ class SetupCalibration:
 				opt.step()
 
 				print(loss)
-				loss_hist.append(loss)
+				loss_hist.append(loss.array[0])
 
+			print(config_file.name)
 			SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, f'{config_file.name}_results')
 
 			result = {
@@ -382,14 +397,12 @@ class SetupCalibration:
 				'yaw' : opt['yaw'],
 			}
 			results.append((result, loss))
-			break
-		#compare_scenes(picture, virtual_render)
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]
 
 		SetupCalibration.write_parameters(params, results_path)
-		return params, 
+		return params
 	
 class TestSetupCalibration:
 
@@ -416,8 +429,8 @@ class TestSetupCalibration:
 
 		initial_light_positions = [mi.Point3f(virtual_params[f'light_{i}.position']) for i in range(len(emitters))]
 
-     
-    
+	 
+	
 if __name__ == '__main__':
 	#SetupCalibration.optimize_lights()
 	SetupCalibration.optimize_camera()

@@ -73,19 +73,18 @@ class HDRIOptimization:
         base_params = mi.traverse(scene)
         ref_params = mi.traverse(reference_scene)
 
-        light_opt = SC.open_light_parameters(light_cfg)
+        # update sensor parameters
         cam_opt = SC.open_camera_parameters(cam_cfg)
 
-        print(cam_opt)
         translation = cam_opt['translation']
         x_fov = cam_opt['sensor.x_fov']
+
         base_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
             origin=mi.ScalarPoint3f(translation),
             target=mi.ScalarPoint3f(0, 0, 0),
             up=mi.ScalarPoint3f(0, 1, 0)
         )
         base_params["sensor.x_fov"] = x_fov
-
         ref_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
             origin=mi.ScalarPoint3f(translation),
             target=mi.ScalarPoint3f(0, 0, 0),
@@ -135,6 +134,8 @@ class HDRIOptimization:
                 plt.pause(0.08)
                 plt.close(fig)
 
+            print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
+
             # early stopping
             if loss.array[0] < best_loss - 1e-6:
                 best_loss = loss.array[0]
@@ -146,8 +147,6 @@ class HDRIOptimization:
                 if wait >= patience:
                     print(f"Stopped at epoch {epoch} (no improvement for {patience} epochs)")
                     break
-
-            print(f"Epoch {epoch + 1:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
 
         for i in range(len(emitters)):
             base_params[f'light_{i}.intensity.value'] = best_rgb[i]
@@ -161,7 +160,7 @@ class HDRIOptimization:
             ax[0].set_title("Reference (HDRI)")
             ax[0].axis('off')
             ax[1].imshow(mi.util.convert_to_bitmap(final_render))
-            ax[1].set_title(f"Optimized Emitter Render @ Epoch {best_loss_idx + 1:02d}")
+            ax[1].set_title(f"Optimized Emitter Render @ Epoch {best_loss_idx:02d}")
             ax[1].axis('off')
             plt.tight_layout()
             plt.pause(3.0)
@@ -170,6 +169,7 @@ class HDRIOptimization:
         plt.figure(figsize=(10, 4))
         plt.plot(loss_hist, label='Loss', linewidth=2)
         plt.axvline(best_loss_idx, color='red', linestyle='--', label='Best Epoch (Early Stopping)')
+        plt.xlim(1, len(loss_hist)-1)
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         plt.title('HDRI Optimization Loss over Time')

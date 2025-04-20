@@ -4,11 +4,12 @@ import mitsuba as mi
 import numpy as np
 import json
 from Utils import ConfigUtils
+from setup_calibration import SetupCalibration as SC
 
 class HDRImap(): 
 
     @staticmethod
-    def apply_hdri(emitters, hdri_path, all_pos, hidr_scale_factor, n_clusters=598, scale=0.6):
+    def apply_hdri(emitters, hdri_path, all_pos, light_cfg, hidr_scale_factor, n_clusters=598, scale=0.6, verbose=False):
 
         if (hdri_path is None):
             raise FileNotFoundError("invalid hdri path")
@@ -21,6 +22,27 @@ class HDRImap():
         hdri_np = np.array(hdri)
         H, W, _ = hdri_np.shape
 
+        print("Initializing with optimized transform.") if verbose else None
+        light_opt = SC.open_light_parameters(light_cfg)
+        # update light parameters
+        scale = light_opt['scale']
+        translation = light_opt['translation']
+        roll = light_opt['roll']
+        pitch = light_opt['pitch']
+        yaw = light_opt['yaw']
+
+        T = (
+            mi.Transform4f()
+                .translate(mi.Point3f(translation))
+                .rotate(mi.Point3f(1, 0, 0), roll)
+                .rotate(mi.Point3f(0, 1, 0), pitch)
+                .rotate(mi.Point3f(0, 0, 1), yaw)
+                .scale(scale)
+        )
+        print(f"Original positions: {all_pos[:3]}...{all_pos[-1]}") if verbose else None
+        transformed_pos = [T @ mi.Point3f(float(pos[0]), float(pos[1]), float(pos[2])) for pos in all_pos]
+        print(f"Transformed positions: {transformed_pos[:3]}...{transformed_pos[-1]}") if verbose else None
+
         # perceived brightness of each pixel in HDRI
         # https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color
         luminance = (
@@ -30,7 +52,8 @@ class HDRImap():
         )
 
         # hdri lighting is spherical, get pixel directions
-        phi   = np.linspace(0, 2 * np.pi, W, endpoint=False)
+        print("Calculating directions.") if verbose else None
+        phi = np.linspace(0, 2 * np.pi, W, endpoint=False)
         theta = np.linspace(0, np.pi, H)
         phi_grid, theta_grid = np.meshgrid(phi, theta)
 
@@ -52,6 +75,7 @@ class HDRImap():
 
         # cluster env lighting into 600 lights
         # kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+        print("Clustering HDRI light directions weighted by luminance.") if verbose else None
         kmeans = MiniBatchKMeans(n_clusters, random_state=42, batch_size=1000)
         kmeans.fit(sample_dirs, sample_weight=sample_weights)
         cluster_dirs = kmeans.cluster_centers_
@@ -72,7 +96,10 @@ class HDRImap():
             else:
                 cluster_colors[i] = 0  # fallback color for empty cluster
 
-        emitter_dirs = np.array([np.array(pos)/np.linalg.norm(pos) for pos in all_pos])
+        # emitter_dirs = np.array([np.array(pos)/np.linalg.norm(pos) for pos in all_pos])
+        emitter_dirs = np.array([np.array(p).reshape(3) / np.linalg.norm(p) for p in transformed_pos])
+
+        print("Finding nearest emitter to each cluster.") if verbose else None
         tree = cKDTree(emitter_dirs)
         _, nearest_indices = tree.query(cluster_dirs)
 
@@ -85,6 +112,7 @@ class HDRImap():
         for cluster_idx, emitter_idx in enumerate(nearest_indices):
             emitter_colors[emitter_idx].append(cluster_colors[cluster_idx])
 
+        print("Calculating average color for each emitter.") if verbose else None
         for idx, colors in emitter_colors.items():
             # numPy array for per-channel 
             colors_np = np.array(colors)

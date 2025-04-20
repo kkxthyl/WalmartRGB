@@ -28,12 +28,12 @@ class LEDController:
 
     TOP_START = 0
     TOP_END = 168
-    RIGHT_START = 170
-    RIGHT_END = 299
+    RIGHT_START = 471
+    RIGHT_END = 599
     BACK_START = 301
     BACK_END = 469
-    LEFT_START = 471
-    LEFT_END = 599
+    LEFT_START = 170
+    LEFT_END = 299
 
     def __init__(self, host=None, hw_address=None, camera_test=False):
         """

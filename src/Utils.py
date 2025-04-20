@@ -147,43 +147,29 @@ class SceneUtils:
     
     @staticmethod
     def get_base_scene_dict(low_res=False):
+        w = 5184
+        h = 3456
         if low_res:
-            entry = {
-                "type": "perspective",
-                "sampler": {"type": "independent", "sample_count": 512},
-                "to_world": mi.ScalarTransform4f().look_at(
-                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
-                    target=mi.ScalarPoint3f(0, 0, 0),
-                    up=mi.ScalarPoint3f(0, 1, 0)
-                ),
-                "film": {
-                    "type": "hdrfilm",
-                    "width": 800,
-                    "height": 600,
-                    "pixel_format": "rgb"
-                }
-            }
-        else:
-            entry = {
-                "type": "perspective",
-                "sampler": {"type": "independent", "sample_count": 512},
-                "to_world": mi.ScalarTransform4f().look_at(
-                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
-                    target=mi.ScalarPoint3f(0, 0, 0),
-                    up=mi.ScalarPoint3f(0, 1, 0)
-                ),
-                "film": {
-                    "type": "hdrfilm",
-                    "width": 5184,
-                    "height": 3456,
-                    "pixel_format": "rgb"
-                }
-            }
-
+            w = 800
+            h = 600
         scene_dict = {
             "type": "scene",
             "integrator": {"type": "path"},
-            "sensor": entry,
+            "sensor": {
+                "type": "perspective",
+                "sampler": {"type": "independent", "sample_count": 512},
+                "to_world": mi.ScalarTransform4f().look_at(
+                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
+                    target=mi.ScalarPoint3f(0, 0, 0),
+                    up=mi.ScalarPoint3f(0, 1, 0)
+                ),
+                "film": {
+                    "type": "hdrfilm",
+                    "width": w,
+                    "height": h,
+                    "pixel_format": "rgb"
+                }
+            },
             "env": {
                 "type": "constant",
                 "radiance": {"type": "rgb", "value": [0.01, 0.01, 0.01]}

@@ -121,9 +121,11 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             emitters,
             hdri_path,
             [pos for _, pos in all_pos],
+            light_cfg=calibration_light_configs,
             hidr_scale_factor=0.003,
             n_clusters=598,
-            scale=0.6
+            scale=0.6,
+            verbose=show_debug
         )
 
         HDRImap.export_hdrimap_to_json(
@@ -167,8 +169,8 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             reference_scene=reference,
             light_cfg=calibration_light_configs,
             cam_cfg=calibration_camera_configs,
-            lr=0.000175,
-            n_epochs=50,
+            lr=0.00025,
+            n_epochs=100,
             spp=16,
             patience=3,
             visualize_steps=debug_flag
@@ -176,7 +178,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
 
         print("Optimization loss:", loss_hist[best_idx]) if show_debug else None
 
-        with open(f"data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json", "w") as f:
+        with open(f"data/optimized_hdri/optimized_{hdri_name[:-4]}_{calibration_idx}.json", "w") as f:
             json.dump(optim_emitters, f, indent=4)
 
     # =======================================
@@ -196,8 +198,8 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--hdri', type=str, default="sample_hdri.exr",
-                        help="Name of the HDRI file (e.g., 'sample_hdri.exr')")
+    parser.add_argument('--hdri', type=str, default="indoor.exr",
+                        help="Name of the HDRI file (e.g., 'indoor.exr')")
     parser.add_argument('--calibrate', action='store_true',
                         help="Enable calibration mode")
     # parser.add_argument('--v', action='store_true',

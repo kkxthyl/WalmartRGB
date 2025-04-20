@@ -65,6 +65,7 @@ class SetupCalibration:
 		axs[1][1].set_title('Reference Image')
 		plt.show()
 		plt.savefig(f'figures/{file_name}.png')
+		plt.close(fig)
 
 	@staticmethod
 	def get_emitters(all_pos, config, color_configs_file=None):
@@ -162,7 +163,8 @@ class SetupCalibration:
 		axarr[0].imshow(real_img)
 		axarr[1].imshow(virtual_img)
 
-		plt.savefig(f'figures/{file_name}')
+		plt.savefig(f'figures/{file_name}.png')
+		plt.close(f)
 
  
 	@staticmethod
@@ -179,18 +181,13 @@ class SetupCalibration:
 		)
 		
 
-		opt['translation'] =  mi.Vector3f([0,0,0])
 		opt["sensor.x_fov"] = mi.Float(30)
 
-		# Use the Plane Sweep Method
-		# Elect depth candidates
-		loss_hist = []
-		virtual_render = None
-		loss = None
-
-		file = next(Path(calibration_images_folder).glob(f'*{SetupCalibration.FILE_TYPE}'))
+		file = next(Path(calibration_images_folder).glob(f'WHITE*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
 		virtual_scene_params.update(SetupCalibration.get_emitters(emitter_positions, 'WHITE', color_configs_file))
+		virtual_scene_params.update()
+
 		virtual_scene_params.update()
 
 		init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
@@ -205,67 +202,73 @@ class SetupCalibration:
 		mask = SceneUtils.get_mask(img_empty, img_obj)
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 		mask = mask.astype(bool)
-		picture[~mask] = (0,0,0)
-		picture = mi.TensorXf(picture)
+		# picture[~mask] = (0,0,0)
+		# picture = mi.TensorXf(picture)
 			
-		initial_to_world = mi.Transform4f(virtual_scene_params["sensor.to_world"])
 		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(init_virtual_render), 'calib')
 
-		# Optimization Loop
-		for epoch in range(10):
+		best_loss = 1E10
+		result = {}
+		for i in np.linspace(0,0.3,5):
 
-			print('Epoch: ', epoch)
-
-			# Apply clipping
-			translation_val = dr.clip(opt['translation'], -50, 50)
-			fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
-
-
-			opt['translation'] = translation_val
-			opt['sensor.x_fov'] = fov_val
-
-			T = (
-				mi.Transform4f()
-				.translate(5*opt['translation'])
-			)
-
-
-			print(opt['translation'])
-			
-			# # Apply change to scene
-			origin = T@ [0, 0.5, 0.35]
-			#virtual_scene_params["sensor.to_world"] = T @ initial_to_world
+			translation = [0, i, 0.35]
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				origin=[origin[i][0] for i in range(3)],
+				origin=translation,
 				target=[0, 0, 0],
 				up=[0,1,0]
 			)
+			virtual_scene_params.update()
+			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
+
+			vrender = np.array(virtual_render)
+
+			merged = np.array(vrender)
+			merged[mask] = (0,0,0)
+			merged[mask] = vrender[mask]
+
+			loss = np.mean(np.square(virtual_render-picture))
+
+			if loss < best_loss:
+				SetupCalibration.compare_scenes(merged, picture, str(i))
+				best_loss = loss
+				result['translation'] = translation
+
+			
+		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(virtual_render), 'sweep')
+
+		loss_hist = []
+		virtual_render = None
+		loss = None
+
+		# Optimization Loop
+		for epoch in range(100):
+
+			print(epoch, end='\r')
+			# Apply clipping
+			fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
+			opt['sensor.x_fov'] = fov_val
 
 			virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
 			virtual_scene_params.update()
 
 			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
-			if epoch % 5 == 0:
-				SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(virtual_render), str(epoch))
-			
+			picture[~mask] = (0,0,0)
 			loss = dr.mean(dr.sqr(virtual_render-picture))
 			dr.backward(loss)
 			opt.step()
-			print(loss)
+
+			if epoch % 5 == 0:
+				vimg = mi.util.convert_to_bitmap(virtual_render)
+				SetupCalibration.compare_scenes(picture, vimg, str(epoch))
 
 			loss_hist.append(loss.array[0])
 			
 
-		result = {
-			'translation'  : opt['translation'],
-			'sensor.x_fov'  : opt['sensor.x_fov']
-		}
+		result['sensor.x_fov'] = mi.Float(opt['sensor.x_fov'])
 		SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization')
 		SetupCalibration.write_parameters(result, SetupCalibration.CAMERA_SETUP_FILE)
-		return opt
-
-
+		return result
 
 	@staticmethod
 	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path):
@@ -303,7 +306,10 @@ class SetupCalibration:
 		
 		for config_file in Path(calibration_images_folder).glob(f'*{SetupCalibration.FILE_TYPE}'):
 
-			config, face = config_file.stem.split('_')
+			try:
+				config, face = config_file.stem.split('_')
+			except ValueError:
+				continue
 
 			print(config, face)
 

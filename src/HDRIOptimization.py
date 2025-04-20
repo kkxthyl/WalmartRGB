@@ -1,18 +1,16 @@
 import mitsuba as mi
 import matplotlib.pyplot as plt
-import numpy as np
 import drjit as dr
-import json
 
 class HDRIOptimization:
 
     @staticmethod
-    def get_reference_hdri_scene(hdri_path, spp=24, hide_hdri=True):
+    def get_reference_hdri_scene(hdri_path, sample_count=512, hide_hdri=True):
+
         hdri = mi.Bitmap(hdri_path).convert(
             mi.Bitmap.PixelFormat.RGB,
             mi.Struct.Type.Float32
         )
-
         scene_dict = {
             "type": "scene",
             "integrator": {
@@ -21,11 +19,11 @@ class HDRIOptimization:
             },
             "sensor": {
                 "type": "perspective",
-                "sampler": {"type": "independent", "sample_count": spp},
+                "sampler": {"type": "independent", "sample_count": sample_count},
                 "to_world": mi.ScalarTransform4f().look_at(
-                    origin=[0, 0.05, 0.35],
-                    target=[0, 0, 0],
-                    up=[0, 1, 0]
+                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
+                    target=mi.ScalarPoint3f(0, 0, 0),
+                    up=mi.ScalarPoint3f(0, 1, 0)
                 ),
                 "film": {
                     "type": "hdrfilm",
@@ -44,16 +42,16 @@ class HDRIOptimization:
             "checkerboard": {
                 "type": "rectangle",
                 "to_world": mi.ScalarTransform4f()
-                    .translate([0, 0, 0])
-                    .rotate([1, 0, 0], -90)
-                    .scale([0.2, 0.2, 1.0]),
+                    .translate(mi.ScalarPoint3f(0, 0, 0))
+                    .rotate(mi.ScalarPoint3f(1, 0, 0), -90)
+                    .scale(mi.ScalarPoint3f(0.2, 0.2, 1.0)),
                 "bsdf": {
                     "type": "diffuse",
                     "reflectance": {
                         "type": "checkerboard",
-                        "color0": { "type": "rgb", "value": [1, 1, 1] },
-                        "color1": { "type": "rgb", "value": [0, 0, 0] },
-                        "to_uv": mi.ScalarTransform4f().scale([10.0, 10.0, 1.0])
+                        "color0": {"type": "rgb", "value": [1, 1, 1]},
+                        "color1": {"type": "rgb", "value": [0, 0, 0]},
+                        "to_uv": mi.ScalarTransform4f().scale(mi.ScalarPoint3f(10.0, 10.0, 1.0))
                     }
                 }
             }
@@ -64,10 +62,11 @@ class HDRIOptimization:
         return scene
 
     @staticmethod
-    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=8, visualize_steps=False):
+    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=16,
+                                   visualize_steps=False):
 
         params = mi.traverse(scene)
-        reference = mi.render(reference_scene, params, spp=spp)
+        reference = mi.render(reference_scene, params, spp=512)
         opt = mi.ad.Adam(lr=lr)
         for i in range(len(emitters)):
             init_rgb = dr.detach(params[f'light_{i}.intensity.value'])
@@ -100,23 +99,23 @@ class HDRIOptimization:
             else:
                 wait += 1
                 if wait >= patience:
-                    print(f"Early stopping at epoch {epoch} (no improvement for {patience} epochs)")
+                    print(f"Stopped at epoch {epoch} (no improvement for {patience} epochs)")
                     break
 
-            print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
+            print(f"Epoch {epoch + 1:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
 
-        if visualize_steps:
-            # visualization
-            fig, ax = plt.subplots(1, 2, figsize=(10, 4))
-            ax[0].imshow(mi.util.convert_to_bitmap(reference))
-            ax[0].set_title("Reference (HDRI)")
-            ax[0].axis('off')
-            ax[1].imshow(mi.util.convert_to_bitmap(render))
-            ax[1].set_title(f"Render Epoch {epoch}")
-            ax[1].axis('off')
-            plt.tight_layout()
-            plt.pause(0.08)
-            plt.close(fig)
+            if visualize_steps:
+                # visualization
+                fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+                ax[0].imshow(mi.util.convert_to_bitmap(reference))
+                ax[0].set_title("Reference (HDRI)")
+                ax[0].axis('off')
+                ax[1].imshow(mi.util.convert_to_bitmap(render))
+                ax[1].set_title(f"Render Epoch {epoch}")
+                ax[1].axis('off')
+                plt.tight_layout()
+                plt.pause(0.08)
+                plt.close(fig)
 
         for i in range(len(emitters)):
             params[f'light_{i}.intensity.value'] = best_rgb[i]
@@ -124,16 +123,19 @@ class HDRIOptimization:
         params.update()
         final_render = mi.render(scene, params, spp=512)
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
-        ax[0].imshow(mi.util.convert_to_bitmap(reference))
-        ax[0].set_title("Reference (HDRI)")
-        ax[0].axis('off')
-        ax[1].imshow(mi.util.convert_to_bitmap(final_render))
-        ax[1].set_title("Optimized Emitter Render")
-        ax[1].axis('off')
-        plt.show()
+
+        if visualize_steps:
+            ax[0].imshow(mi.util.convert_to_bitmap(reference))
+            ax[0].set_title("Reference (HDRI)")
+            ax[0].axis('off')
+            ax[1].imshow(mi.util.convert_to_bitmap(final_render))
+            ax[1].set_title("Optimized Emitter Render")
+            ax[1].axis('off')
+            plt.tight_layout()
+            plt.pause(3.0)
+            plt.close(fig)
 
         optimized_colors = {
-        i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
+            i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
         }
         return optimized_colors, best_loss
-    

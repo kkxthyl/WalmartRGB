@@ -23,7 +23,7 @@ class SetupCalibration:
 
 		if not os.path.exists(file_path):
 			return None
-  
+
 		with open(file_path) as f:
 			params = json.load(f)
 			params['translation'] = mi.Vector3f(*eval(params['translation']))
@@ -118,7 +118,7 @@ class SetupCalibration:
 	def initialize_virtual_scene(all_pos, color_configs_file, misalign=False):
 
 		# Initialize scene
-		scene_dict = SceneUtils.get_base_scene_dict()
+		scene_dict = SceneUtils.get_base_scene_dict(low_res=True)
 		scene_dict = SceneUtils.add_checkerboard_to_scene_dict(scene_dict)
 
 
@@ -198,6 +198,7 @@ class SetupCalibration:
 
 		file = next(Path(calibration_images_folder).glob(f'WHITE*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
+		# downsample = cv2.resize(picture, (800,600))
 		virtual_scene_params.update(SetupCalibration.get_emitters(emitter_positions, 'WHITE', color_configs_file))
 		virtual_scene_params.update()
 
@@ -304,7 +305,8 @@ class SetupCalibration:
 		# Initialize Adam optimizer
 		virtual_scene_params = mi.traverse(virtual_scene)
 		opt = mi.ad.Adam(
-			lr=0.025,
+			# lr=0.025,
+			lr=0.018,
 			mask_updates=True
 		)
 		
@@ -321,6 +323,7 @@ class SetupCalibration:
 		img_empty = cv2.imread(blank)
 		img_obj = cv2.imread(calib)
 		mask = SceneUtils.get_mask(img_empty, img_obj)
+		mask = cv2.resize(mask, (800,600))
 
 		# Convert to boolean array 
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
@@ -364,7 +367,11 @@ class SetupCalibration:
 			
 			# Grab reference image
 			picture = cv2.imread(str(config_file))
+			picture = cv2.resize(picture, (800,600))
 			picture[~mask] = (0,0,0)
+
+			picture = picture.astype(np.float32) / 255.0
+			picture = mi.TensorXf(picture)
 
 			init_virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 

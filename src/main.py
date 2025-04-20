@@ -37,7 +37,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
     # =======================================
     #                SETUP
     # =======================================
-    print("1. Setup") if show_debug else None
+    print("\n1. Setup") if show_debug else None
 
     hdri_path = os.path.join("hdri", hdri_name)
 
@@ -64,7 +64,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         #            DATA COLLECTION
         # =======================================
-        print("2. Data Collection") if show_debug else None
+        print("\n2. Data Collection") if show_debug else None
         if calibrate_physical:
             
             CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
@@ -83,7 +83,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         #          CAMERA OPTIMIZATION
         # =======================================
-        print("3. Camera Optimization") if show_debug else None
+        print("\n3. Camera Optimization") if show_debug else None
         # TODO: Add camera parameters file to check first before attempting optimization
         # camera_setup = None
         # if camera_setup is None:
@@ -92,7 +92,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         #    TRANSFORM OPTIMIZATION
         # =======================================
-        print("4. Transform Optimization") if show_debug else None
+        print("\n4. Transform Optimization") if show_debug else None
         light_setup = SetupCalibration.open_light_parameters(calibration_light_configs)
         if light_setup is None:
             light_setup = SetupCalibration.optimize_lights(all_pos, calibration_images_folder,
@@ -115,7 +115,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         # =======================================
         #             HDRI MAPPING
         # =======================================
-        print("5. HDRI Mapping") if show_debug else None
+        print("\n5. HDRI Mapping") if show_debug else None
         HDRImap.apply_hdri(
             emitters,
             hdri_path,
@@ -133,7 +133,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
     # =======================================
     #           HDRI OPTIMIZATION
     # =======================================
-    print("6. HDRI Optimization") if show_debug else None
+    print("\n6. HDRI Optimization") if show_debug else None
 
     if not os.path.exists(f"src/data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json"):
         print('Loading initial RGB values from calibration file.') if show_debug else None
@@ -159,16 +159,18 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         base_scene_dict.update(optim_emitters)
         base_scene = mi.load_dict(base_scene_dict)
         print("Optimizing light intensities.") if show_debug else None
-        _, best_loss = HDRIOpt.optimize_light_intensities(
+        _, loss_hist, best_idx = HDRIOpt.optimize_light_intensities(
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
             lr=0.000175,
             n_epochs=50,
             spp=16,
+            patience=3,
             visualize_steps=debug_flag
         )
-        print("Optimization loss:", best_loss) if show_debug else None
+
+        print("Optimization loss:", loss_hist[best_idx]) if show_debug else None
 
         with open(f"data/optimized_hdri/optimized_{hdri_name}_{calibration_idx}.json", "w") as f:
             json.dump(optim_emitters, f, indent=4)
@@ -176,7 +178,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
     # =======================================
     #            PHYSICAL MAPPING
     # =======================================
-    print("7. Physical Mapping") if show_debug else None
+    print("\n7. Physical Mapping") if show_debug else None
 
     # led = LEDController()
     #

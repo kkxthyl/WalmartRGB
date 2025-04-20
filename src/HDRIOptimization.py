@@ -2,6 +2,7 @@ import mitsuba as mi
 import matplotlib.pyplot as plt
 import drjit as dr
 
+output_dir = "figures"
 class HDRIOptimization:
 
     @staticmethod
@@ -62,7 +63,7 @@ class HDRIOptimization:
         return scene
 
     @staticmethod
-    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=16,
+    def optimize_light_intensities(scene, emitters, reference_scene, lr=0.00025, n_epochs=200, spp=16, patience=5,
                                    visualize_steps=False):
 
         params = mi.traverse(scene)
@@ -75,8 +76,9 @@ class HDRIOptimization:
 
         loss_hist = []
         best_loss = float('inf')
+        best_loss_idx = -1
         best_rgb = None
-        patience = 5
+        patience = patience
         wait = 0
         for epoch in range(n_epochs):
             for i in range(len(emitters)):
@@ -91,19 +93,6 @@ class HDRIOptimization:
             opt.step()
             loss_hist.append(loss.array[0])
 
-            # early stopping
-            if loss.array[0] < best_loss - 1e-6:
-                best_loss = loss.array[0]
-                best_rgb = {i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))}
-                wait = 0
-            else:
-                wait += 1
-                if wait >= patience:
-                    print(f"Stopped at epoch {epoch} (no improvement for {patience} epochs)")
-                    break
-
-            print(f"Epoch {epoch + 1:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
-
             if visualize_steps:
                 # visualization
                 fig, ax = plt.subplots(1, 2, figsize=(10, 4))
@@ -117,6 +106,20 @@ class HDRIOptimization:
                 plt.pause(0.08)
                 plt.close(fig)
 
+            # early stopping
+            if loss.array[0] < best_loss - 1e-6:
+                best_loss = loss.array[0]
+                best_rgb = {i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))}
+                best_loss_idx = epoch
+                wait = 0
+            else:
+                wait += 1
+                if wait >= patience:
+                    print(f"Stopped at epoch {epoch} (no improvement for {patience} epochs)")
+                    break
+
+            print(f"Epoch {epoch + 1:02d}: Loss = {loss.array[0]:.6f}") if visualize_steps else None
+
         for i in range(len(emitters)):
             params[f'light_{i}.intensity.value'] = best_rgb[i]
 
@@ -129,13 +132,26 @@ class HDRIOptimization:
             ax[0].set_title("Reference (HDRI)")
             ax[0].axis('off')
             ax[1].imshow(mi.util.convert_to_bitmap(final_render))
-            ax[1].set_title("Optimized Emitter Render")
+            ax[1].set_title(f"Optimized Emitter Render @ Epoch {best_loss_idx + 1:02d}")
             ax[1].axis('off')
             plt.tight_layout()
             plt.pause(3.0)
             plt.close(fig)
 
+        plt.figure(figsize=(10, 4))
+        plt.plot(loss_hist, label='Loss', linewidth=2)
+        plt.axvline(best_loss_idx, color='red', linestyle='--', label='Best Epoch (Early Stopping)')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.title('HDRI Optimization Loss over Time')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(f"{output_dir}/intensity_loss_plot.png", dpi=300)
+        if visualize_steps:
+            plt.pause(3.0)
+        plt.close(fig)
+
         optimized_colors = {
             i: dr.detach(opt[f'light_{i}_rgb']) for i in range(len(emitters))
         }
-        return optimized_colors, best_loss
+        return optimized_colors, loss_hist, best_loss_idx

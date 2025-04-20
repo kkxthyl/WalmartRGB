@@ -33,7 +33,7 @@ def get_all_positions(scale=1.0):
     return left + top + back + right
 
 
-def main(hdri_name, calibrate_flag, show_debug=False):
+def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
     # =======================================
     #                SETUP
     # =======================================
@@ -65,17 +65,20 @@ def main(hdri_name, calibrate_flag, show_debug=False):
         #            DATA COLLECTION
         # =======================================
         print("2. Data Collection") if show_debug else None
+        if calibrate_physical:
+            
+            CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
 
-        # CollectionController = DataCollection(led_test=False, camera_test=False, calibration_folder=calibration_images_folder)
+            # Capture Mask Images
+            CollectionController.take_mask_images()
 
-        # # Capture Mask Images
-        # CollectionController.take_mask_images()
+            # Capture Calibration Images
+            CollectionController.capture_optimization_images(config_path=calibration_color_configs)
 
-        # # Capture Calibration Images
-        # CollectionController.capture_optimization_images(config_path=calibration_color_configs)
+            # Close the camera SDK
+            CollectionController.close_sdk()
 
-        # # Close the camera SDK
-        # CollectionController.close_sdk()
+            exit()
 
         # =======================================
         #          CAMERA OPTIMIZATION
@@ -193,6 +196,8 @@ if __name__ == '__main__':
                         help="Enable calibration mode")
     # parser.add_argument('--v', action='store_true',
     #                     help="Show more output for debugging purposes")
+    parser.add_argument('--calibrate_physical', action='store_true',
+                        help="Capture camera calibration images")
 
     args = parser.parse_args()
 
@@ -200,5 +205,6 @@ if __name__ == '__main__':
 
     print(f"HDRI FILE: {args.hdri}") if debug_flag else None
     print(f"CALIBRATION FLAG: {args.calibrate}") if debug_flag else None
+    print(f"PHYSICAL CALIBRATION FLAG: {args.calibrate_physical}") if debug_flag else None
 
-    main(args.hdri, args.calibrate, debug_flag)
+    main(args.hdri, args.calibrate, args.calibrate_physical, debug_flag)

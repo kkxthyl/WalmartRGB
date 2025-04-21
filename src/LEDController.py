@@ -121,9 +121,10 @@ class LEDController:
             A bytes object representing the pixel.
         """
         # Scale the colors by the brightness factor w (assumed to be between 0 and 255)
-        r = math.ceil(r * (w / 255))
-        g = math.ceil(g * (w / 255))
-        b = math.ceil(b * (w / 255))
+        r = min(math.ceil(r * (w / 255)), 255)
+        g = min(math.ceil(g * (w / 255)), 255)
+        b = min(math.ceil(b * (w / 255)), 255)
+
         return struct.pack(">BBB", r, g, b)
 
     def create_face_pattern(self, face, r, g, b, w):
@@ -252,7 +253,7 @@ class LEDController:
                 and len(radiance) == 3
             ):
                 r, g, b = radiance
-                color_map[idx] = {'r': r*100, 'g': g*100, 'b': b*100}
+                color_map[idx] = {'r': r[0]*100, 'g': g[0]*100, 'b': b[0]*100}
 
         return color_map
 
@@ -262,6 +263,11 @@ class LEDController:
         for i, color in colors.items():
             # print(i)
             # print(color)
+
+            r = max(0, color['r'])
+            g = max(0, color['g'])
+            b = max(0, color['b'])
+
             idx = i
             if i > 168:
                 idx += 1
@@ -269,7 +275,7 @@ class LEDController:
             #     idx += 1
             if i > 467:
                 idx += 1
-            patt[idx] = self.make_pixel(color['r']*255, color['g']*255, color['b']*255, 255)
+            patt[idx] = self.make_pixel(r*255, g*255, b*255, 255)
 
         return patt
 

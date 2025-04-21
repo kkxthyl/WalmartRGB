@@ -488,7 +488,7 @@ class SceneUtils:
         "to_world": mi.ScalarTransform4f()
             .translate([0, 0, 0])      # Place it on the ground
             .rotate([1, 0, 0], -90)    # Lie flat on XZ
-            .scale([0.1, 0.1, 1.0]),  # 20 cm × 20 cm plane
+            .scale([0.2, 0.2, 1.0]),  # 20 cm × 20 cm plane
         "bsdf": {
             "type": "diffuse",
             "reflectance": {

@@ -41,7 +41,7 @@ class SetupCalibration:
 		params = cu.get_camera_calibration_params()
 
 		params['translation'] = eval(params['translation'])
-		params['sensor.x_fov'] = mi.Float(eval(params['camera_fov']))
+		params['sensor.x_fov'] = mi.Float(eval(params['sensor.x_fov']))
 
 		return params
 
@@ -379,7 +379,7 @@ class SetupCalibration:
 
 			patience = 5
 			# Optimization Loop
-			for epoch in range(2):
+			for epoch in range(50):
 
 				print('Epoch: ', epoch)
 
@@ -443,7 +443,6 @@ class SetupCalibration:
 				'yaw' : opt['yaw'],
 			}
 			results.append((result, loss))
-			break
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]

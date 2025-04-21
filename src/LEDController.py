@@ -24,16 +24,16 @@ class LEDController:
 
     # [0, 168, 170, 299, 301, 469, 471, 599]
 
-    null_lights = [169,300,470]
+    # null_lights = [169,300,470]
 
     TOP_START = 0
-    TOP_END = 168
-    RIGHT_START = 471
-    RIGHT_END = 599
-    BACK_START = 301
+    TOP_END = 169
+    RIGHT_START = 470
+    RIGHT_END = 600
+    BACK_START = 300
     BACK_END = 469
     LEFT_START = 170
-    LEFT_END = 299
+    LEFT_END = 300
 
     def __init__(self, host=None, hw_address=None, camera_test=False):
         """

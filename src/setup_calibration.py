@@ -50,6 +50,7 @@ class SetupCalibration:
 	def show_results(init_virtual_render, virtual_render, picture, loss_hist, file_name, learning_rate):
 
 		fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+		plt.tight_layout()
 
 		axs[0][0].plot(loss_hist)
 		axs[0][0].set_xlabel('Iteration')
@@ -144,11 +145,15 @@ class SetupCalibration:
 	def compare_scenes(real_img, virtual_img, file_name):
 
 		f, axarr = plt.subplots(1,2) 
+		plt.tight_layout()
 
 		# use the created array to output your multiple images. In this case I have stacked 4 images vertically
 		real = mi.util.convert_to_bitmap(real_img)
+		axarr[0].axis('off')
 		axarr[0].imshow(real)
+
 		bitmap = mi.util.convert_to_bitmap(virtual_img)
+		axarr[1].axis('off')
 		axarr[1].imshow(bitmap)
 
 		plt.savefig(f'figures/{file_name}.png')

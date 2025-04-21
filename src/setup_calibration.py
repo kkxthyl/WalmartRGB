@@ -323,6 +323,9 @@ class SetupCalibration:
 
 			print(config, face)
 
+			if config == 'mask':
+				continue
+
 			# Update emitters based on the configuration used for the calibration image
 			emitters = SetupCalibration.get_emitters(emitter_positions, config, color_configs_file)
 			if face == 'combined':

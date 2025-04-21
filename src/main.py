@@ -3,6 +3,8 @@ import argparse
 import matplotlib.pyplot as plt
 import json
 import mitsuba as mi
+import drjit as dr
+
 from Utils import SceneUtils
 
 from Utils import SceneUtils as su
@@ -184,17 +186,28 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
         base_scene_dict.update(optim_emitters)
         base_scene = mi.load_dict(base_scene_dict)
         print("Optimizing mapped light intensities.") if show_debug else None
-        _, loss_hist, best_idx = HDRIOpt.optimize_light_intensities(
+        optimized_emitters, loss_hist, best_idx = HDRIOpt.optimize_light_intensities(
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
             cam_cfg=config_file,
             lr=0.00025,
-            n_epochs=100,
+            n_epochs=50,
             spp=16,
             patience=3,
             visualize_steps=debug_flag
         )
+
+        for idx, rgb in optimized_emitters.items():
+            key=f'light_{idx}'
+            if key in optim_emitters:
+
+                np_rgb = rgb.numpy()
+                optim_emitters[key]['intensity']['value'][0] = np_rgb.tolist()[0]
+                optim_emitters[key]['intensity']['value'][1] = np_rgb.tolist()[1]
+                optim_emitters[key]['intensity']['value'][2] = np_rgb.tolist()[2]
+
+
 
         print("Final optimization loss:", loss_hist[best_idx]) if show_debug else None
 

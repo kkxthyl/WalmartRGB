@@ -120,11 +120,18 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
 
         # Build transformation
         emitters = SetupCalibration.get_emitters(all_pos, 'WHITE', calibration_color_configs)
+
+        translation = json.loads(light_setup['translation'])[0]
+        scale = json.loads(light_setup['scale'])[0]
+        roll = json.loads(light_setup['roll'])[0]
+        pitch = json.loads(light_setup['pitch'])[0]
+        yaw = json.loads(light_setup['yaw'])[0]
+
         emitters = SceneUtils.update_emitters(
             emitters,
-            [light_setup['translation'][0][0], light_setup['translation'][1][0], light_setup['translation'][2][0]],
-            light_setup['scale'][0],
-            [light_setup['roll'][0], light_setup['pitch'][0], light_setup['yaw'][0]]
+            translation,
+            scale,
+            [roll, pitch, yaw]
         )
 
         # =======================================

@@ -18,7 +18,7 @@ class SetupCalibration:
 	MASK_FULL_FILE = 'mask_obj.jpg'
 	MASK_EMPTY_FILE = 'mask_no_obj.jpg'
 	CAMERA_LR = 0.05
-	# LIGHT_LR = 
+	LIGHT_LR = 0.03
 
 	@staticmethod
 	def open_light_parameters(file_path):

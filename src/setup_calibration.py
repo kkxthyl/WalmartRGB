@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import drjit as dr
 import json
-import cv2 
+import cv2
+from Configs import Configs as cf
 from Utils import SceneUtils
 from Utils import ConfigUtils
 
@@ -17,7 +18,7 @@ class SetupCalibration:
 	CAMERA_SETUP_FILE = 'data/camera_setup.json'
 	MASK_FULL_FILE = 'mask_obj.jpg'
 	MASK_EMPTY_FILE = 'mask_no_obj.jpg'
-	CAMERA_LR = 0.05
+	CAMERA_LR = 0.3
 	LIGHT_LR = 0.03
 
 	@staticmethod
@@ -168,7 +169,8 @@ class SetupCalibration:
 		bitmap = mi.util.convert_to_bitmap(virtual_img)
 		axarr[1].imshow(bitmap)
 
-		plt.savefig(f'figures/{file_name}.png')
+		# plt.savefig(f'figures/{file_name}.png')
+		plt.pause(0.08)
 		plt.close(f)
 
 	@staticmethod
@@ -185,7 +187,9 @@ class SetupCalibration:
 		)
 
 		opt["sensor.x_fov"] = mi.Float(30)
-		opt["translation"] = mi.Vector3f([0,0,0])
+		opt["x"] = mi.Float(cf.BASE_VIEW[0])
+		opt["y"] = mi.Float(cf.BASE_VIEW[1])
+		opt["z"] = mi.Float(cf.BASE_VIEW[2])
 
 		file = next(Path(calibration_images_folder).glob(f'WHITE*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
@@ -216,58 +220,81 @@ class SetupCalibration:
 		loss = None
 		best_loss = float('inf')
 		best_loss_idx = -1
+		patience = 3
+		wait=0
+		best_fov = None
+		best_translation = None
 							
 		result = {}
+		# result['sensor.x_fov'] = mi.Float(dr.detach(opt['sensor.x_fov']))
+		# result['translation'] = mi.Vector3f(dr.detach(opt['translation']))
 		# Optimization Loop
-		for epoch in range(5):
+		init_to_world = virtual_scene_params['sensor.to_world']  
+		for epoch in range(50):
 
 			print(epoch, end='\r')
 			# Apply clipping
 			fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
-			translation_val = dr.clip(opt['translation'], 0.0, 50)
+			x_val = dr.clip(opt['x'], 0.0, 1)
+			y_val = dr.clip(opt['y'], 0.0, 1)
+			z_val = dr.clip(opt['z'], 0.0, 1)
 			opt['sensor.x_fov'] = fov_val
-			opt['translation'] = translation_val
+			opt['x'] = x_val
+			opt['y'] = y_val
+			opt['z'] = z_val
 
 			virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
 
-			T = (
-            	mi.Transform4f()
-                .translate(mi.Point3f(opt['translation']))
-			)
-			origin = T@[0, 0.3, 0.35]
+			# T = (
+            # 	mi.Transform4f()
+            #     .translate(mi.Point3f(opt['translation']))
+			# )
+			# origin = T @ mi.Point3f(cf.BASE_VIEW)
+			#virtual_scene_params['sensor.to_world']  = T @ init_to_world
+			print(opt['x'])
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				origin=[origin[i][0] for i in range(3)],
-				target=[0, 0, 0],
-				up=[0,1,0]
+				origin= mi.ScalarPoint3f(opt['x'][0], opt['y'][0], opt['z'][0]),
+				target=mi.ScalarPoint3f(0, 0, 0),
+				up=mi.ScalarPoint3f(0,1,0)
 			)
+
+			# virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+			# 	origin=[origin[i][0] for i in range(3)],
+			# 	target=[0, 0, 0],
+			# 	up=[0,1,0]
+			# )
 
 			virtual_scene_params.update()
 
 			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
-
 			picture[~mask] = (0,0,0)
-			#virtual_mask = dr.select(mask, 0, virtual_render)
-			#dr.select(mask, 0,)
-			#loss = dr.mean(virtual_mask)
 			loss = dr.mean(dr.sqr(virtual_render-picture))
 			dr.backward(loss)
 			opt.step()
+			print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
+			if loss.array[0] < best_loss - 1e-6:
+				best_fov = mi.Float(opt['sensor.x_fov'])
+				best_translation = mi.Vector3f([opt['x'][0], opt['y'][0], opt['z'][0]])
+				print(f'{epoch} - {best_fov}, {best_translation}')
+				best_loss = loss.array[0]
+				best_loss_idx = epoch
+				wait = 0
+			else:
+				wait += 1
+				if wait >= patience:
+					print(f"Stopped at epoch {epoch} (no improvement for {wait} epochs)")
+					break
 
-			if epoch % 10 == 0:
+			if epoch % 1 == 0:
 				vimg = mi.util.convert_to_bitmap(virtual_render)
 				SetupCalibration.compare_scenes(picture, vimg, str(epoch))
 
 			loss_hist.append(loss.array[0])
 
-			# if loss.array[0] < best_loss - 1e-6:
-			# 	best_loss = loss.array[0]
-			# 	best_loss_idx = epoch
-			# 	best_
-			
+		result['sensor.x_fov'] = best_fov
+		result['translation'] = best_translation
 
-		result['sensor.x_fov'] = mi.Float(opt['sensor.x_fov'])
-		result['translation'] = mi.Vector3f(opt['translation'])
 		SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization', SetupCalibration.CAMERA_LR)
 
 		cu = ConfigUtils(config_file)
@@ -375,7 +402,6 @@ class SetupCalibration:
 
 			best_loss = float('inf')
 			best_loss_idx = -1
-
 
 			patience = 5
 			# Optimization Loop

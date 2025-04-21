@@ -159,7 +159,7 @@ class SceneUtils:
                 "type": "perspective",
                 "sampler": {"type": "independent", "sample_count": 512},
                 "to_world": mi.ScalarTransform4f().look_at(
-                    origin=mi.ScalarPoint3f(0, 0.3, 0.35),
+                    origin=mi.ScalarPoint3f(0, 0.1, 0.45),
                     target=mi.ScalarPoint3f(0, 0, 0),
                     up=mi.ScalarPoint3f(0, 1, 0)
                 ),

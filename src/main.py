@@ -52,6 +52,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
     print(f"ENVMAP '{hdri_path}' retrieved successfully.")
 
     all_pos = get_all_positions(scale=0.6)
+    print(all_pos[0])
 
     ConfigFile = cu(config_file)
     calibration_idx = ConfigFile.get_calibration_idx()

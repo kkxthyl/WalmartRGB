@@ -87,7 +87,7 @@ class SceneUtils:
                     x_iter = xs
 
                 for x in x_iter:
-                    positions.append((face, [x, const_val_n2, z]))
+                    positions.append((face, [float(val) for val in [x, const_val_n2, z]]))
 
         elif face == "back":
             xs = np.linspace(-half, half, n1)
@@ -100,7 +100,7 @@ class SceneUtils:
                     y_iter = ys
 
                 for y in y_iter:
-                    positions.append((face, [x, y, -const_val_n2]))
+                    positions.append((face, [float(val) for val in [x, y, -const_val_n2]]))
 
         elif face == "left":
             ys = np.linspace(-half, half, n1)
@@ -115,7 +115,7 @@ class SceneUtils:
                     y_iter = ys
 
                 for y in y_iter:
-                    positions.append((face, [-const_val_n1, y, z]))
+                    positions.append((face, [float(val) for val in [-const_val_n1, y, z]]))
 
         elif face == "right":
             ys = np.linspace(-half, half, n1)
@@ -130,7 +130,7 @@ class SceneUtils:
                     y_iter = ys
 
                 for y in y_iter:
-                    positions.append((face, [const_val_n1, y, z]))
+                    positions.append((face, [float(val) for val in [const_val_n1, y, z]]))
         return positions
 
     @staticmethod
@@ -159,7 +159,7 @@ class SceneUtils:
                 "type": "perspective",
                 "sampler": {"type": "independent", "sample_count": 512},
                 "to_world": mi.ScalarTransform4f().look_at(
-                    origin=mi.ScalarPoint3f(0, 0.05, 0.35),
+                    origin=mi.ScalarPoint3f(0, 0.3, 0.35),
                     target=mi.ScalarPoint3f(0, 0, 0),
                     up=mi.ScalarPoint3f(0, 1, 0)
                 ),

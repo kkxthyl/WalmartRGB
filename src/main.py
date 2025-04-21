@@ -183,12 +183,11 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
 
         base_scene_dict.update(optim_emitters)
         base_scene = mi.load_dict(base_scene_dict)
-        print("Optimizing light intensities.") if show_debug else None
+        print("Optimizing mapped light intensities.") if show_debug else None
         _, loss_hist, best_idx = HDRIOpt.optimize_light_intensities(
             scene=base_scene,
             emitters=optim_emitters,
             reference_scene=reference,
-            light_cfg=config_file,
             cam_cfg=config_file,
             lr=0.00025,
             n_epochs=100,
@@ -197,7 +196,7 @@ def main(hdri_name, calibrate_flag, calibrate_physical, show_debug=False):
             visualize_steps=debug_flag
         )
 
-        print("Optimization loss:", loss_hist[best_idx]) if show_debug else None
+        print("Final optimization loss:", loss_hist[best_idx]) if show_debug else None
 
         with open(f"data/optimized_hdri/optimized_{hdri_name[:-4]}_{calibration_idx}.json", "w") as f:
             json.dump(optim_emitters, f, indent=4)

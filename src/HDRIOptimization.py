@@ -1,7 +1,6 @@
 import mitsuba as mi
 import matplotlib.pyplot as plt
 import drjit as dr
-import json
 from Utils import SceneUtils as su
 from setup_calibration import SetupCalibration as SC
 output_dir = "figures"
@@ -67,7 +66,7 @@ class HDRIOptimization:
         return scene
 
     @staticmethod
-    def optimize_light_intensities(scene, emitters, reference_scene, light_cfg, cam_cfg, lr=0.00025, n_epochs=200, spp=16,
+    def optimize_light_intensities(scene, emitters, reference_scene, cam_cfg, lr=0.00025, n_epochs=200, spp=16,
                                    patience=5, visualize_steps=False):
 
         base_params = mi.traverse(scene)
@@ -95,6 +94,7 @@ class HDRIOptimization:
         base_params.update()
         ref_params.update()
 
+
         reference = mi.render(reference_scene, ref_params, spp=512)
         opt = mi.ad.Adam(lr=lr)
         for i in range(len(emitters)):
@@ -108,6 +108,7 @@ class HDRIOptimization:
         best_rgb = None
         patience = patience
         wait = 0
+        # optimize for RGB values of each emitter in the scene to match a reference HDRI-mapped scene
         for epoch in range(n_epochs):
             for i in range(len(emitters)):
                 opt[f'light_{i}_rgb'] = dr.clip(opt[f'light_{i}_rgb'], 0.0, 1.0)
@@ -155,17 +156,21 @@ class HDRIOptimization:
         final_render = mi.render(scene, base_params, spp=512)
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 
-        if visualize_steps:
-            ax[0].imshow(mi.util.convert_to_bitmap(reference))
-            ax[0].set_title("Reference (HDRI)")
-            ax[0].axis('off')
-            ax[1].imshow(mi.util.convert_to_bitmap(final_render))
-            ax[1].set_title(f"Optimized Emitter Render @ Epoch {best_loss_idx:02d}")
-            ax[1].axis('off')
-            plt.tight_layout()
-            plt.pause(3.0)
-            plt.close(fig)
+        # Best render-reference comparison
+        ax[0].imshow(mi.util.convert_to_bitmap(reference))
+        ax[0].set_title("Reference (HDRI)")
+        ax[0].axis('off')
+        ax[1].imshow(mi.util.convert_to_bitmap(final_render))
+        ax[1].set_title(f"Optimized Emitter Render @ Epoch {best_loss_idx:02d}")
+        ax[1].axis('off')
+        plt.tight_layout()
+        plt.savefig(f"{output_dir}/intensity_optimized.png", dpi=300)
 
+        if visualize_steps:
+            plt.pause(3.0)
+        plt.close(fig)
+
+        # Loss history with early stopping indication
         plt.figure(figsize=(10, 4))
         plt.plot(loss_hist, label='Loss', linewidth=2)
         plt.axvline(best_loss_idx, color='red', linestyle='--', label='Best Epoch (Early Stopping)')
@@ -176,6 +181,7 @@ class HDRIOptimization:
         plt.legend()
         plt.tight_layout()
         plt.savefig(f"{output_dir}/intensity_loss_plot.png", dpi=300)
+
         if visualize_steps:
             plt.pause(3.0)
         plt.close(fig)

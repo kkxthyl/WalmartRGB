@@ -151,7 +151,7 @@ class SetupCalibration:
 		bitmap = mi.util.convert_to_bitmap(virtual_img)
 		axarr[1].imshow(bitmap)
 
-		# plt.savefig(f'figures/{file_name}.png')
+		plt.savefig(f'figures/{file_name}.png')
 		plt.pause(0.08)
 		plt.close(f)
 
@@ -189,6 +189,9 @@ class SetupCalibration:
 		mask = cv2.resize(mask, (800,600))
 		mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 		mask = mask.astype(bool)
+		
+		# Mask the picture so only the checkerboard is in the scene
+		picture[~mask] = (0,0,0)
 			
 		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(init_virtual_render), 'calib')
 
@@ -256,9 +259,6 @@ class SetupCalibration:
 
 			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
-			# Mask the picture so only the checkerboard is in the scene
-			picture[~mask] = (0,0,0)
-
 			# Compute loss and backpropagate
 			loss = dr.mean(dr.sqr(virtual_render-picture))
 			dr.backward(loss)
@@ -283,7 +283,6 @@ class SetupCalibration:
 				SetupCalibration.compare_scenes(picture, vimg, str(epoch))
 
 			loss_hist.append(loss.array[0])
-
 
 		result['sensor.x_fov'] = best_fov
 

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import json
+from Configs import Configs as cf
 
 class SceneUtils:
 
@@ -159,7 +160,7 @@ class SceneUtils:
                 "type": "perspective",
                 "sampler": {"type": "independent", "sample_count": 512},
                 "to_world": mi.ScalarTransform4f().look_at(
-                    origin=mi.ScalarPoint3f(0, 0.1, 0.45),
+                    origin=mi.ScalarPoint3f(*cf.BASE_VIEW),
                     target=mi.ScalarPoint3f(0, 0, 0),
                     up=mi.ScalarPoint3f(0, 1, 0)
                 ),

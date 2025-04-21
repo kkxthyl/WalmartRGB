@@ -215,6 +215,39 @@ class SetupCalibration:
 			
 		SetupCalibration.compare_scenes(picture, mi.util.convert_to_bitmap(init_virtual_render), 'calib')
 
+
+
+		best_loss = 1E10
+		result = {}
+		for i in np.linspace(0,0.01,10):
+
+			# Move y up and down
+			translation = cf.BASE_VIEW
+			translation[1] += float(i)
+
+			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+				origin=translation,
+				target=[0, 0, 0],
+				up=[0,1,0]
+			)
+			virtual_scene_params.update()
+			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
+
+			vrender = np.array(virtual_render)
+
+			merged = np.array(vrender)
+			merged[mask] = (0,0,0)
+			merged[mask] = vrender[mask]
+
+			loss = np.mean(np.square(virtual_render-picture))
+
+			if loss < best_loss:
+				SetupCalibration.compare_scenes(merged, picture, str(i))
+				best_loss = loss
+				result['translation'] = translation
+
+
+
 		loss_hist = []
 		virtual_render = None
 		loss = None
@@ -224,10 +257,7 @@ class SetupCalibration:
 		wait=0
 		best_fov = None
 		best_translation = None
-							
-		result = {}
-		# result['sensor.x_fov'] = mi.Float(dr.detach(opt['sensor.x_fov']))
-		# result['translation'] = mi.Vector3f(dr.detach(opt['translation']))
+
 		# Optimization Loop
 		init_to_world = virtual_scene_params['sensor.to_world']  
 		for epoch in range(50):
@@ -235,34 +265,16 @@ class SetupCalibration:
 			print(epoch, end='\r')
 			# Apply clipping
 			fov_val = dr.clip(opt['sensor.x_fov'], 0.0, 50)
-			x_val = dr.clip(opt['x'], 0.0, 1)
-			y_val = dr.clip(opt['y'], 0.0, 1)
-			z_val = dr.clip(opt['z'], 0.0, 1)
 			opt['sensor.x_fov'] = fov_val
-			opt['x'] = x_val
-			opt['y'] = y_val
-			opt['z'] = z_val
 
 			virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
 
-			# T = (
-            # 	mi.Transform4f()
-            #     .translate(mi.Point3f(opt['translation']))
-			# )
-			# origin = T @ mi.Point3f(cf.BASE_VIEW)
-			#virtual_scene_params['sensor.to_world']  = T @ init_to_world
 			print(opt['x'])
 			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
 				origin= mi.ScalarPoint3f(opt['x'][0], opt['y'][0], opt['z'][0]),
 				target=mi.ScalarPoint3f(0, 0, 0),
 				up=mi.ScalarPoint3f(0,1,0)
 			)
-
-			# virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-			# 	origin=[origin[i][0] for i in range(3)],
-			# 	target=[0, 0, 0],
-			# 	up=[0,1,0]
-			# )
 
 			virtual_scene_params.update()
 
@@ -292,8 +304,9 @@ class SetupCalibration:
 
 			loss_hist.append(loss.array[0])
 
+			break
+
 		result['sensor.x_fov'] = best_fov
-		result['translation'] = best_translation
 
 		SetupCalibration.show_results(init_virtual_render, virtual_render, picture, loss_hist, 'camera_optimization', SetupCalibration.CAMERA_LR)
 
@@ -303,6 +316,7 @@ class SetupCalibration:
 			raw[k] = str(v)
 		cu.set_camera_calibration_params(raw)
 		return result
+	
 
 	@staticmethod
 	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters, config_output_file):
@@ -469,6 +483,8 @@ class SetupCalibration:
 				'yaw' : opt['yaw'],
 			}
 			results.append((result, loss))
+
+			break
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]

@@ -187,9 +187,7 @@ class SetupCalibration:
 		)
 
 		opt["sensor.x_fov"] = mi.Float(30)
-		opt["x"] = mi.Float(cf.BASE_VIEW[0])
-		opt["y"] = mi.Float(cf.BASE_VIEW[1])
-		opt["z"] = mi.Float(cf.BASE_VIEW[2])
+	
 
 		file = next(Path(calibration_images_folder).glob(f'WHITE*{SetupCalibration.FILE_TYPE}'))
 		picture = cv2.imread(str(file))
@@ -219,33 +217,46 @@ class SetupCalibration:
 
 		best_loss = 1E10
 		result = {}
-		for i in np.linspace(0,0.01,10):
+		for i in np.linspace(-0.01, 0.01, 6):
+			for j in np.linspace(-0.001, 0.001, 6):
+				for k in np.linspace(-0.001, 0.001, 6):
 
-			# Move y up and down
-			translation = cf.BASE_VIEW
-			translation[1] += float(i)
+					# Move y up and down
+					translation = cf.BASE_VIEW
+					translation[0] += float(i)
+					translation[1] += float(i)
+					translation[2] += float(k)
 
-			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				origin=translation,
-				target=[0, 0, 0],
-				up=[0,1,0]
-			)
-			virtual_scene_params.update()
-			virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
-			vrender = np.array(virtual_render)
+					virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+						origin=translation,
+						target=[0, 0, 0],
+						up=[0,1,0]
+					)
+					virtual_scene_params.update()
+					virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
 
-			merged = np.array(vrender)
-			merged[mask] = (0,0,0)
-			merged[mask] = vrender[mask]
+					vrender = np.array(virtual_render)
+					# picture[~mask] = (0,0,0)
+					# vrender[mask] = picture[mask]
 
-			loss = np.mean(np.square(virtual_render-picture))
+					loss = np.mean(np.square(vrender-picture))
 
-			if loss < best_loss:
-				SetupCalibration.compare_scenes(merged, picture, str(i))
-				best_loss = loss
-				result['translation'] = translation
+					if loss < best_loss:
+						SetupCalibration.compare_scenes(vrender, picture, str(i))
+						best_loss = loss
+						print(translation, loss)
+						result['translation'] = translation
 
+		virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
+			origin=result['translation'],
+			target=mi.ScalarPoint3f(0, 0, 0),
+			up=mi.ScalarPoint3f(0,1,0)
+		)
+		virtual_scene_params.update()
+		virtual_render = mi.render(virtual_scene, virtual_scene_params, spp=SetupCalibration.SPP)
+
+		SetupCalibration.compare_scenes(virtual_render, picture, 'sweep')
 
 
 		loss_hist = []
@@ -259,7 +270,6 @@ class SetupCalibration:
 		best_translation = None
 
 		# Optimization Loop
-		init_to_world = virtual_scene_params['sensor.to_world']  
 		for epoch in range(50):
 
 			print(epoch, end='\r')
@@ -268,13 +278,6 @@ class SetupCalibration:
 			opt['sensor.x_fov'] = fov_val
 
 			virtual_scene_params["sensor.x_fov"] = opt["sensor.x_fov"] 
-
-			print(opt['x'])
-			virtual_scene_params["sensor.to_world"] = mi.ScalarTransform4f().look_at(
-				origin= mi.ScalarPoint3f(opt['x'][0], opt['y'][0], opt['z'][0]),
-				target=mi.ScalarPoint3f(0, 0, 0),
-				up=mi.ScalarPoint3f(0,1,0)
-			)
 
 			virtual_scene_params.update()
 
@@ -287,7 +290,7 @@ class SetupCalibration:
 			print(f"Epoch {epoch:02d}: Loss = {loss.array[0]:.6f}")
 			if loss.array[0] < best_loss - 1e-6:
 				best_fov = mi.Float(opt['sensor.x_fov'])
-				best_translation = mi.Vector3f([opt['x'][0], opt['y'][0], opt['z'][0]])
+				# best_translation = mi.Vector3f([opt['x'][0], opt['y'][0], opt['z'][0]])
 				print(f'{epoch} - {best_fov}, {best_translation}')
 				best_loss = loss.array[0]
 				best_loss_idx = epoch
@@ -304,7 +307,7 @@ class SetupCalibration:
 
 			loss_hist.append(loss.array[0])
 
-			break
+
 
 		result['sensor.x_fov'] = best_fov
 
@@ -484,7 +487,7 @@ class SetupCalibration:
 			}
 			results.append((result, loss))
 
-			break
+
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]
@@ -498,4 +501,3 @@ class SetupCalibration:
 		cu.save()
 		# SetupCalibration.write_parameters(params, results_path)
 		return params
-	

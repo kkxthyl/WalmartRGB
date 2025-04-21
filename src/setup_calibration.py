@@ -278,7 +278,7 @@ class SetupCalibration:
 		return result
 
 	@staticmethod
-	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters, config_file):
+	def optimize_lights(emitter_positions, calibration_images_folder, color_configs_file, results_path, camera_parameters, config_output_file):
 
 		virtual_scene, scene_dict, initial_light_positions = SetupCalibration.initialize_virtual_scene(emitter_positions, color_configs_file)
 
@@ -379,7 +379,7 @@ class SetupCalibration:
 
 			patience = 5
 			# Optimization Loop
-			for epoch in range(50):
+			for epoch in range(2):
 
 				print('Epoch: ', epoch)
 
@@ -443,14 +443,18 @@ class SetupCalibration:
 				'yaw' : opt['yaw'],
 			}
 			results.append((result, loss))
+			break
 
 		# Choose the parameters with the best loss 
 		params, loss = sorted(results, key=lambda x: x[1])[0]
+		
+		print("CONFIG FILE: ", config_output_file)
 
-		cu = ConfigUtils(config_file)
+		cu = ConfigUtils(config_output_file)
 		for k,v in params.items():
 			params[k] = str(v)
 		cu.set_scene_calibration_params(params)
-		SetupCalibration.write_parameters(params, results_path)
+		cu.save()
+		# SetupCalibration.write_parameters(params, results_path)
 		return params
 	

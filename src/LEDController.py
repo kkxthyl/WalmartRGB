@@ -24,8 +24,6 @@ class LEDController:
 
     # [0, 168, 170, 299, 301, 469, 471, 599]
 
-    # null_lights = [169,300,470]
-
     TOP_START = 0
     TOP_END = 169
     RIGHT_START = 470
@@ -166,8 +164,8 @@ class LEDController:
             w      : Brightness (weight) value.
         """
         patt = self.get_empty_pattern()
-        for i in self.null_lights:
-            patt[i] = self.make_pixel(0, 0, 0, 0)
+        for i in range(len(patt)):
+            patt[i] = self.make_pixel(r, g, b, w)
         return patt
 
     def combine_patterns(self, left=[], right=[], top=[], back=[]):
